@@ -347,6 +347,7 @@ textarea{min-height:110px;resize:vertical}
   </div>
  </section>
 </main>
+<div class="meta" style="text-align:center;padding:30px 0 40px">애니노트 v1.0.0</div>
 </div>
 
 
@@ -438,7 +439,14 @@ textarea{min-height:110px;resize:vertical}
       <select id="myStatus"><option value="">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
     </div>
     <div class="field"><label>평점 (0~5)</label><input id="myRating" type="number" min="0" max="5" step="0.1"></div>
-    <div class="field full"><label>메모 / 감상</label><textarea id="myMemo"></textarea></div>
+    <div class="field full">
+     <label>새 메모 / 감상</label>
+     <textarea id="myMemo" placeholder="새 감상을 쓰면 기존 감상을 대체해"></textarea>
+     <div id="currentMyMemoBox" class="review hidden" style="margin-top:8px">
+      <div class="meta" style="margin-bottom:5px">현재 저장된 감상</div>
+      <div id="currentMyMemoText"></div>
+     </div>
+    </div>
    </div>
    <div class="admin-tools">
     <button id="saveMyReviewBtn" class="primary small">내 감상 저장</button>
@@ -1212,7 +1220,12 @@ window.openAnime=async(id)=>{
  myRecord=(a.user_anime||[]).find(x=>x.user_id===session.user.id)||null;
  $('#myStatus').value=myRecord?.status??'';
  $('#myRating').value=myRecord?.rating??'';
- $('#myMemo').value=myRecord?.memo??'';
+
+ const existingMemo=myRecord?.memo?.trim()||'';
+ $('#myMemo').value='';
+ $('#currentMyMemoText').textContent=existingMemo;
+ $('#currentMyMemoBox').classList.toggle('hidden',!existingMemo);
+
  $('#deleteMyReviewBtn').classList.toggle('hidden',!myRecord);
 
  await Promise.all([loadCast(id),loadReviews(id),renderAnimeRegistrant(a)]);
@@ -1244,17 +1257,25 @@ $('#animeTitle').addEventListener('input',()=>{
 $('#closeAnimeDialog').onclick=()=>$('#animeDialog').close();
 
 $('#saveMyReviewBtn').onclick=async()=>{
+ const newMemo=$('#myMemo').value.trim();
+
  const record={
   user_id:session.user.id,
   anime_id:currentAnimeId,
   status:$('#myStatus').value||null,
   rating:$('#myRating').value===''?null:Number($('#myRating').value),
-  memo:$('#myMemo').value.trim()
+  memo:newMemo!=='' ? newMemo : (myRecord?.memo??'')
  };
  const {error}=await sb.from('user_anime').upsert(record,{onConflict:'user_id,anime_id'});
  if(error){alert(error.message);return;}
  await loadAnime();await loadMyReviews();await loadReviews(currentAnimeId);
  myRecord=(animeData.find(a=>a.id===currentAnimeId)?.user_anime||[]).find(x=>x.user_id===session.user.id)||null;
+
+ const savedMemo=myRecord?.memo?.trim()||'';
+ $('#myMemo').value='';
+ $('#currentMyMemoText').textContent=savedMemo;
+ $('#currentMyMemoBox').classList.toggle('hidden',!savedMemo);
+
  $('#deleteMyReviewBtn').classList.toggle('hidden',!myRecord);
  alert('내 감상을 저장했어.');
 };
@@ -1264,7 +1285,11 @@ $('#deleteMyReviewBtn').onclick=async()=>{
  const {error}=await sb.from('user_anime').delete().eq('id',myRecord.id);
  if(error){alert(error.message);return;}
  await loadAnime();await loadMyReviews();await loadReviews(currentAnimeId);
- $('#myRating').value='';$('#myMemo').value='';myRecord=null;
+ $('#myRating').value='';
+ $('#myMemo').value='';
+ $('#currentMyMemoText').textContent='';
+ $('#currentMyMemoBox').classList.add('hidden');
+ myRecord=null;
  $('#deleteMyReviewBtn').classList.add('hidden');
 };
 
