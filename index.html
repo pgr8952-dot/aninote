@@ -95,6 +95,23 @@ textarea{min-height:110px;resize:vertical}
 .image-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 @media(max-width:700px){.global-search-wrap{min-width:100%;width:100%}.headrow{gap:10px}.poster-lg{width:100px}.media-card{gap:10px}}
 
+
+.modal-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.modal-title-row h2{margin:0}
+.icon-close{width:38px;height:38px;border-radius:999px;padding:0;display:grid;place-items:center;font-size:20px;line-height:1;background:#202633;border-color:#384154}
+.icon-close:hover{background:#2a3242}
+.registrant-line{margin-top:10px;color:#788395;font-size:12px}
+.floating-top{position:fixed;right:24px;bottom:24px;width:48px;height:48px;border-radius:999px;z-index:90;display:grid;place-items:center;background:#202633;border:1px solid #3a4558;box-shadow:0 10px 30px #0008;font-size:20px}
+.floating-top:hover{background:#2a3242}
+.user-admin-row{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #242b39}
+.user-admin-row:last-child{border-bottom:0}
+.user-admin-main{min-width:0}
+.banned-badge{background:#42191c;border-color:#7a2b31;color:#fecaca}
+.laftel-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#d8b4fe}
+.laftel-link:hover{text-decoration:underline}
+.add-anime-review-box{margin-top:14px}
+@media(max-width:700px){.user-admin-row{grid-template-columns:1fr}.floating-top{right:14px;bottom:14px}}
+
 </style>
 </head>
 <body>
@@ -218,6 +235,11 @@ textarea{min-height:110px;resize:vertical}
 
  <section id="admin" class="section">
   <div class="panel">
+   <div class="row"><h3 style="margin:0">유저 관리</h3><button id="refreshUsersBtn" class="small">새로고침</button></div>
+   <div class="meta" style="margin:7px 0 10px">밴된 유저는 로그인은 가능해도 애니노트 DB를 읽거나 수정할 수 없게 막혀.</div>
+   <div id="adminUserList"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
    <h3 style="margin-top:0">수정 요청 / 신고</h3>
    <div id="requestList"></div>
   </div>
@@ -229,9 +251,45 @@ textarea{min-height:110px;resize:vertical}
 </main>
 </div>
 
+
+<dialog id="addAnimeDialog">
+ <div class="modal">
+  <div class="modal-title-row">
+   <h2>새 작품 추가</h2>
+   <button id="closeAddAnimeDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
+
+  <div class="panel">
+   <div class="formgrid">
+    <div class="field full"><label>작품명</label><input id="addAnimeTitle" placeholder="작품명을 입력해줘"></div>
+    <div class="field"><label>연도</label><input id="addAnimeYear" type="number" min="1900" max="2100"></div>
+    <div class="field"><label>라프텔 링크 (선택)</label><input id="addAnimeLaftel" placeholder="https://laftel.net/..."></div>
+   </div>
+  </div>
+
+  <div class="panel add-anime-review-box">
+   <h3 style="margin-top:0">내 감상도 같이 작성</h3>
+   <div class="formgrid">
+    <div class="field"><label>상태</label>
+     <select id="addAnimeStatus"><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
+    </div>
+    <div class="field"><label>평점 (0~5)</label><input id="addAnimeRating" type="number" min="0" max="5" step="0.1"></div>
+    <div class="field full"><label>메모 / 감상</label><textarea id="addAnimeMemo" placeholder="추가하면서 바로 감상을 적어둘 수 있어"></textarea></div>
+   </div>
+  </div>
+
+  <div class="modal-actions">
+   <button id="saveNewAnimeBtn" class="primary">작품 추가</button>
+  </div>
+ </div>
+</dialog>
+
 <dialog id="animeDialog">
  <div class="modal">
-  <h2 id="animeDialogTitle">작품</h2>
+  <div class="modal-title-row">
+   <h2 id="animeDialogTitle">작품</h2>
+   <button id="closeAnimeDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
 
   <div id="publicInfoBox" class="panel" style="margin-bottom:14px">
    <div class="media-card">
@@ -240,7 +298,9 @@ textarea{min-height:110px;resize:vertical}
      <div class="formgrid">
     <div class="field full"><label>작품명</label><input id="animeTitle"></div>
     <div class="field"><label>연도</label><input id="animeYear" type="number" min="1900" max="2100"></div>
+    <div class="field"><label>라프텔 링크</label><input id="animeLaftelUrl" placeholder="https://laftel.net/..."></div>
     <div id="seriesKeyField" class="field"><label>시리즈 키 (관리자용)</label><input id="animeSeriesKey" placeholder="자동 생성됨"></div>
+    <div class="field full"><a id="laftelOpenLink" class="laftel-link hidden" href="#" target="_blank" rel="noopener">라프텔에서 보기 ↗</a></div>
     <div id="seriesSiblings" class="field full meta"></div>
      </div>
      <div id="animeImageTools" class="image-tools hidden">
@@ -273,6 +333,7 @@ textarea{min-height:110px;resize:vertical}
     <button id="saveMyReviewBtn" class="primary small">내 감상 저장</button>
     <button id="deleteMyReviewBtn" class="danger small hidden">내 감상 삭제</button>
    </div>
+   <div id="animeRegistrant" class="registrant-line"></div>
   </div>
 
   <div id="animeDetailArea" style="margin-top:14px">
@@ -300,9 +361,6 @@ textarea{min-height:110px;resize:vertical}
    </div>
   </div>
 
-  <div class="modal-actions">
-   <button id="closeAnimeDialog">닫기</button>
-  </div>
  </div>
 </dialog>
 
@@ -320,7 +378,10 @@ textarea{min-height:110px;resize:vertical}
 
 <dialog id="voiceProfileDialog">
  <div class="modal">
-  <h2 id="voiceProfileTitle">성우</h2>
+  <div class="modal-title-row">
+   <h2 id="voiceProfileTitle">성우</h2>
+   <button id="closeVoiceProfileDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
   <div class="panel">
    <div class="profile-hero">
     <img id="voiceProfileImage" class="voice-photo-lg hidden" alt="성우 이미지">
@@ -352,9 +413,6 @@ textarea{min-height:110px;resize:vertical}
   <div class="panel" style="margin-top:14px">
    <h3 style="margin-top:0">출연 작품 / 캐릭터</h3>
    <div id="voiceProfileAppearances"></div>
-  </div>
-  <div class="modal-actions">
-   <button id="closeVoiceProfileDialog">닫기</button>
   </div>
  </div>
 </dialog>
@@ -416,6 +474,15 @@ function showAuth(){
 }
 
 async function showApp(){
+ const {data:banReason}=await sb.rpc('my_ban_reason');
+ if(banReason!==null && banReason!==undefined){
+   await sb.auth.signOut();
+   session=null;
+   showAuth();
+   $('#authMsg').textContent=`이 계정은 이용이 제한됐어.${banReason?` 사유: ${banReason}`:''}`;
+   return;
+ }
+
  $('#authView').classList.add('hidden');
  $('#appView').classList.remove('hidden');
  $('#whoami').textContent=session.user.email||'';
@@ -430,7 +497,7 @@ async function showApp(){
 
  await Promise.all([loadAnime(),loadVoices(),loadProfile()]);
  await loadMyReviews();
- if(isAdmin){ await loadRequests(); await loadAuditLogs(); renderSeriesManager(); }
+ if(isAdmin){ await loadAdminUsers(); await loadRequests(); await loadAuditLogs(); renderSeriesManager(); }
  renderRanking();
  await renderStats();
 }
@@ -453,7 +520,7 @@ $('#logoutBtn').onclick=async()=>{await sb.auth.signOut();session=null;showAuth(
 
 async function loadAnime(){
  const {data,error}=await sb.from('anime').select(`
-   id,title,year,series_key,image_url,created_by,created_at,
+   id,title,year,series_key,image_url,laftel_url,created_by,created_at,
    user_anime(id,user_id,status,rating,memo,updated_at)
  `).order('year',{ascending:false}).order('title',{ascending:true});
 
@@ -597,16 +664,109 @@ $('#animeSearch').addEventListener('input',renderAnime);
 $('#yearFilter').addEventListener('change',renderAnime);
 $('#sortMode').addEventListener('change',renderAnime);
 
-$('#openAddAnime').onclick=async()=>{
- const title=prompt('추가할 작품명을 입력해줘.');
- if(!title?.trim())return;
- const yearRaw=prompt('연도는? 예: 2026');
- const year=yearRaw?.trim()?Number(yearRaw):null;
+function parseRatingValue(v){
+ if(v==='')return null;
+ const n=Number(v);
+ if(Number.isNaN(n)||n<0||n>5)throw new Error('평점은 0~5 사이로 입력해줘.');
+ return n;
+}
 
- const {error}=await sb.from('anime').insert({title:title.trim(),year});
- if(error){alert(error.code==='23505'?'이미 등록된 작품이야.':error.message);return;}
- await loadAnime();
- alert('공용 작품 DB에 추가했어.');
+function normalizeLaftelUrl(raw){
+ const value=String(raw||'').trim();
+ if(!value)return null;
+ try{
+  const u=new URL(value);
+  if(!(u.protocol==='https:'||u.protocol==='http:'))throw new Error();
+  if(!(u.hostname==='laftel.net'||u.hostname.endsWith('.laftel.net')))throw new Error();
+  return u.href;
+ }catch{
+  throw new Error('라프텔 링크는 https://laftel.net/... 형식으로 넣어줘.');
+ }
+}
+
+function renderLaftelLink(url){
+ const link=$('#laftelOpenLink');
+ if(url){
+  link.href=url;
+  link.classList.remove('hidden');
+ }else{
+  link.href='#';
+  link.classList.add('hidden');
+ }
+}
+
+async function renderAnimeRegistrant(a){
+ const box=$('#animeRegistrant');
+ if(!a?.created_by){
+   box.textContent=`등록자 정보 없음 · ${a?.created_at?new Date(a.created_at).toLocaleDateString('ko-KR'):''}`;
+   return;
+ }
+ const {data:p}=await sb.from('profiles')
+   .select('username,display_name')
+   .eq('id',a.created_by)
+   .maybeSingle();
+
+ const name=p?.display_name||p?.username||'사용자';
+ const date=a.created_at?new Date(a.created_at).toLocaleDateString('ko-KR'):'';
+ box.textContent=`${name} 등록함${date?` · ${date}`:''}`;
+}
+
+$('#openAddAnime').onclick=()=>{
+ $('#addAnimeTitle').value='';
+ $('#addAnimeYear').value=new Date().getFullYear();
+ $('#addAnimeLaftel').value='';
+ $('#addAnimeStatus').value='시청 완료';
+ $('#addAnimeRating').value='';
+ $('#addAnimeMemo').value='';
+ $('#addAnimeDialog').showModal();
+ setTimeout(()=>$('#addAnimeTitle').focus(),50);
+};
+
+$('#closeAddAnimeDialog').onclick=()=>$('#addAnimeDialog').close();
+
+$('#saveNewAnimeBtn').onclick=async()=>{
+ try{
+  const title=$('#addAnimeTitle').value.trim();
+  if(!title)throw new Error('작품명을 입력해줘.');
+
+  const yearRaw=$('#addAnimeYear').value.trim();
+  const year=yearRaw?Number(yearRaw):null;
+  if(year!==null && (Number.isNaN(year)||year<1900||year>2100))throw new Error('연도를 확인해줘.');
+
+  const laftelUrl=normalizeLaftelUrl($('#addAnimeLaftel').value);
+  const rating=parseRatingValue($('#addAnimeRating').value);
+
+  const {data:newAnime,error}=await sb.from('anime')
+   .insert({
+    title,
+    year,
+    laftel_url:laftelUrl
+   })
+   .select('id,title,year')
+   .single();
+
+  if(error){
+   if(error.code==='23505')throw new Error('이미 같은 작품이 등록되어 있어.');
+   throw error;
+  }
+
+  const {error:reviewError}=await sb.from('user_anime').upsert({
+    user_id:session.user.id,
+    anime_id:newAnime.id,
+    status:$('#addAnimeStatus').value,
+    rating,
+    memo:$('#addAnimeMemo').value.trim()
+   },{onConflict:'user_id,anime_id'});
+
+  if(reviewError)throw reviewError;
+
+  $('#addAnimeDialog').close();
+  await Promise.all([loadAnime(),loadMyReviews()]);
+  alert('작품과 내 감상을 같이 등록했어.');
+  await openAnime(newAnime.id);
+ }catch(e){
+  alert(e.message||String(e));
+ }
 };
 
 window.openAnime=async(id)=>{
@@ -617,6 +777,8 @@ window.openAnime=async(id)=>{
  $('#animeTitle').value=a.title;
  $('#animeYear').value=a.year||'';
  $('#animeSeriesKey').value=a.series_key||'';
+ $('#animeLaftelUrl').value=a.laftel_url||'';
+ renderLaftelLink(a.laftel_url||null);
  $('#animeImagePreview').src=a.image_url||'';
  $('#animeImagePreview').classList.toggle('hidden',!a.image_url);
  $('#animeImageTools').classList.toggle('hidden',!isAdmin);
@@ -624,6 +786,7 @@ window.openAnime=async(id)=>{
 
  $('#animeTitle').disabled=!isAdmin;
  $('#animeYear').disabled=!isAdmin;
+ $('#animeLaftelUrl').disabled=!isAdmin;
  $('#animeSeriesKey').disabled=!isAdmin;
  $('#seriesKeyField').classList.toggle('hidden',!isAdmin);
 
@@ -643,7 +806,7 @@ window.openAnime=async(id)=>{
  $('#myMemo').value=myRecord?.memo??'';
  $('#deleteMyReviewBtn').classList.toggle('hidden',!myRecord);
 
- await Promise.all([loadCast(id),loadReviews(id)]);
+ await Promise.all([loadCast(id),loadReviews(id),renderAnimeRegistrant(a)]);
  $('#animeDialog').showModal();
 };
 
@@ -676,15 +839,34 @@ $('#deleteMyReviewBtn').onclick=async()=>{
 
 $('#savePublicAnimeBtn').onclick=async()=>{
  if(!isAdmin)return;
- const {error}=await sb.from('anime').update({
-  title:$('#animeTitle').value.trim(),
-  year:$('#animeYear').value?Number($('#animeYear').value):null,
-  series_key:$('#animeSeriesKey').value.trim()||null
- }).eq('id',currentAnimeId);
- if(error){alert(error.message);return;}
- await loadAnime();
- $('#animeDialogTitle').textContent=$('#animeTitle').value.trim();
- alert('공용 작품 정보를 수정했어.');
+ try{
+  const title=$('#animeTitle').value.trim();
+  if(!title)throw new Error('작품명을 입력해줘.');
+  const laftelUrl=normalizeLaftelUrl($('#animeLaftelUrl').value);
+
+  const {data:updated,error}=await sb.from('anime').update({
+   title,
+   year:$('#animeYear').value?Number($('#animeYear').value):null,
+   series_key:$('#animeSeriesKey').value.trim()||null,
+   laftel_url:laftelUrl
+  }).eq('id',currentAnimeId)
+    .select('title,year,series_key,laftel_url')
+    .single();
+
+  if(error)throw error;
+
+  $('#animeDialogTitle').textContent=updated.title;
+  $('#animeTitle').value=updated.title;
+  $('#animeYear').value=updated.year||'';
+  $('#animeSeriesKey').value=updated.series_key||'';
+  $('#animeLaftelUrl').value=updated.laftel_url||'';
+  renderLaftelLink(updated.laftel_url||null);
+
+  await loadAnime();
+  alert('공용 작품 정보를 수정했어.');
+ }catch(e){
+  alert(e.message||String(e));
+ }
 };
 
 $('#deleteAnimeBtn').onclick=async()=>{
@@ -1145,6 +1327,72 @@ window.setRequestStatus=async(id,status)=>{
 
 
 // ============================================================
+// 관리자: 유저 목록 / 밴
+// ============================================================
+async function loadAdminUsers(){
+ if(!isAdmin)return;
+
+ const {data,error}=await sb.rpc('admin_list_users');
+ if(error){
+  $('#adminUserList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;
+  return;
+ }
+
+ const rows=data||[];
+
+ $('#adminUserList').innerHTML=rows.length?rows.map(u=>{
+  const label=u.display_name||u.username||u.email||'사용자';
+  const self=u.user_id===session.user.id;
+  return `<div class="user-admin-row">
+    <div class="user-admin-main">
+      <div>
+        <b>${esc(label)}</b>
+        ${u.banned?`<span class="badge banned-badge">밴됨</span>`:''}
+        ${self?`<span class="badge">내 계정</span>`:''}
+      </div>
+      <div class="meta">${esc(u.email||'')} · 가입 ${new Date(u.joined_at).toLocaleDateString('ko-KR')} · 감상 ${u.review_count||0}개</div>
+      ${u.banned&&u.ban_reason?`<div class="meta" style="margin-top:4px">사유: ${esc(u.ban_reason)}</div>`:''}
+    </div>
+    <div>
+      ${self?'':u.banned
+        ?`<button class="small good" onclick="setUserBan('${u.user_id}',false,'${esc(label).replaceAll("'","&#39;")}')">밴 해제</button>`
+        :`<button class="small danger" onclick="setUserBan('${u.user_id}',true,'${esc(label).replaceAll("'","&#39;")}')">밴</button>`}
+    </div>
+  </div>`;
+ }).join(''):'<div class="meta">사용자가 없어.</div>';
+}
+
+window.setUserBan=async(userId,shouldBan,label)=>{
+ if(!isAdmin)return;
+
+ let reason='';
+ if(shouldBan){
+  const input=prompt(`${label} 사용자를 밴할까?\n사유를 적어줘.`, '');
+  if(input===null)return;
+  reason=input;
+  if(!confirm(`${label} 계정을 이용 제한할까?`))return;
+ }else{
+  if(!confirm(`${label} 계정의 밴을 해제할까?`))return;
+ }
+
+ const {error}=await sb.rpc('admin_set_user_ban',{
+  target_user:userId,
+  should_ban:shouldBan,
+  ban_reason:reason
+ });
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ await Promise.all([loadAdminUsers(),loadAuditLogs()]);
+};
+
+$('#refreshUsersBtn').onclick=loadAdminUsers;
+
+
+// ============================================================
 // 통합 검색
 // ============================================================
 $('#globalSearch').addEventListener('input',()=>{
@@ -1309,10 +1557,21 @@ document.querySelectorAll('.tabs button').forEach(btn=>btn.onclick=()=>{
  if(btn.dataset.tab==='ranking')renderRanking();
  if(btn.dataset.tab==='profile')loadMyReviews();
  if(btn.dataset.tab==='seriesadmin'&&isAdmin)renderSeriesManager();
- if(btn.dataset.tab==='admin'&&isAdmin){loadRequests();loadAuditLogs();}
+ if(btn.dataset.tab==='admin'&&isAdmin){loadAdminUsers();loadRequests();loadAuditLogs();}
 });
+
+
+// ============================================================
+// 편의성: 맨 위로 버튼
+// ============================================================
+window.addEventListener('scroll',()=>{
+ $('#scrollTopBtn').classList.toggle('hidden',window.scrollY<500);
+},{passive:true});
+
+$('#scrollTopBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 
 boot();
 </script>
+<button id="scrollTopBtn" class="floating-top hidden" title="맨 위로">↑</button>
 </body>
 </html>
