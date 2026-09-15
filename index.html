@@ -126,6 +126,43 @@ textarea{min-height:110px;resize:vertical}
 .auto-sync-badge{font-size:11px;color:#7f8a9a;margin-left:8px}
 @media(max-width:700px){.voice-add-appearance-row{grid-template-columns:1fr}}
 
+
+/* 검색창 빠른 지우기 */
+.clear-search-wrap{position:relative;width:100%;min-width:0}
+.clear-search-wrap input{width:100%;padding-right:38px}
+.clear-search-btn{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:999px;padding:0;display:grid;place-items:center;background:#252c39;border:1px solid #3a4558;color:#b8c0cc;font-size:14px;line-height:1}
+.clear-search-btn:hover{background:#323b4c;color:#fff}
+
+/* 장르 */
+.genre-picker{display:flex;gap:7px;flex-wrap:wrap}
+.genre-chip{padding:7px 10px;border-radius:999px;font-size:12px;background:#1a202b;border:1px solid #344055}
+.genre-chip.selected{background:#6d4bd8;border-color:#8b5cf6;color:white}
+.genre-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.genre-badge{display:inline-block;padding:3px 7px;border-radius:999px;background:#20283a;border:1px solid #34415a;color:#bfc9dc;font-size:11px}
+
+/* 취향 추천 */
+.recommend-sidebar{display:none;position:fixed;top:150px;left:max(12px,calc((100vw - 1180px)/2 - 226px));width:210px;max-height:calc(100vh - 180px);overflow:auto;background:#121720;border:1px solid #2c3444;border-radius:16px;padding:13px;z-index:15;box-shadow:0 12px 30px #0005}
+.recommend-inline{display:block;margin-bottom:14px}
+.recommend-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.recommend-sub{font-size:11px;color:#8e99aa;margin-bottom:10px}
+.recommend-item{display:grid;grid-template-columns:42px 1fr;gap:8px;padding:8px 0;border-top:1px solid #242c39;cursor:pointer}
+.recommend-item:first-child{border-top:0}
+.recommend-item:hover .recommend-name{color:#c4b5fd}
+.recommend-thumb{width:42px;height:58px;object-fit:cover;border-radius:6px;background:#222a37}
+.recommend-placeholder{width:42px;height:58px;border-radius:6px;background:#222a37;display:grid;place-items:center;font-size:20px}
+.recommend-name{font-size:12px;font-weight:800;line-height:1.3}
+.recommend-reason{font-size:10px;color:#8f9aad;margin-top:4px;line-height:1.35}
+.recommend-score{font-size:10px;color:#ffd166;margin-top:3px}
+
+@media(min-width:1640px){
+ .recommend-sidebar{display:block}
+ .recommend-inline{display:none}
+}
+@media(max-width:1639px){
+ .recommend-sidebar{display:none!important}
+ .recommend-inline{display:block}
+}
+
 </style>
 </head>
 <body>
@@ -163,6 +200,12 @@ textarea{min-height:110px;resize:vertical}
  </div>
 </header>
 
+<aside id="recommendSidebar" class="recommend-sidebar">
+ <div class="recommend-title">✨ 취향 추천</div>
+ <div class="recommend-sub">내 평점과 장르 취향으로 고른 안 본 작품</div>
+ <div id="recommendSidebarList"></div>
+</aside>
+
 <main class="wrap">
  <div class="tabs">
   <button class="active" data-tab="anime">애니</button>
@@ -175,6 +218,11 @@ textarea{min-height:110px;resize:vertical}
  </div>
 
  <section id="anime" class="section active">
+  <div id="recommendInline" class="recommend-inline panel">
+   <div class="recommend-title">✨ 취향 추천</div>
+   <div class="recommend-sub">내 평점과 장르 취향으로 고른 안 본 작품</div>
+   <div id="recommendInlineList"></div>
+  </div>
   <div class="toolbar">
    <input id="animeSearch" placeholder="작품명 검색...">
    <select id="yearFilter"><option value="">전체 연도</option></select>
@@ -315,6 +363,11 @@ textarea{min-height:110px;resize:vertical}
     <div class="field"><label>연도</label><input id="addAnimeYear" type="number" min="1900" max="2100"></div>
     <div class="field"><label>라프텔 링크 (선택)</label><input id="addAnimeLaftel" placeholder="https://laftel.net/..."></div>
     <div class="field full">
+     <label>장르 <span class="meta">· 추천 정확도를 위해 1개 이상 권장</span></label>
+     <div id="addAnimeGenrePicker" class="genre-picker"></div>
+     <input id="addAnimeGenreCustom" style="margin-top:8px" placeholder="기타 장르 직접 입력 · 쉼표로 여러 개 가능">
+    </div>
+    <div class="field full">
      <label>작품 이미지 (선택)</label>
      <input id="addAnimeImageFile" type="file" accept="image/*">
      <div id="addAnimeImageStatus" class="meta image-status"></div>
@@ -355,6 +408,7 @@ textarea{min-height:110px;resize:vertical}
     <div class="field full"><label>작품명</label><input id="animeTitle"></div>
     <div class="field"><label>연도</label><input id="animeYear" type="number" min="1900" max="2100"></div>
     <div class="field"><label>라프텔 링크</label><input id="animeLaftelUrl" placeholder="https://laftel.net/..."></div>
+    <div class="field full"><label>장르</label><input id="animeGenres" placeholder="액션, 판타지, 코미디"></div>
     <div id="seriesKeyField" class="field"><label>시리즈 키 (관리자용)</label><input id="animeSeriesKey" placeholder="자동 생성됨"></div>
     <div class="field full"><a id="laftelOpenLink" class="laftel-link hidden" href="#" target="_blank" rel="noopener">라프텔에서 보기 ↗</a></div>
     <div id="seriesSiblings" class="field full meta"></div>
@@ -561,6 +615,7 @@ let auditProfileMap={};
 let seriesKeyManuallyEdited=false;
 let autoRefreshTimer=null;
 let refreshBusy=false;
+let selectedAddGenres=new Set();
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -687,7 +742,7 @@ $('#logoutBtn').onclick=async()=>{await sb.auth.signOut();session=null;showAuth(
 
 async function loadAnime(){
  const {data,error}=await sb.from('anime').select(`
-   id,title,year,series_key,image_url,laftel_url,created_by,created_at,
+   id,title,year,series_key,image_url,laftel_url,genres,created_by,created_at,
    user_anime(id,user_id,status,rating,memo,updated_at)
  `).order('year',{ascending:false}).order('title',{ascending:true});
 
@@ -695,6 +750,7 @@ async function loadAnime(){
  animeData=data||[];
  rebuildYearFilter();
  renderAnime();
+ renderRecommendations();
 }
 
 function rebuildYearFilter(){
@@ -722,6 +778,53 @@ function baseSeriesLabel(title){
    .trim();
 }
 
+
+const STANDARD_GENRES=[
+ '액션','모험','판타지','이세계','로맨스','러브코미디','코미디','드라마',
+ '일상','학원','청춘','스포츠','미스터리','스릴러','공포','SF','메카',
+ '음악','아이돌','역사','군사','요리','치유','초능력','마법','가족'
+];
+
+function normalizeGenres(value){
+ const arr=Array.isArray(value)?value:String(value||'').split(',');
+ const seen=new Set();
+ const result=[];
+
+ for(const raw of arr){
+  const g=String(raw||'').trim().replace(/\s+/g,' ');
+  if(!g)continue;
+  const key=g.toLowerCase();
+  if(seen.has(key))continue;
+  seen.add(key);
+  result.push(g);
+ }
+ return result;
+}
+
+function genreBadges(genres,limit=4){
+ const rows=normalizeGenres(genres).slice(0,limit);
+ if(!rows.length)return '';
+ return `<div class="genre-badges">${rows.map(g=>`<span class="genre-badge">${esc(g)}</span>`).join('')}</div>`;
+}
+
+function renderAddGenrePicker(){
+ const box=$('#addAnimeGenrePicker');
+ if(!box)return;
+
+ box.innerHTML=STANDARD_GENRES.map(g=>`
+  <button type="button" class="genre-chip ${selectedAddGenres.has(g)?'selected':''}" data-genre="${esc(g)}">${esc(g)}</button>
+ `).join('');
+
+ box.querySelectorAll('[data-genre]').forEach(btn=>{
+  btn.onclick=()=>{
+   const g=btn.dataset.genre;
+   if(selectedAddGenres.has(g))selectedAddGenres.delete(g);
+   else selectedAddGenres.add(g);
+   renderAddGenrePicker();
+  };
+ });
+}
+
 function animeCard(a){
  const avg=avgRating(a);
  const count=reviewCount(a);
@@ -734,6 +837,7 @@ function animeCard(a){
     <span class="badge">${a.year||'연도 미상'}</span>
    </div>
    <div class="meta">${avg!==null?`평균 <span class="star">★</span> ${avg.toFixed(2)}`:'평점 없음'} · 리뷰 ${count}개</div>
+   ${genreBadges(a.genres,3)}
    ${mine?`<div style="margin-top:8px">${mine.status?`<span class="badge">${esc(mine.status)}</span>`:''}${mine.rating!==null?` <span class="badge">내 평점 ${mine.rating}</span>`:''}</div>`:''}
   </div>
  </div>`;
@@ -744,6 +848,7 @@ function seriesCard(group){
  const label=baseSeriesLabel(items[0]?.title)||items[0]?.title||'시리즈';
  return `<div class="series-card">
   <div class="series-title">📚 ${esc(label)} <span class="badge">${items.length}작품</span></div>
+  ${genreBadges(items.flatMap(x=>x.genres||[]),4)}
   ${items.map(a=>{
     const avg=avgRating(a);
     const count=reviewCount(a);
@@ -827,6 +932,107 @@ function renderAnime(){
  }).join('');
 }
 
+
+function getMyAnimeRecord(a){
+ return (a.user_anime||[]).find(x=>x.user_id===session.user.id)||null;
+}
+
+function buildGenrePreferences(){
+ const stats={};
+
+ for(const a of animeData){
+  const mine=getMyAnimeRecord(a);
+  if(!mine || mine.rating===null || mine.status==='시청 예정')continue;
+
+  const rating=Number(mine.rating);
+  if(Number.isNaN(rating))continue;
+
+  for(const genre of normalizeGenres(a.genres)){
+   if(!stats[genre])stats[genre]={sum:0,count:0};
+   stats[genre].sum+=rating;
+   stats[genre].count+=1;
+  }
+ }
+
+ const prefs={};
+
+ for(const [genre,st] of Object.entries(stats)){
+  const avg=st.sum/st.count;
+
+  // 3점 이상 준 장르를 긍정 취향 신호로 사용
+  if(avg>=3){
+   prefs[genre]={
+    avg,
+    count:st.count,
+    weight:Math.max(0,avg-2.5)*(1+Math.min(st.count,6)*0.12)
+   };
+  }
+ }
+
+ return prefs;
+}
+
+function getRecommendationRows(){
+ const prefs=buildGenrePreferences();
+ if(!Object.keys(prefs).length)return [];
+
+ const candidates=[];
+
+ for(const a of animeData){
+  // 이미 어떤 형태로든 내 기록이 있는 작품은 제외
+  if(getMyAnimeRecord(a))continue;
+
+  const genres=normalizeGenres(a.genres);
+  if(!genres.length)continue;
+
+  const matches=genres
+   .filter(g=>prefs[g])
+   .sort((x,y)=>prefs[y].weight-prefs[x].weight);
+
+  if(!matches.length)continue;
+
+  let score=matches.reduce((sum,g)=>sum+prefs[g].weight,0);
+  score/=Math.sqrt(Math.max(1,genres.length));
+
+  const globalAvg=avgRating(a);
+  if(globalAvg!==null){
+   score+=Math.max(0,globalAvg-2.5)*0.12;
+  }
+
+  candidates.push({anime:a,score,matches});
+ }
+
+ return candidates
+  .sort((a,b)=>b.score-a.score || (avgRating(b.anime)??0)-(avgRating(a.anime)??0))
+  .slice(0,7);
+}
+
+function recommendationHTML(rows){
+ if(!rows.length){
+  return `<div class="meta">아직 추천할 데이터가 부족해.<br>장르가 등록된 작품에 평점을 남기면 여기서 취향 추천이 시작돼.</div>`;
+ }
+
+ return rows.map(({anime,score,matches})=>`
+  <div class="recommend-item" onclick="openAnime('${anime.id}')">
+   ${anime.image_url
+    ?`<img class="recommend-thumb" src="${esc(anime.image_url)}" loading="lazy" alt="">`
+    :`<div class="recommend-placeholder">🎬</div>`}
+   <div>
+    <div class="recommend-name">${esc(anime.title)}</div>
+    <div class="recommend-reason">${esc(matches.slice(0,2).join(' · '))} 취향과 잘 맞음</div>
+    ${avgRating(anime)!==null?`<div class="recommend-score">★ ${avgRating(anime).toFixed(2)}</div>`:''}
+   </div>
+  </div>
+ `).join('');
+}
+
+function renderRecommendations(){
+ if(!session)return;
+ const html=recommendationHTML(getRecommendationRows());
+ if($('#recommendSidebarList'))$('#recommendSidebarList').innerHTML=html;
+ if($('#recommendInlineList'))$('#recommendInlineList').innerHTML=html;
+}
+
 $('#animeSearch').addEventListener('input',renderAnime);
 $('#yearFilter').addEventListener('change',renderAnime);
 $('#sortMode').addEventListener('change',renderAnime);
@@ -882,6 +1088,9 @@ $('#openAddAnime').onclick=()=>{
  $('#addAnimeTitle').value='';
  $('#addAnimeYear').value=new Date().getFullYear();
  $('#addAnimeLaftel').value='';
+ selectedAddGenres=new Set();
+ $('#addAnimeGenreCustom').value='';
+ renderAddGenrePicker();
  $('#addAnimeStatus').value='';
  $('#addAnimeRating').value='';
  $('#addAnimeMemo').value='';
@@ -904,12 +1113,17 @@ $('#saveNewAnimeBtn').onclick=async()=>{
 
   const laftelUrl=normalizeLaftelUrl($('#addAnimeLaftel').value);
   const rating=parseRatingValue($('#addAnimeRating').value);
+  const genres=normalizeGenres([
+   ...selectedAddGenres,
+   ...String($('#addAnimeGenreCustom').value||'').split(',')
+  ]);
 
   const {data:newAnimeRows,error}=await sb.from('anime')
    .insert({
     title,
     year,
-    laftel_url:laftelUrl
+    laftel_url:laftelUrl,
+    genres
    })
    .select('id,title,year');
 
@@ -970,6 +1184,7 @@ window.openAnime=async(id)=>{
  $('#animeSeriesKey').value=a.series_key||'';
  seriesKeyManuallyEdited=false;
  $('#animeLaftelUrl').value=a.laftel_url||'';
+ $('#animeGenres').value=normalizeGenres(a.genres).join(', ');
  $('#animeImageStatus').textContent='';
  renderLaftelLink(a.laftel_url||null);
  $('#animeImagePreview').src=a.image_url||'';
@@ -980,6 +1195,7 @@ window.openAnime=async(id)=>{
  $('#animeTitle').disabled=!isAdmin;
  $('#animeYear').disabled=!isAdmin;
  $('#animeLaftelUrl').disabled=!isAdmin;
+ $('#animeGenres').disabled=!isAdmin;
  $('#animeSeriesKey').disabled=!isAdmin;
  $('#seriesKeyField').classList.toggle('hidden',!isAdmin);
 
@@ -1058,14 +1274,16 @@ $('#savePublicAnimeBtn').onclick=async()=>{
   const title=$('#animeTitle').value.trim();
   if(!title)throw new Error('작품명을 입력해줘.');
   const laftelUrl=normalizeLaftelUrl($('#animeLaftelUrl').value);
+  const genres=normalizeGenres($('#animeGenres').value);
 
   const {data:updatedRows,error}=await sb.from('anime').update({
    title,
    year:$('#animeYear').value?Number($('#animeYear').value):null,
    series_key:$('#animeSeriesKey').value.trim()||null,
-   laftel_url:laftelUrl
+   laftel_url:laftelUrl,
+   genres
   }).eq('id',currentAnimeId)
-    .select('title,year,series_key,laftel_url');
+    .select('title,year,series_key,laftel_url,genres');
 
   if(error)throw error;
   const updated=updatedRows?.[0];
@@ -1076,6 +1294,7 @@ $('#savePublicAnimeBtn').onclick=async()=>{
   $('#animeYear').value=updated.year||'';
   $('#animeSeriesKey').value=updated.series_key||'';
   $('#animeLaftelUrl').value=updated.laftel_url||'';
+  $('#animeGenres').value=normalizeGenres(updated.genres).join(', ');
   renderLaftelLink(updated.laftel_url||null);
 
   await loadAnime();
@@ -2267,6 +2486,7 @@ document.querySelectorAll('.tabs button').forEach(btn=>btn.onclick=()=>{
  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
  btn.classList.add('active');
  $('#'+btn.dataset.tab).classList.add('active');
+ $('#recommendSidebar').classList.toggle('hidden',btn.dataset.tab!=='anime');
  if(btn.dataset.tab==='stats')renderStats();
  if(btn.dataset.tab==='ranking')renderRanking();
  if(btn.dataset.tab==='profile')loadMyReviews();
@@ -2274,6 +2494,52 @@ document.querySelectorAll('.tabs button').forEach(btn=>btn.onclick=()=>{
  if(btn.dataset.tab==='admin'&&isAdmin){loadAdminUsers();loadRequests();loadAuditLogs();}
 });
 
+
+
+// ============================================================
+// 편의성: 모든 검색창 X 버튼
+// ============================================================
+function enhanceSearchInputs(){
+ const inputs=[...document.querySelectorAll(
+  'input[id*="Search"], input[placeholder*="검색"]'
+ )].filter(el=>el.type!=='hidden');
+
+ for(const input of inputs){
+  if(input.dataset.clearEnhanced==='1')continue;
+  input.dataset.clearEnhanced='1';
+
+  const wrapper=document.createElement('div');
+  wrapper.className='clear-search-wrap';
+
+  input.parentNode.insertBefore(wrapper,input);
+  wrapper.appendChild(input);
+
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='clear-search-btn hidden';
+  btn.textContent='×';
+  btn.title='검색어 지우기';
+
+  wrapper.appendChild(btn);
+
+  const update=()=>btn.classList.toggle('hidden',!input.value);
+
+  input.addEventListener('input',update);
+  input.addEventListener('change',update);
+
+  btn.onclick=e=>{
+   e.preventDefault();
+   e.stopPropagation();
+   input.value='';
+   input.dispatchEvent(new Event('input',{bubbles:true}));
+   input.dispatchEvent(new Event('change',{bubbles:true}));
+   input.focus();
+   update();
+  };
+
+  update();
+ }
+}
 
 // ============================================================
 // 편의성: 맨 위로 버튼
@@ -2313,10 +2579,15 @@ window.addEventListener('scroll',()=>{
  );
 },{passive:true});
 
-if(document.readyState==='loading'){
- document.addEventListener('DOMContentLoaded',boot,{once:true});
-}else{
+function startAninote(){
+ enhanceSearchInputs();
  boot();
+}
+
+if(document.readyState==='loading'){
+ document.addEventListener('DOMContentLoaded',startAninote,{once:true});
+}else{
+ startAninote();
 }
 </script>
 </body>
