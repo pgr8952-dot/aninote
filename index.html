@@ -121,6 +121,11 @@ textarea{min-height:110px;resize:vertical}
 .image-status{margin-top:7px;min-height:18px}
 @media(max-width:700px){.admin-user-controls{grid-template-columns:1fr}.dialog-top-button{right:14px;bottom:14px}}
 
+
+.voice-add-appearance-row{display:grid;grid-template-columns:minmax(220px,1.3fr) minmax(180px,1fr) auto;gap:8px;align-items:center;margin-bottom:8px}
+.auto-sync-badge{font-size:11px;color:#7f8a9a;margin-left:8px}
+@media(max-width:700px){.voice-add-appearance-row{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -151,7 +156,7 @@ textarea{min-height:110px;resize:vertical}
    </div>
    <div class="row">
     <span id="adminBadge" class="badge admin-badge hidden">관리자</span>
-    <span id="whoami" class="meta"></span>
+    <span id="whoami" class="meta"></span><span class="auto-sync-badge">자동 동기화 1분</span>
     <button id="logoutBtn" class="small">로그아웃</button>
    </div>
   </div>
@@ -309,6 +314,11 @@ textarea{min-height:110px;resize:vertical}
     <div class="field full"><label>작품명</label><input id="addAnimeTitle" placeholder="작품명을 입력해줘"></div>
     <div class="field"><label>연도</label><input id="addAnimeYear" type="number" min="1900" max="2100"></div>
     <div class="field"><label>라프텔 링크 (선택)</label><input id="addAnimeLaftel" placeholder="https://laftel.net/..."></div>
+    <div class="field full">
+     <label>작품 이미지 (선택)</label>
+     <input id="addAnimeImageFile" type="file" accept="image/*">
+     <div id="addAnimeImageStatus" class="meta image-status"></div>
+    </div>
    </div>
   </div>
 
@@ -415,11 +425,34 @@ textarea{min-height:110px;resize:vertical}
 
 <dialog id="voiceDialog">
  <div class="modal">
-  <h2>성우 추가</h2>
-  <div class="field"><label>성우 이름</label><input id="newVoiceName"></div>
+  <div class="modal-title-row">
+   <h2>성우 추가</h2>
+   <button id="closeVoiceDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
+
+  <div class="panel">
+   <div class="field">
+    <label>성우 이름</label>
+    <input id="newVoiceName" placeholder="성우 이름">
+   </div>
+   <div class="field">
+    <label>프로필</label>
+    <textarea id="newVoiceProfile" placeholder="프로필이나 메모를 같이 적어둘 수 있어"></textarea>
+   </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+   <div class="row">
+    <h3 style="margin:0">출연 작품 / 캐릭터</h3>
+    <button id="addVoiceAppearanceBtn" class="small">+ 출연작 추가</button>
+   </div>
+   <div class="meta" style="margin:7px 0 10px">등록된 작품을 선택하고 캐릭터명을 적어줘. 여러 작품을 한 번에 넣을 수 있어.</div>
+   <datalist id="voiceAnimeOptions"></datalist>
+   <div id="newVoiceAppearances"></div>
+  </div>
+
   <div class="modal-actions">
-   <button id="closeVoiceDialog">취소</button>
-   <button id="saveVoiceBtn" class="primary">추가</button>
+   <button id="saveVoiceBtn" class="primary">성우 추가</button>
   </div>
  </div>
 </dialog>
@@ -451,9 +484,9 @@ textarea{min-height:110px;resize:vertical}
     </div>
     </div>
    </div>
-   <div id="voiceProfileAdminTools" class="admin-tools hidden">
-    <button id="saveVoiceProfileBtn" class="good small">프로필 수정</button>
-    <button id="deleteVoiceProfileBtn" class="danger small">성우 삭제</button>
+   <div id="voiceProfileAdminTools" class="admin-tools">
+    <button id="saveVoiceProfileBtn" class="good small">성우정보 저장</button>
+    <button id="deleteVoiceProfileBtn" class="danger small hidden">성우 삭제</button>
    </div>
    <div id="voiceProfileUserTools" class="admin-tools">
     <button id="requestEditVoiceBtn" class="warn small">수정 요청</button>
@@ -526,6 +559,8 @@ let adminUsersData=[];
 let auditData=[];
 let auditProfileMap={};
 let seriesKeyManuallyEdited=false;
+let autoRefreshTimer=null;
+let refreshBusy=false;
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -537,6 +572,7 @@ async function boot(){
 }
 
 function showAuth(){
+ stopAutoRefresh();
  $('#authView').classList.remove('hidden');
  $('#appView').classList.add('hidden');
  $('#scrollTopBtn')?.classList.add('hidden');
@@ -570,7 +606,68 @@ async function showApp(){
  if(isAdmin){ await loadAdminUsers(); await loadRequests(); await loadAuditLogs(); renderSeriesManager(); }
  renderRanking();
  await renderStats();
+ startAutoRefresh();
 }
+
+function stopAutoRefresh(){
+ if(autoRefreshTimer){
+  clearInterval(autoRefreshTimer);
+  autoRefreshTimer=null;
+ }
+}
+
+async function refreshLiveData(){
+ if(refreshBusy || !session || document.hidden)return;
+
+ refreshBusy=true;
+
+ try{
+  await Promise.all([
+   loadAnime(),
+   loadVoices(),
+   loadMyReviews()
+  ]);
+
+  renderRanking();
+  await renderStats();
+
+  if(isAdmin){
+   await Promise.all([
+    loadAdminUsers(),
+    loadRequests(),
+    loadAuditLogs()
+   ]);
+   renderSeriesManager();
+  }
+
+  if($('#animeDialog').open && currentAnimeId){
+   const current=animeData.find(a=>a.id===currentAnimeId);
+   await Promise.all([
+    loadCast(currentAnimeId),
+    loadReviews(currentAnimeId),
+    current?renderAnimeRegistrant(current):Promise.resolve()
+   ]);
+  }
+ }catch(e){
+  console.warn('자동 동기화 실패:',e);
+ }finally{
+  refreshBusy=false;
+ }
+}
+
+function startAutoRefresh(){
+ stopAutoRefresh();
+
+ // 전체 목록을 매번 가져오는 구조라 무료 사용량을 고려해 1분 간격.
+ autoRefreshTimer=setInterval(refreshLiveData,60000);
+}
+
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden && session){
+  refreshLiveData();
+ }
+});
+
 
 $('#loginBtn').onclick=async()=>{
  $('#authMsg').textContent='로그인 중...';
@@ -788,6 +885,8 @@ $('#openAddAnime').onclick=()=>{
  $('#addAnimeStatus').value='';
  $('#addAnimeRating').value='';
  $('#addAnimeMemo').value='';
+ $('#addAnimeImageFile').value='';
+ $('#addAnimeImageStatus').textContent='';
  $('#addAnimeDialog').showModal();
  setTimeout(()=>$('#addAnimeTitle').focus(),50);
 };
@@ -832,9 +931,29 @@ $('#saveNewAnimeBtn').onclick=async()=>{
 
   if(reviewError)throw reviewError;
 
+  const imageFile=$('#addAnimeImageFile').files[0];
+  if(imageFile){
+   const statusEl=$('#addAnimeImageStatus');
+   try{
+    const uploaded=await uploadSharedImage('anime',newAnime.id,imageFile,statusEl);
+    statusEl.textContent='작품에 이미지 연결 중...';
+
+    const {error:imageLinkError}=await sb.rpc('set_new_anime_image',{
+     target_anime:newAnime.id,
+     new_image_url:uploaded.url
+    });
+
+    if(imageLinkError)throw imageLinkError;
+    statusEl.textContent='이미지 저장 완료';
+   }catch(imageError){
+    $('#addAnimeImageStatus').textContent=`이미지는 저장 실패: ${imageError.message}`;
+    alert(`작품은 등록됐지만 이미지는 저장하지 못했어.\n${imageError.message}`);
+   }
+  }
+
   $('#addAnimeDialog').close();
   await Promise.all([loadAnime(),loadMyReviews()]);
-  alert('작품과 내 감상을 같이 등록했어.');
+  alert('작품과 내 감상을 등록했어.');
   await openAnime(newAnime.id);
  }catch(e){
   alert(e.message||String(e));
@@ -1189,9 +1308,10 @@ window.openVoiceProfile=async(id)=>{
  $('#voiceProfileImage').classList.toggle('hidden',!v.image_url);
  $('#voiceImageTools').classList.toggle('hidden',!isAdmin);
  $('#voiceImageFile').value='';
- $('#voiceProfileName').disabled=!isAdmin;
- $('#voiceProfileText').disabled=!isAdmin;
- $('#voiceProfileAdminTools').classList.toggle('hidden',!isAdmin);
+ $('#voiceProfileName').disabled=false;
+ $('#voiceProfileText').disabled=false;
+ $('#voiceProfileAdminTools').classList.remove('hidden');
+ $('#deleteVoiceProfileBtn').classList.toggle('hidden',!isAdmin);
  $('#voiceProfileUserTools').classList.toggle('hidden',isAdmin);
 
  const apps=(v.character_cast||[]).map(x=>x.characters).filter(Boolean);
@@ -1209,7 +1329,7 @@ window.openVoiceProfile=async(id)=>{
 $('#closeVoiceProfileDialog').onclick=()=>$('#voiceProfileDialog').close();
 
 $('#saveVoiceProfileBtn').onclick=async()=>{
- if(!isAdmin||!currentVoiceId)return;
+ if(!currentVoiceId)return;
  const name=$('#voiceProfileName').value.trim();
  if(!name){alert('성우 이름을 입력해줘.');return;}
  const {error}=await sb.from('voice_actors').update({
@@ -1243,18 +1363,142 @@ $('#reportVoiceBtn').onclick=()=>{
 
 $('#voiceSearch').addEventListener('input',renderVoices);
 
+function animeOptionLabel(a){
+ return a.year?`${a.title} (${a.year})`:a.title;
+}
+
+function rebuildVoiceAnimeOptions(){
+ $('#voiceAnimeOptions').innerHTML=animeData
+  .map(a=>`<option value="${esc(animeOptionLabel(a))}"></option>`)
+  .join('');
+}
+
+function addVoiceAppearanceRow(animeValue='',characterValue=''){
+ const row=document.createElement('div');
+ row.className='voice-add-appearance-row';
+ row.innerHTML=`
+  <input class="voice-add-anime" list="voiceAnimeOptions" placeholder="출연 작품" value="${esc(animeValue)}">
+  <input class="voice-add-character" placeholder="캐릭터 이름" value="${esc(characterValue)}">
+  <button type="button" class="small danger voice-add-remove">×</button>
+ `;
+ row.querySelector('.voice-add-remove').onclick=()=>row.remove();
+ $('#newVoiceAppearances').appendChild(row);
+}
+
+function resolveAnimeFromVoiceInput(value){
+ const v=value.trim().toLowerCase();
+ if(!v)return null;
+
+ let match=animeData.find(a=>animeOptionLabel(a).toLowerCase()===v);
+ if(match)return match;
+
+ const titleMatches=animeData.filter(a=>a.title.toLowerCase()===v);
+ if(titleMatches.length===1)return titleMatches[0];
+
+ return null;
+}
+
+$('#addVoiceAppearanceBtn').onclick=()=>addVoiceAppearanceRow();
+
 $('#openAddVoice').onclick=()=>{
  $('#newVoiceName').value='';
+ $('#newVoiceProfile').value='';
+ $('#newVoiceAppearances').innerHTML='';
+ rebuildVoiceAnimeOptions();
+ addVoiceAppearanceRow();
  $('#voiceDialog').showModal();
+ setTimeout(()=>$('#newVoiceName').focus(),50);
 };
+
 $('#closeVoiceDialog').onclick=()=>$('#voiceDialog').close();
 
 $('#saveVoiceBtn').onclick=async()=>{
- const name=$('#newVoiceName').value.trim();if(!name)return;
- const {error}=await sb.from('voice_actors').insert({name});
- if(error){alert(error.code==='23505'?'이미 등록된 성우야.':error.message);return;}
- $('#voiceDialog').close();await loadVoices();
+ const name=$('#newVoiceName').value.trim();
+ if(!name)return alert('성우 이름을 입력해줘.');
+
+ const appearanceRows=[...document.querySelectorAll('.voice-add-appearance-row')];
+ const appearances=[];
+
+ for(const row of appearanceRows){
+  const animeValue=row.querySelector('.voice-add-anime').value.trim();
+  const characterName=row.querySelector('.voice-add-character').value.trim();
+
+  if(!animeValue && !characterName)continue;
+  if(!animeValue || !characterName){
+   return alert('출연작과 캐릭터 이름은 한 줄에 둘 다 적어줘.');
+  }
+
+  const anime=resolveAnimeFromVoiceInput(animeValue);
+  if(!anime){
+   return alert(`"${animeValue}" 작품을 찾지 못했어. 목록에서 등록된 작품을 선택해줘.`);
+  }
+
+  appearances.push({anime,characterName});
+ }
+
+ const {data:voiceRows,error}=await sb.from('voice_actors')
+  .insert({
+   name,
+   profile:$('#newVoiceProfile').value.trim()
+  })
+  .select('id,name');
+
+ if(error){
+  return alert(error.code==='23505'?'이미 등록된 성우야.':error.message);
+ }
+
+ const voice=voiceRows?.[0];
+ if(!voice)return alert('성우는 추가됐지만 결과를 다시 불러오지 못했어.');
+
+ for(const item of appearances){
+  let characterId;
+
+  const {data:existing,error:findError}=await sb.from('characters')
+   .select('id')
+   .eq('anime_id',item.anime.id)
+   .ilike('name',item.characterName)
+   .maybeSingle();
+
+  if(findError){
+   alert(`성우는 등록됐지만 캐릭터 확인 중 오류가 났어.\\n${findError.message}`);
+   break;
+  }
+
+  if(existing){
+   characterId=existing.id;
+  }else{
+   const {data:charRows,error:charError}=await sb.from('characters')
+    .insert({
+     anime_id:item.anime.id,
+     name:item.characterName
+    })
+    .select('id');
+
+   if(charError){
+    alert(`성우는 등록됐지만 "${item.characterName}" 캐릭터 추가에 실패했어.\\n${charError.message}`);
+    continue;
+   }
+   characterId=charRows?.[0]?.id;
+  }
+
+  if(!characterId)continue;
+
+  const {error:castError}=await sb.from('character_cast')
+   .insert({
+    character_id:characterId,
+    voice_actor_id:voice.id
+   });
+
+  if(castError && castError.code!=='23505'){
+   alert(`"${item.characterName}" 출연 연결에 실패했어.\\n${castError.message}`);
+  }
+ }
+
+ $('#voiceDialog').close();
+ await loadVoices();
+ alert('성우 정보를 추가했어.');
 };
+
 
 window.renameVoice=async(id,current)=>{
  if(!isAdmin)return;
@@ -1274,9 +1518,9 @@ function renderRanking(){
   const avg=avgRating(a);
   const count=(a.user_anime||[]).filter(x=>x.rating!==null).length;
   return {...a,avg,count};
- }).filter(x=>x.avg!==null).sort((a,b)=>b.avg-a.avg||b.count-a.count);
+ }).filter(x=>x.avg!==null).sort((a,b)=>b.avg-a.avg||b.count-a.count).slice(0,50);
 
- $('#rankingList').innerHTML=rows.length?`<div class="panel">${rows.map((a,i)=>`
+ $('#rankingList').innerHTML=rows.length?`<div class="panel"><div class="meta" style="margin-bottom:10px">평점 TOP 50</div>${rows.map((a,i)=>`
   <div class="listrow row">
    <div><b>#${i+1} ${esc(a.title)}</b><div class="meta">${a.year||''} · 평가 ${a.count}명</div></div>
    <div class="star">★ ${a.avg.toFixed(2)}</div>
@@ -1689,7 +1933,7 @@ function storagePathFromPublicUrl(url){
 }
 
 async function uploadSharedImage(kind,id,file,statusEl){
- if(!isAdmin)throw new Error('관리자만 이미지를 업로드할 수 있어.');
+ if(!isAdmin && kind!=='anime')throw new Error('이 이미지는 관리자만 업로드할 수 있어.');
  if(!id)throw new Error('대상 ID를 찾지 못했어.');
 
  statusEl.textContent='이미지 압축 중...';
