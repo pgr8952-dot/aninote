@@ -40,7 +40,7 @@ label{color:var(--muted);font-size:13px}
 .star{color:#ffd166}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .listrow{padding:11px 0;border-bottom:1px solid #242b39}.listrow:last-child{border-bottom:0}
 .link{color:#c4b5fd;cursor:pointer}
-dialog{border:none;background:transparent;color:var(--text);padding:0;max-width:min(820px,95vw);width:100%}
+dialog{border:none;background:transparent;color:var(--text);padding:0;max-width:min(820px,95vw);width:100%;max-height:90vh;overflow:auto}
 dialog::backdrop{background:#000b}
 .modal{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
 .modal h2{margin:0 0 14px}
@@ -214,7 +214,7 @@ textarea{min-height:110px;resize:vertical}
    <div class="panel">
     <h3 style="margin-top:0">내 감상</h3>
     <div class="filter-row">
-      <select id="myStatusFilter"><option value="">전체 상태</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
+      <select id="myStatusFilter"><option value="">전체 상태</option><option value="__none__">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
       <select id="myRatingFilter"><option value="">전체 평점</option><option value="5">4.5 이상</option><option value="4">4.0 이상</option><option value="3">3.0 이상</option><option value="none">평점 없음</option></select>
       <select id="myYearFilter"><option value="">전체 연도</option></select>
       <select id="myReviewSort"><option value="recent">최근 수정순</option><option value="rating_desc">평점 높은순</option><option value="rating_asc">평점 낮은순</option><option value="title">가나다순</option><option value="year_desc">연도 최신순</option></select>
@@ -316,7 +316,7 @@ textarea{min-height:110px;resize:vertical}
    <h3 style="margin-top:0">내 감상도 같이 작성</h3>
    <div class="formgrid">
     <div class="field"><label>상태</label>
-     <select id="addAnimeStatus"><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
+     <select id="addAnimeStatus"><option value="">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
     </div>
     <div class="field"><label>평점 (0~5)</label><input id="addAnimeRating" type="number" min="0" max="5" step="0.1"></div>
     <div class="field full"><label>메모 / 감상</label><textarea id="addAnimeMemo" placeholder="추가하면서 바로 감상을 적어둘 수 있어"></textarea></div>
@@ -371,7 +371,7 @@ textarea{min-height:110px;resize:vertical}
    <h3 style="margin-top:0">내 감상</h3>
    <div class="formgrid">
     <div class="field"><label>상태</label>
-      <select id="myStatus"><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
+      <select id="myStatus"><option value="">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
     </div>
     <div class="field"><label>평점 (0~5)</label><input id="myRating" type="number" min="0" max="5" step="0.1"></div>
     <div class="field full"><label>메모 / 감상</label><textarea id="myMemo"></textarea></div>
@@ -497,10 +497,19 @@ textarea{min-height:110px;resize:vertical}
  </div>
 </dialog>
 
+<button id="scrollTopBtn" class="floating-top hidden" title="맨 위로">↑</button>
+
 <script>
 const SUPABASE_URL="https://zkmxtvompqzhyfbrnupc.supabase.co";
 const SUPABASE_KEY="sb_publishable_yqodOC8pokdJmOthqsuA1Q_WZjlI0Xg";
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+ auth:{
+  persistSession:true,
+  autoRefreshToken:true,
+  detectSessionInUrl:true,
+  storage:window.localStorage
+ }
+});
 
 let session=null;
 let isAdmin=false;
@@ -628,7 +637,7 @@ function animeCard(a){
     <span class="badge">${a.year||'연도 미상'}</span>
    </div>
    <div class="meta">${avg!==null?`평균 <span class="star">★</span> ${avg.toFixed(2)}`:'평점 없음'} · 리뷰 ${count}개</div>
-   ${mine?`<div style="margin-top:8px"><span class="badge">${esc(mine.status)}</span>${mine.rating!==null?` <span class="badge">내 평점 ${mine.rating}</span>`:''}</div>`:''}
+   ${mine?`<div style="margin-top:8px">${mine.status?`<span class="badge">${esc(mine.status)}</span>`:''}${mine.rating!==null?` <span class="badge">내 평점 ${mine.rating}</span>`:''}</div>`:''}
   </div>
  </div>`;
 }
@@ -776,7 +785,7 @@ $('#openAddAnime').onclick=()=>{
  $('#addAnimeTitle').value='';
  $('#addAnimeYear').value=new Date().getFullYear();
  $('#addAnimeLaftel').value='';
- $('#addAnimeStatus').value='시청 완료';
+ $('#addAnimeStatus').value='';
  $('#addAnimeRating').value='';
  $('#addAnimeMemo').value='';
  $('#addAnimeDialog').showModal();
@@ -816,7 +825,7 @@ $('#saveNewAnimeBtn').onclick=async()=>{
   const {error:reviewError}=await sb.from('user_anime').upsert({
     user_id:session.user.id,
     anime_id:newAnime.id,
-    status:$('#addAnimeStatus').value,
+    status:$('#addAnimeStatus').value||null,
     rating,
     memo:$('#addAnimeMemo').value.trim()
    },{onConflict:'user_id,anime_id'});
@@ -866,7 +875,7 @@ window.openAnime=async(id)=>{
  $('#castAdder').classList.add('hidden');
 
  myRecord=(a.user_anime||[]).find(x=>x.user_id===session.user.id)||null;
- $('#myStatus').value=myRecord?.status||'시청 완료';
+ $('#myStatus').value=myRecord?.status??'';
  $('#myRating').value=myRecord?.rating??'';
  $('#myMemo').value=myRecord?.memo??'';
  $('#deleteMyReviewBtn').classList.toggle('hidden',!myRecord);
@@ -903,7 +912,7 @@ $('#saveMyReviewBtn').onclick=async()=>{
  const record={
   user_id:session.user.id,
   anime_id:currentAnimeId,
-  status:$('#myStatus').value,
+  status:$('#myStatus').value||null,
   rating:$('#myRating').value===''?null:Number($('#myRating').value),
   memo:$('#myMemo').value.trim()
  };
@@ -987,7 +996,7 @@ async function loadReviews(animeId){
    return `<div class="review">
     <div class="row">
      <b class="profile-link" onclick="openPublicProfile('${r.user_id}')">${esc(p?.display_name||p?.username||'사용자')}</b>
-     <span class="badge">${esc(r.status)}</span>
+     ${r.status?`<span class="badge">${esc(r.status)}</span>`:''}
     </div>
     ${r.rating!==null?`<div class="star" style="margin-top:6px">★ ${Number(r.rating).toFixed(1)}</div>`:''}
     ${r.memo?.trim()?`<div style="margin-top:6px">${esc(r.memo)}</div>`:''}
@@ -1361,7 +1370,8 @@ function renderMyReviews(){
 
  rows=rows.filter(r=>{
   const a=animeData.find(x=>x.id===r.anime_id);
-  if(status&&r.status!==status)return false;
+  if(status==='__none__' && r.status!==null)return false;
+  if(status && status!=='__none__' && r.status!==status)return false;
   if(year&&String(a?.year)!==year)return false;
   if(rf==='none'&&r.rating!==null)return false;
   if(rf&&rf!=='none'&&(r.rating===null||Number(r.rating)<Number(rf)))return false;
@@ -1383,7 +1393,7 @@ function renderMyReviews(){
   const a=animeData.find(x=>x.id===r.anime_id);
   return `<div class="my-review-item">
    <b class="link" onclick="openAnime('${r.anime_id}')">${esc(a?.title||'삭제된 작품')}</b>
-   <div class="meta">${a?.year||''} · ${esc(r.status)} ${r.rating!==null?`· ★ ${Number(r.rating).toFixed(1)}`:''}</div>
+   <div class="meta">${a?.year||''}${r.status?` · ${esc(r.status)}`:''}${r.rating!==null?` · ★ ${Number(r.rating).toFixed(1)}`:''}</div>
    ${r.memo?.trim()?`<div style="margin-top:6px">${esc(r.memo)}</div>`:''}
   </div>`;
  }).join(''):'<div class="meta">조건에 맞는 감상이 없어.</div>';
@@ -1436,7 +1446,7 @@ async function loadRequests(){
   <div class="req">
    <div class="row">
     <b>${esc(r.request_type)} · ${esc(r.target_label||r.target_type)}</b>
-    <span class="badge">${esc(r.status)}</span>
+    ${r.status?`<span class="badge">${esc(r.status)}</span>`:''}
    </div>
    <div style="margin-top:8px">${esc(r.message)}</div>
    <div class="meta" style="margin-top:7px">${new Date(r.created_at).toLocaleString()}</div>
@@ -2028,42 +2038,42 @@ window.scrollDialogTop=function(button){
  const dlg=button?.closest?.('dialog') || document.querySelector('dialog[open]');
 
  if(dlg){
-  try{dlg.scrollTo({top:0,behavior:'smooth'});}catch{dlg.scrollTop=0;}
+  // 실제 스크롤바가 dialog에 생기도록 CSS에서 overflow:auto 지정함
+  dlg.scrollTop=0;
 
   const modal=dlg.querySelector('.modal');
   if(modal){
-   try{modal.scrollTo({top:0,behavior:'smooth'});}catch{modal.scrollTop=0;}
+   modal.scrollTop=0;
+   modal.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
-  // 브라우저별 dialog 내부 스크롤 차이 대응
-  for(const el of dlg.querySelectorAll('*')){
-   if(el.scrollTop>0){
-    try{el.scrollTo({top:0,behavior:'smooth'});}catch{el.scrollTop=0;}
-   }
-  }
+  requestAnimationFrame(()=>{
+   dlg.scrollTop=0;
+  });
   return;
  }
 
- const scroller=document.scrollingElement||document.documentElement;
- try{scroller.scrollTo({top:0,behavior:'smooth'});}catch{scroller.scrollTop=0;}
- window.scrollTo({top:0,behavior:'smooth'});
+ document.documentElement.scrollTop=0;
+ document.body.scrollTop=0;
+ window.scrollTo({top:0,left:0,behavior:'smooth'});
 };
 
-$('#scrollTopBtn').onclick=()=>scrollDialogTop(null);
+$('#scrollTopBtn').onclick=()=>window.scrollDialogTop(null);
 
-// window뿐 아니라 내부 스크롤 컨테이너도 감지
-document.addEventListener('scroll',()=>{
- const scroller=document.scrollingElement||document.documentElement;
- const pageTop=scroller.scrollTop||window.scrollY||0;
+// 페이지 자체가 내려갔을 때 버튼 표시
+window.addEventListener('scroll',()=>{
+ const top=window.scrollY||document.documentElement.scrollTop||document.body.scrollTop||0;
+ $('#scrollTopBtn').classList.toggle(
+  'hidden',
+  top<250 || $('#appView').classList.contains('hidden')
+ );
+},{passive:true});
 
- // 페이지에서는 250px 이상 내려갔을 때만 표시
- if(!document.querySelector('dialog[open]')){
-  $('#scrollTopBtn').classList.toggle('hidden',pageTop<250 || $('#appView').classList.contains('hidden'));
- }
-},true);
-
-boot();
+if(document.readyState==='loading'){
+ document.addEventListener('DOMContentLoaded',boot,{once:true});
+}else{
+ boot();
+}
 </script>
-<button id="scrollTopBtn" class="floating-top hidden" title="맨 위로">↑</button>
 </body>
 </html>
