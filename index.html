@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.6.1 ===== */
+/* ===== v1.6.2 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.6.1 1차 · 설정/운영 ===== */
+/* ===== v1.6.2 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.6.1 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.6.2 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.6.1 · 알림 / 채팅 ===== */
+/* ===== v1.6.2 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -488,7 +488,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.6.1</div>
+    <div class="app-version">v1.6.2</div>
     
    </div>
    <div class="global-search-wrap">
@@ -713,7 +713,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   </div>
   <div class="panel" style="margin-top:14px">
    <div class="row"><h3 style="margin:0">유저 관리</h3><div class="panel-head-actions"><button id="toggleUsersBtn" class="small">더보기</button><button id="refreshUsersBtn" class="small">새로고침</button></div></div>
-   <div class="meta" style="margin:7px 0 10px">총괄관리자와 관리자는 동일한 운영 기능을 사용할 수 있습니다. 총괄관리자 계정은 이용 제한 대상에서 제외됩니다.</div>
+   <div class="meta" style="margin:7px 0 10px">총괄관리자와 관리자는 동일한 운영 기능을 사용할 수 있습니다. 관리자 지정·해제는 총괄관리자만 가능하며, 총괄관리자 계정은 이용 제한할 수 없습니다.</div>
    <div class="admin-user-controls">
     <input id="adminUserSearch" placeholder="닉네임 / 아이디 / 이메일 검색...">
     <select id="adminUserSort">
@@ -768,7 +768,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.6.1</span>
+  <span>애니노트 v1.6.2</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1183,7 +1183,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.1</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.2</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1838,7 +1838,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.6.1 · 대표 최애 / 프로필 / 배지
+// v1.6.2 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2137,7 +2137,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.6.1 · 친구
+// v1.6.2 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2362,7 +2362,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.6.1 · 취향 일치도
+// v1.6.2 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2426,7 +2426,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.6.1 · 공개 프로필 관계 버튼
+// v1.6.2 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2504,7 +2504,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.6.1 · 공유 카드
+// v1.6.2 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2604,7 +2604,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.6.1',72,630);
+ ctx.fillText('aninote · v1.6.2',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2660,7 +2660,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.6.1 · 크레딧
+// v1.6.2 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -4666,7 +4666,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.6.1 · 알림
+// v1.6.2 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -4816,7 +4816,7 @@ $('#markAllNotificationsReadBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.6.1 · 친구 1:1 채팅
+// v1.6.2 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -4972,7 +4972,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.6.1 · 배지 획득 알림 동기화
+// v1.6.2 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -5007,7 +5007,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.6.1 · Supabase Realtime
+// v1.6.2 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -5509,7 +5509,7 @@ function renderAdminUsers(){
       ?`<button class="small good" onclick="setUserBan('${u.user_id}',false,'${esc(label).replaceAll("'","&#39;")}')">밴 해제</button>`
       :`<button class="small danger" onclick="setUserBan('${u.user_id}',true,'${esc(label).replaceAll("'","&#39;")}')">밴</button>`);
 
-  const adminButton=(self||owner)
+  const adminButton=(adminRole!=='owner'||self||owner)
    ?''
    :(admin
       ?`<button class="small" onclick="setUserAdmin('${u.user_id}',false,'${esc(label).replaceAll("'","&#39;")}')">관리자 해제</button>`
@@ -5539,7 +5539,10 @@ $('#toggleUsersBtn').onclick=()=>{adminUsersExpanded=!adminUsersExpanded;renderA
 
 
 window.setUserAdmin=async(userId,shouldAdmin,label)=>{
- if(!isAdmin)return;
+ if(adminRole!=='owner'){
+  alert('총괄관리자만 관리자 권한을 변경할 수 있습니다.');
+  return;
+ }
 
  const message=shouldAdmin
   ?`${label}님을 관리자로 지정하시겠습니까?`
@@ -6242,7 +6245,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.6.1',
+   version:'1.6.2',
    exported_at:new Date().toISOString(),
    tables:{}
   };
