@@ -219,11 +219,123 @@ textarea{min-height:110px;resize:vertical}
 /* ===== v1.5.0 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
-body.light-mode{background:#f3f5f8;color:#1f2937}
+body.light-mode{
+ --bg:#f3f5f8;
+ --panel:#ffffff;
+ --panel2:#f3f6fa;
+ --line:#d5dde8;
+ --text:#1f2937;
+ --muted:#667085;
+ background:var(--bg);
+ color:var(--text);
+}
 body.light-mode header{background:#ffffffee;border-bottom-color:#d7dde7}
-body.light-mode .panel,body.light-mode .card,body.light-mode .recommend-sidebar,body.light-mode dialog .modal{background:#fff;color:#1f2937;border-color:#d6dde8}
-body.light-mode input,body.light-mode textarea,body.light-mode select,body.light-mode button{background:#fff;color:#1f2937;border-color:#cbd5e1}
-body.light-mode .meta,body.light-mode .recommend-sub,body.light-mode .recommend-reason{color:#667085}
+body.light-mode .auth,
+body.light-mode .panel,
+body.light-mode .card,
+body.light-mode .stat-box,
+body.light-mode .modal,
+body.light-mode .setting-card{
+ background:#fff;
+ color:#1f2937;
+ border-color:#d6dde8;
+}
+body.light-mode input,
+body.light-mode textarea,
+body.light-mode select,
+body.light-mode button{
+ background:#fff;
+ color:#1f2937;
+ border-color:#cbd5e1;
+}
+body.light-mode button.primary,
+body.light-mode .tabs button.active{
+ background:var(--accent);
+ border-color:var(--accent);
+ color:#fff;
+}
+body.light-mode button.danger{background:#fff1f2;border-color:#f3a7af;color:#a61b2b}
+body.light-mode button.good{background:#ecfdf3;border-color:#9dd9af;color:#176b36}
+body.light-mode button.warn{background:#fff8e6;border-color:#e5c470;color:#7a5310}
+body.light-mode .bug-report-btn{background:#b92838;border-color:#d94857;color:#fff}
+body.light-mode .meta,
+body.light-mode .sub,
+body.light-mode label,
+body.light-mode .recommend-sub,
+body.light-mode .recommend-reason,
+body.light-mode .registrant-line,
+body.light-mode .app-version{color:#667085}
+body.light-mode .voice-name,
+body.light-mode .admin-user-name,
+body.light-mode .profile-text,
+body.light-mode .recommend-name,
+body.light-mode .series-title,
+body.light-mode .character-meta-card,
+body.light-mode .privacy-body{color:#1f2937}
+body.light-mode .link,
+body.light-mode .profile-link,
+body.light-mode .laftel-link{color:#6d3fd1}
+body.light-mode .review,
+body.light-mode .req,
+body.light-mode .suggestion-box,
+body.light-mode .global-results,
+body.light-mode .favorite-box,
+body.light-mode .series-card,
+body.light-mode .recommend-sidebar,
+body.light-mode .related-anime-card,
+body.light-mode .character-meta-card,
+body.light-mode .request-proposal{
+ background:#fff;
+ color:#1f2937;
+ border-color:#d6dde8;
+}
+body.light-mode .related-anime-card:hover,
+body.light-mode .global-item:hover,
+body.light-mode .suggestion-item:hover,
+body.light-mode .icon-close:hover,
+body.light-mode .floating-top:hover,
+body.light-mode .dialog-top-button:hover{background:#eef2f7}
+body.light-mode .badge,
+body.light-mode .genre-chip,
+body.light-mode .genre-badge,
+body.light-mode .icon-close,
+body.light-mode .floating-top,
+body.light-mode .dialog-top-button,
+body.light-mode .recommend-thumb,
+body.light-mode .recommend-placeholder,
+body.light-mode .character-poster,
+body.light-mode .character-poster-placeholder{
+ background:#f3f6fa;
+ color:#344054;
+ border-color:#d3dbe7;
+}
+body.light-mode .genre-chip.selected{background:#7450db;border-color:#7450db;color:#fff}
+body.light-mode .age-rating{color:#475467;border-color:#b8c2d0}
+body.light-mode .age-rating.adult{color:#b42335;border-color:#e59ba5;background:#fff5f6}
+body.light-mode .spoiler-box{background:#fff5f7;border-color:#e8bac6;color:#1f2937}
+body.light-mode .spoiler-box summary{color:#a72a4b}
+body.light-mode .bar-track,
+body.light-mode .rating-dist-track{background:#e6ebf2}
+body.light-mode .listrow,
+body.light-mode .my-review-item,
+body.light-mode .series-season,
+body.light-mode .series-select-item,
+body.light-mode .audit-item,
+body.light-mode .user-admin-row,
+body.light-mode .favorite-item,
+body.light-mode .recommend-item,
+body.light-mode .global-item,
+body.light-mode .suggestion-item,
+body.light-mode .guestbook-item,
+body.light-mode .block-row,
+body.light-mode .setting-line{
+ border-color:#e2e7ee;
+}
+body.light-mode .clear-search-btn{background:#eef2f6;border-color:#cfd7e3;color:#667085}
+body.light-mode .clear-search-btn:hover{background:#e1e7ef;color:#1f2937}
+body.light-mode .report-request{background:#fff4f5!important;border-color:#dc6975!important;color:#1f2937}
+body.light-mode .admin-badge{background:#fff6dc;border-color:#e6c65c;color:#795b00}
+body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61b2b}
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .setting-card{padding:14px;border:1px solid #2d3543;border-radius:13px;background:#111720}
 .setting-line{display:grid;grid-template-columns:1fr minmax(150px,220px);gap:12px;align-items:center;padding:10px 0;border-top:1px solid #252d39}.setting-line:first-of-type{border-top:0}
@@ -354,6 +466,7 @@ body.light-mode .meta,body.light-mode .recommend-sub,body.light-mode .recommend-
       <select id="myReviewSort"><option value="recent">최근 수정순</option><option value="rating_desc">평점 높은순</option><option value="rating_asc">평점 낮은순</option><option value="title">가나다순</option><option value="year_desc">연도 최신순</option></select>
     </div>
     <div id="myReviews"></div>
+    <div id="myReviewMoreArea" class="row" style="justify-content:center;margin-top:12px"></div>
    </div>
   </div>
  </section>
@@ -469,7 +582,6 @@ body.light-mode .meta,body.light-mode .recommend-sub,body.light-mode .recommend-
  <div class="legal-actions">
   <button id="privacyBtn" class="small legal-btn" type="button">개인정보처리방침</button>
   <button id="contactBtn" class="small legal-btn" type="button">문의</button>
-  <button id="accountDeleteGuideBtn" class="small legal-btn" type="button">계정 삭제 안내</button>
  </div>
 </div>
 </div>
@@ -920,6 +1032,7 @@ let myRecord=null;
 let selectedVoiceId=null;
 let pendingRequest=null;
 let myReviewData=[];
+let myReviewDisplayLimit=5;
 let currentProfile=null;
 let adminUsersData=[];
 let auditData=[];
@@ -2837,7 +2950,10 @@ function renderMyReviews(){
   return new Date(b.updated_at)-new Date(a.updated_at);
  });
 
- $('#myReviews').innerHTML=rows.length?rows.map(r=>{
+ const totalRows=rows.length;
+ const visibleRows=myReviewDisplayLimit===Infinity?rows:rows.slice(0,myReviewDisplayLimit);
+
+ $('#myReviews').innerHTML=visibleRows.length?visibleRows.map(r=>{
   const a=animeData.find(x=>x.id===r.anime_id);
   return `<div class="my-review-item">
    <b class="link" onclick="openAnime('${r.anime_id}')">${esc(a?.title||'삭제된 작품')}</b>
@@ -2845,9 +2961,36 @@ function renderMyReviews(){
    ${r.memo?.trim()?`<div style="margin-top:6px">${r.spoiler?'⚠️ <span class="meta">스포일러 포함</span><br>':''}${esc(r.memo)}</div>`:''}
   </div>`;
  }).join(''):'<div class="meta">조건에 맞는 감상이 없어.</div>';
+
+ const moreArea=$('#myReviewMoreArea');
+
+ if(!totalRows || totalRows<=5 || myReviewDisplayLimit===Infinity){
+  moreArea.innerHTML=totalRows
+   ?`<span class="meta">${totalRows}개 표시</span>`
+   :'';
+ }else if(myReviewDisplayLimit<=5){
+  moreArea.innerHTML=`<span class="meta">5 / ${totalRows}개</span><button id="myReviewsMore20" class="small">더보기 · 20개까지</button>`;
+  $('#myReviewsMore20').onclick=()=>{
+   myReviewDisplayLimit=20;
+   renderMyReviews();
+  };
+ }else if(totalRows>20){
+  moreArea.innerHTML=`<span class="meta">${Math.min(20,totalRows)} / ${totalRows}개</span><button id="myReviewsMoreAll" class="small">더더보기 · 전체</button>`;
+  $('#myReviewsMoreAll').onclick=()=>{
+   myReviewDisplayLimit=Infinity;
+   renderMyReviews();
+  };
+ }else{
+  moreArea.innerHTML=`<span class="meta">${totalRows}개 표시</span>`;
+ }
 }
 
-['myStatusFilter','myRatingFilter','myYearFilter','myReviewSort'].forEach(id=>$('#'+id).addEventListener('change',renderMyReviews));
+['myStatusFilter','myRatingFilter','myYearFilter','myReviewSort'].forEach(id=>{
+ $('#'+id).addEventListener('change',()=>{
+  myReviewDisplayLimit=5;
+  renderMyReviews();
+ });
+});
 
 
 // ============================================================
@@ -3039,7 +3182,6 @@ function openPrivacyDialog(){
 
 $('#privacyBtn').onclick=openPrivacyDialog;
 $('#authPrivacyBtn').onclick=openPrivacyDialog;
-$('#accountDeleteGuideBtn').onclick=openPrivacyDialog;
 $('#closePrivacyDialog').onclick=()=>$('#privacyDialog').close();
 $('#closePrivacyDialogBottom').onclick=()=>$('#privacyDialog').close();
 
