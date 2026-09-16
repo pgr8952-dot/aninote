@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.6.2 ===== */
+/* ===== v1.6.3 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.6.2 1차 · 설정/운영 ===== */
+/* ===== v1.6.3 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.6.2 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.6.3 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.6.2 · 알림 / 채팅 ===== */
+/* ===== v1.6.3 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -488,7 +488,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.6.2</div>
+    <div class="app-version">v1.6.3</div>
     
    </div>
    <div class="global-search-wrap">
@@ -729,6 +729,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
      <option value="banned">밴 유저</option>
     </select>
    </div>
+   <div id="adminUserCount" class="meta" style="margin:8px 0"></div>
    <div id="adminUserList"></div>
   </div>
   <div class="panel" style="margin-top:14px">
@@ -768,7 +769,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.6.2</span>
+  <span>애니노트 v1.6.3</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1183,7 +1184,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.2</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.3</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1838,7 +1839,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.6.2 · 대표 최애 / 프로필 / 배지
+// v1.6.3 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2137,7 +2138,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.6.2 · 친구
+// v1.6.3 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2362,7 +2363,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.6.2 · 취향 일치도
+// v1.6.3 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2426,7 +2427,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.6.2 · 공개 프로필 관계 버튼
+// v1.6.3 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2504,7 +2505,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.6.2 · 공유 카드
+// v1.6.3 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2604,7 +2605,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.6.2',72,630);
+ ctx.fillText('aninote · v1.6.3',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2660,7 +2661,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.6.2 · 크레딧
+// v1.6.3 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -4666,7 +4667,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.6.2 · 알림
+// v1.6.3 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -4816,7 +4817,7 @@ $('#markAllNotificationsReadBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.6.2 · 친구 1:1 채팅
+// v1.6.3 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -4972,7 +4973,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.6.2 · 배지 획득 알림 동기화
+// v1.6.3 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -5007,7 +5008,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.6.2 · Supabase Realtime
+// v1.6.3 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -5451,13 +5452,34 @@ $('#toggleRequestsBtn').onclick=()=>{requestsExpanded=!requestsExpanded;renderRe
 async function loadAdminUsers(){
  if(!isAdmin)return;
 
- const {data,error}=await sb.rpc('admin_list_users');
+ $('#adminUserCount').textContent='유저 목록을 불러오는 중입니다...';
+
+ const {data,error}=await sb.rpc('admin_list_users_v2');
+
  if(error){
-  $('#adminUserList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;
+  $('#adminUserCount').textContent='';
+  $('#adminUserList').innerHTML=`<div class="notice">유저 목록을 불러오지 못했습니다.<br>${esc(error.message)}</div>`;
   return;
  }
 
- adminUsersData=data||[];
+ let rows=data;
+
+ // JSONB 반환값은 정상적으로 배열로 전달되지만,
+ // 환경에 따라 문자열로 전달되는 경우도 안전하게 처리합니다.
+ if(typeof rows==='string'){
+  try{
+   rows=JSON.parse(rows);
+  }catch(e){
+   rows=[];
+  }
+ }
+
+ if(!Array.isArray(rows)){
+  rows=[];
+ }
+
+ adminUsersData=rows;
+ $('#adminUserCount').textContent=`전체 가입 유저 ${adminUsersData.length}명`;
  renderAdminUsers();
 }
 
@@ -5492,6 +5514,15 @@ function renderAdminUsers(){
  });
 
  const visibleRows=adminUsersExpanded?rows:rows.slice(0,5);
+
+ if($('#adminUserCount')){
+  const total=adminUsersData.length;
+  const filtered=rows.length;
+  $('#adminUserCount').textContent=
+   filtered===total
+    ?`전체 가입 유저 ${total}명`
+    :`검색 결과 ${filtered}명 · 전체 ${total}명`;
+ }
 
  $('#adminUserList').innerHTML=visibleRows.length?visibleRows.map(u=>{
   const label=u.display_name||u.username||u.email||'사용자';
@@ -6245,7 +6276,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.6.2',
+   version:'1.6.3',
    exported_at:new Date().toISOString(),
    tables:{}
   };
