@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.9.6 ===== */
+/* ===== v1.10.0 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.9.6 1차 · 설정/운영 ===== */
+/* ===== v1.10.0 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.9.6 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.10.0 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.9.6 · 알림 / 채팅 ===== */
+/* ===== v1.10.0 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -450,7 +450,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 }
 
 
-/* ===== v1.9.6 ===== */
+/* ===== v1.10.0 ===== */
 .notification-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .notification-delete{padding:4px 7px;font-size:11px;line-height:1}
 .unread-chat-pill{
@@ -473,7 +473,7 @@ body.light-mode .friend-rating-row,
 body.light-mode .trend-row{border-color:#d6dde8}
 
 
-/* ===== v1.9.6 ===== */
+/* ===== v1.10.0 ===== */
 .genre-edit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#11151d}
 .genre-edit-details summary{cursor:pointer;font-weight:800;color:#c4b5fd}
 .genre-edit-details .genre-picker{margin-top:10px}
@@ -491,7 +491,7 @@ body.light-mode .review-limit-message{background:#fff1f2;border-color:#fecdd3;co
 body.light-mode .review-editing-note{color:#6d28d9}
 
 
-/* ===== v1.9.6 ===== */
+/* ===== v1.10.0 ===== */
 .admin-overview-grid{
  display:grid;
  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -590,7 +590,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
 }
 
 
-/* ===== v1.9.6 · 몬스터 러시 ===== */
+/* ===== v1.10.0 · 몬스터 러시 ===== */
 .monster-rush-modal{max-width:760px}
 .monster-rush-intro{
  display:flex;
@@ -794,7 +794,7 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
 }
 
 
-/* v1.9.6 · 애니 탭 상단 컴팩트 미니게임 카드 */
+/* v1.10.0 · 애니 탭 상단 컴팩트 미니게임 카드 */
 .anime-home-feature-grid{
  display:grid;
  grid-template-columns:minmax(0,1fr) 240px;
@@ -874,6 +874,201 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
  }
 }
 
+
+/* ===== v1.10.0 · 미니게임 홈 스택 ===== */
+.mini-game-home-stack{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:10px;
+ min-width:0;
+}
+.mini-game-home-card{
+ min-height:0;
+}
+.sniper-rush-home-card{
+ min-width:0;
+ padding:14px 15px;
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+ overflow:hidden;
+ position:relative;
+ cursor:pointer;
+}
+.sniper-rush-home-card::after{
+ content:'';
+ position:absolute;
+ right:-34px;
+ top:-38px;
+ width:100px;
+ height:100px;
+ border-radius:50%;
+ background:rgba(245,158,11,.10);
+ pointer-events:none;
+}
+.sniper-rush-home-main{position:relative;z-index:1}
+.sniper-rush-home-heading{display:flex;align-items:center;gap:9px}
+.sniper-rush-home-icon{font-size:29px;line-height:1;flex:0 0 auto}
+.sniper-rush-home-title{font-size:16px;font-weight:900;letter-spacing:-.2px}
+.sniper-rush-home-sub{
+ margin-top:7px;
+ color:var(--muted);
+ font-size:11px;
+ line-height:1.45;
+}
+.sniper-rush-home-actions{position:relative;z-index:1;margin-top:0}
+.sniper-rush-home-actions button{
+ width:100%;
+ min-height:36px;
+ padding:7px 10px;
+ font-size:12px;
+}
+
+/* ===== v1.10.0 · 사격장 러시 ===== */
+.sniper-rush-modal{max-width:1040px}
+.sniper-rush-intro{
+ display:flex;
+ align-items:flex-start;
+ justify-content:space-between;
+ gap:12px;
+ flex-wrap:wrap;
+ margin-bottom:12px;
+}
+.sniper-rush-actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+}
+.sniper-rush-score-grid{
+ display:grid;
+ grid-template-columns:repeat(6,minmax(0,1fr));
+ gap:8px;
+ margin-bottom:12px;
+}
+.sniper-rush-stat{
+ border:1px solid var(--line);
+ border-radius:12px;
+ background:#11151d;
+ padding:9px 7px;
+ text-align:center;
+ min-width:0;
+}
+.sniper-rush-stat strong{
+ display:block;
+ margin-top:3px;
+ font-size:21px;
+ white-space:nowrap;
+}
+.sniper-rush-stage-wrap{
+ position:relative;
+ border:1px solid var(--line);
+ border-radius:16px;
+ overflow:hidden;
+ background:#07111e;
+ user-select:none;
+}
+#sniperRushCanvas{
+ display:block;
+ width:100%;
+ height:auto;
+ aspect-ratio:16/9;
+ cursor:crosshair;
+ touch-action:none;
+ background:#07111e;
+}
+.sniper-rush-stage-message{
+ position:absolute;
+ left:50%;
+ bottom:14px;
+ transform:translateX(-50%);
+ max-width:calc(100% - 28px);
+ border:1px solid #344054;
+ border-radius:999px;
+ padding:7px 12px;
+ background:#090d14dd;
+ color:#e5e7eb;
+ font-size:12px;
+ font-weight:800;
+ pointer-events:none;
+ text-align:center;
+}
+.sniper-rush-stage-message.good{border-color:#3f9b6c;color:#b7f7d0}
+.sniper-rush-stage-message.bad{border-color:#c94e5c;color:#ffc0c7}
+.sniper-rush-help{
+ margin-top:10px;
+ border:1px solid var(--line);
+ border-radius:12px;
+ padding:10px 12px;
+ background:#11151d;
+ font-size:12px;
+ line-height:1.65;
+ color:#cbd5e1;
+}
+.sniper-rush-result{
+ margin-top:12px;
+ border:1px solid var(--line);
+ border-radius:14px;
+ padding:14px;
+ background:#11151d;
+}
+.sniper-rush-result-score{
+ font-size:30px;
+ font-weight:1000;
+ margin-top:4px;
+}
+.sniper-rush-ranking{
+ margin-top:14px;
+ border-top:1px solid var(--line);
+ padding-top:14px;
+}
+.sniper-rush-my-rank{
+ margin:9px 0;
+ padding:9px 11px;
+ border:1px solid var(--line);
+ border-radius:11px;
+ background:#11151d;
+ font-weight:800;
+}
+.sniper-rush-rank-row{
+ display:grid;
+ grid-template-columns:42px minmax(0,1fr) auto;
+ gap:9px;
+ align-items:center;
+ padding:8px 0;
+ border-top:1px solid var(--line);
+}
+.sniper-rush-rank-row:first-child{border-top:0}
+.sniper-rush-rank-pos{font-weight:1000;text-align:center}
+.sniper-rush-rank-score{font-weight:1000;white-space:nowrap}
+.sniper-rush-rank-row.me{
+ background:rgba(245,158,11,.10);
+ border-radius:9px;
+ padding-left:6px;
+ padding-right:6px;
+}
+body.light-mode .sniper-rush-stat,
+body.light-mode .sniper-rush-help,
+body.light-mode .sniper-rush-result,
+body.light-mode .sniper-rush-my-rank{
+ background:#fff;
+ border-color:#d6dde8;
+ color:#1f2937;
+}
+body.light-mode .sniper-rush-help{color:#475569}
+
+@media(max-width:760px){
+ .sniper-rush-score-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .sniper-rush-rank-row{grid-template-columns:34px minmax(0,1fr) auto}
+}
+@media(max-width:950px){
+ .mini-game-home-stack{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
+@media(max-width:560px){
+ .mini-game-home-stack{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -913,7 +1108,7 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.9.6</div>
+    <div class="app-version">v1.10.0</div>
     
    </div>
    <div class="global-search-wrap">
@@ -971,16 +1166,31 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
     </div>
    </div>
 
-   <div id="monsterRushHomeCard" class="monster-rush-home-card panel" role="button" tabindex="0" aria-label="몬스터 러시 열기">
-    <div class="monster-rush-home-main">
-     <div class="monster-rush-home-heading">
-      <div class="monster-rush-home-icon">👾</div>
-      <div class="monster-rush-home-title">몬스터 러시</div>
+   <div class="mini-game-home-stack">
+    <div id="monsterRushHomeCard" class="monster-rush-home-card panel mini-game-home-card" role="button" tabindex="0" aria-label="몬스터 러시 열기">
+     <div class="monster-rush-home-main">
+      <div class="monster-rush-home-heading">
+       <div class="monster-rush-home-icon">👾</div>
+       <div class="monster-rush-home-title">몬스터 러시</div>
+      </div>
+      <div class="monster-rush-home-sub">60초 점수 어택 · 전체 랭킹</div>
      </div>
-     <div class="monster-rush-home-sub">60초 점수 어택 · 전체 랭킹</div>
+     <div class="monster-rush-home-actions">
+      <button id="openMonsterRushHomeBtn" class="primary">게임 시작</button>
+     </div>
     </div>
-    <div class="monster-rush-home-actions">
-     <button id="openMonsterRushHomeBtn" class="primary">게임 시작</button>
+
+    <div id="sniperRushHomeCard" class="sniper-rush-home-card panel mini-game-home-card" role="button" tabindex="0" aria-label="사격장 러시 열기">
+     <div class="sniper-rush-home-main">
+      <div class="sniper-rush-home-heading">
+       <div class="sniper-rush-home-icon">🎯</div>
+       <div class="sniper-rush-home-title">사격장 러시</div>
+      </div>
+      <div class="sniper-rush-home-sub">저격 점수전 · 전체 랭킹</div>
+     </div>
+     <div class="sniper-rush-home-actions">
+      <button id="openSniperRushHomeBtn" class="primary">게임 시작</button>
+     </div>
     </div>
    </div>
   </div>
@@ -1323,7 +1533,7 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.9.6</span>
+  <span>애니노트 v1.10.0</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1883,6 +2093,92 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
  </div>
 </dialog>
 
+
+<dialog id="sniperRushDialog">
+ <div class="modal sniper-rush-modal">
+  <div class="modal-title-row">
+   <div>
+    <h2>🎯 사격장 러시</h2>
+    <div class="meta">저격총으로 창문과 옥상에 나타나는 표적을 처리하고 최고 점수를 노려보세요.</div>
+   </div>
+   <button id="closeSniperRushDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
+
+  <div class="sniper-rush-intro">
+   <div>
+    <b>내 최고 기록 · <span id="sniperRushBestScore">0</span>점</b>
+    <div class="meta" style="margin-top:4px">공식 최고 기록은 애니노트 계정에 저장됩니다.</div>
+   </div>
+   <div class="sniper-rush-actions">
+    <button id="sniperRushStartBtn" class="primary">게임 시작</button>
+    <button id="sniperRushGiveUpBtn" class="danger" disabled>포기</button>
+   </div>
+  </div>
+
+  <div class="sniper-rush-score-grid">
+   <div class="sniper-rush-stat">
+    <div class="meta">남은 시간</div>
+    <strong id="sniperRushTime">60.0</strong>
+   </div>
+   <div class="sniper-rush-stat">
+    <div class="meta">점수</div>
+    <strong id="sniperRushScore">0</strong>
+   </div>
+   <div class="sniper-rush-stat">
+    <div class="meta">목숨</div>
+    <strong id="sniperRushLives">♥♥♥♥♥</strong>
+   </div>
+   <div class="sniper-rush-stat">
+    <div class="meta">탄약</div>
+    <strong id="sniperRushAmmo">5 / 5</strong>
+   </div>
+   <div class="sniper-rush-stat">
+    <div class="meta">명중률</div>
+    <strong id="sniperRushAccuracy">-</strong>
+   </div>
+   <div class="sniper-rush-stat">
+    <div class="meta">콤보</div>
+    <strong id="sniperRushCombo">0</strong>
+   </div>
+  </div>
+
+  <div class="sniper-rush-stage-wrap">
+   <canvas id="sniperRushCanvas" width="960" height="540" tabindex="0" aria-label="사격장 러시 게임 화면"></canvas>
+   <div id="sniperRushStageMessage" class="sniper-rush-stage-message">우클릭을 누르고 있으면 조준경 · 좌클릭 발사 · R 재장전</div>
+  </div>
+
+  <div class="sniper-rush-help">
+   <b>조작</b> · 우클릭을 누르고 있으면 조준경을 사용합니다. 조준 중 좌클릭은 커서 위치에 정확히 명중하고,
+   비조준 좌클릭은 탄착점이 무작위로 퍼집니다. <b>R</b>키로 5발 탄창을 재장전합니다.<br>
+   <b>표적</b> · 창문 일반 적, 기둥 뒤 빼꼼 적, 옥상을 뛰는 적, 인질 뒤 적이 등장합니다.
+   인질 또는 민간인을 맞히거나 적을 놓치면 목숨이 감소합니다.
+  </div>
+
+  <div id="sniperRushResult" class="sniper-rush-result hidden">
+   <div class="meta">최종 점수</div>
+   <div id="sniperRushFinalScore" class="sniper-rush-result-score">0점</div>
+   <div id="sniperRushResultStats" class="meta" style="margin-top:6px"></div>
+   <div style="margin-top:10px">
+    <button id="sniperRushRetryBtn" class="primary">다시 도전</button>
+   </div>
+  </div>
+
+  <div class="sniper-rush-ranking">
+   <div class="row">
+    <div>
+     <h3 style="margin:0">🏆 전체 랭킹 TOP 10</h3>
+     <div class="meta" style="margin-top:4px">계정별 최고 점수 1개만 기록됩니다.</div>
+    </div>
+    <button id="refreshSniperRushRankingBtn" class="small">새로고침</button>
+   </div>
+   <div id="sniperRushMyRank" class="sniper-rush-my-rank">내 순위 · 기록 없음</div>
+   <div id="sniperRushLeaderboard"><div class="meta">랭킹을 불러오는 중입니다...</div></div>
+  </div>
+ </div>
+</dialog>
+
+
+
 <dialog id="privacyDialog">
  <div class="modal">
   <div class="modal-title-row">
@@ -1891,7 +2187,7 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.9.6</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.0</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -2685,7 +2981,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.9.6 · 대표 최애 / 프로필 / 배지
+// v1.10.0 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2985,7 +3281,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.9.6 · 친구
+// v1.10.0 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -3379,7 +3675,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.9.6 · 취향 일치도
+// v1.10.0 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -3443,7 +3739,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.9.6 · 공개 프로필 관계 버튼
+// v1.10.0 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -3521,7 +3817,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.9.6 · 공유 카드
+// v1.10.0 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -3621,7 +3917,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.9.6',72,630);
+ ctx.fillText('aninote · v1.10.0',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -3677,7 +3973,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.9.6 · 크레딧
+// v1.10.0 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -6001,7 +6297,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.9.6 · 알림
+// v1.10.0 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -6172,7 +6468,7 @@ $('#deleteAllNotificationsBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.9.6 · 친구 1:1 채팅
+// v1.10.0 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -6339,7 +6635,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.9.6 · 배지 획득 알림 동기화
+// v1.10.0 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -6374,7 +6670,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.9.6 · Supabase Realtime
+// v1.10.0 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -7066,7 +7362,7 @@ $('#adminUserBanFilter').addEventListener('change',()=>{adminUsersPage=1;renderA
 
 
 // ============================================================
-// v1.9.6 이스터에그 · 몬스터 러시
+// v1.10.0 이스터에그 · 몬스터 러시
 // - 목숨 5개
 // - 2.5초 내 미대응 시 적 공격
 // - 계정별 최고기록 + TOP 10 랭킹
@@ -7712,6 +8008,1045 @@ function handleMonsterRushKeyboard(e){
 document.addEventListener('keydown',handleMonsterRushKeyboard,true);
 
 
+
+// ============================================================
+// v1.10.0 · 사격장 러시
+// - 우클릭 홀드 조준경 / 좌클릭 발사 / R 재장전
+// - 비조준 탄퍼짐 / 조준 정확 사격
+// - 창문 / 옥상 / 빼꼼 / 달리는 적 / 인질
+// - 60초 점수전 + TOP 10 랭킹
+// ============================================================
+const SNIPER_RUSH_DURATION=60000;
+const SNIPER_RUSH_MAX_LIVES=5;
+const SNIPER_RUSH_MAG_SIZE=5;
+const SNIPER_RUSH_RELOAD_MS=1300;
+const SNIPER_RUSH_FIRE_COOLDOWN=280;
+
+const sniperRushCanvas=$('#sniperRushCanvas');
+const sniperRushCtx=sniperRushCanvas.getContext('2d');
+const sniperRushWorld=document.createElement('canvas');
+sniperRushWorld.width=sniperRushCanvas.width;
+sniperRushWorld.height=sniperRushCanvas.height;
+const sniperRushWorldCtx=sniperRushWorld.getContext('2d');
+
+let sniperRushRunning=false;
+let sniperRushRunId=null;
+let sniperRushTimer=null;
+let sniperRushLastFrame=0;
+let sniperRushEndsAt=0;
+let sniperRushLastSpawn=0;
+let sniperRushEntities=[];
+let sniperRushScore=0;
+let sniperRushLives=SNIPER_RUSH_MAX_LIVES;
+let sniperRushAmmo=SNIPER_RUSH_MAG_SIZE;
+let sniperRushReloading=false;
+let sniperRushReloadEnd=0;
+let sniperRushShots=0;
+let sniperRushKills=0;
+let sniperRushCivilianHits=0;
+let sniperRushEscaped=0;
+let sniperRushHeadshots=0;
+let sniperRushCombo=0;
+let sniperRushBestCombo=0;
+let sniperRushReactionTotal=0;
+let sniperRushLastShotAt=0;
+let sniperRushHeat=0;
+let sniperRushScoped=false;
+let sniperRushMouse={x:480,y:270,inside:false};
+let sniperRushImpact=null;
+let sniperRushRecoil=0;
+let sniperRushServerBest=0;
+let sniperRushSpawnSerial=0;
+
+const SNIPER_WINDOW_SPOTS=[
+ {x:180,y:305},{x:320,y:305},{x:460,y:305},{x:600,y:305},{x:740,y:305},
+ {x:180,y:420},{x:320,y:420},{x:460,y:420},{x:600,y:420},{x:740,y:420}
+];
+const SNIPER_ROOF_SPOTS=[
+ {x:220,y:155,coverX:188},{x:400,y:155,coverX:368},
+ {x:580,y:155,coverX:548},{x:760,y:155,coverX:728}
+];
+
+function sniperClamp(v,min,max){return Math.max(min,Math.min(max,v));}
+function sniperRand(min,max){return min+Math.random()*(max-min);}
+function sniperPick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function sniperRushSetMessage(text,type=''){
+ const el=$('#sniperRushStageMessage');
+ el.textContent=text;
+ el.className=`sniper-rush-stage-message ${type}`.trim();
+}
+
+function sniperRushLifeText(){
+ return '♥'.repeat(Math.max(0,sniperRushLives))
+  +'♡'.repeat(Math.max(0,SNIPER_RUSH_MAX_LIVES-sniperRushLives));
+}
+
+function updateSniperRushHud(){
+ $('#sniperRushScore').textContent=Math.max(0,Math.round(sniperRushScore)).toLocaleString('ko-KR');
+ $('#sniperRushLives').textContent=sniperRushLifeText();
+ $('#sniperRushAmmo').textContent=sniperRushReloading
+  ?'재장전'
+  :`${sniperRushAmmo} / ${SNIPER_RUSH_MAG_SIZE}`;
+ $('#sniperRushCombo').textContent=sniperRushCombo;
+ $('#sniperRushAccuracy').textContent=sniperRushShots
+  ?`${Math.round(sniperRushKills/sniperRushShots*100)}%`
+  :'-';
+}
+
+function updateSniperRushBestLabel(){
+ $('#sniperRushBestScore').textContent=
+  Number(sniperRushServerBest||0).toLocaleString('ko-KR');
+}
+
+function sniperRushMousePos(e){
+ const r=sniperRushCanvas.getBoundingClientRect();
+ return {
+  x:(e.clientX-r.left)*(sniperRushCanvas.width/r.width),
+  y:(e.clientY-r.top)*(sniperRushCanvas.height/r.height)
+ };
+}
+
+function sniperRushComboMultiplier(){
+ return Math.min(2.5,1+Math.floor(sniperRushCombo/5)*0.2);
+}
+
+function sniperRushEntityGeometry(e,now){
+ const t=sniperClamp((now-e.spawnAt)/e.duration,0,1);
+ let x=e.x;
+ let y=e.y;
+
+ if(e.type==='runner'){
+  x=e.fromX+(e.toX-e.fromX)*t;
+  y=e.y+Math.sin(t*Math.PI*2)*2;
+ }
+
+ if(e.type==='peek'){
+  const wave=Math.sin(sniperClamp(t*1.25,0,1)*Math.PI);
+  x=e.x+e.peekDir*(1-wave)*28;
+ }
+
+ const head={x,y:y-31,r:13};
+ const body={x:x-18,y:y-18,w:36,h:49};
+
+ let hostage=null;
+ if(e.type==='hostage'){
+  hostage={
+   head:{x:x-7,y:y-23,r:15},
+   body:{x:x-28,y:y-9,w:43,h:50}
+  };
+  head.x=x+18;
+  body.x=x+3;
+ }
+
+ return {x,y,head,body,hostage};
+}
+
+function sniperRushPointInCircle(px,py,c){
+ const dx=px-c.x,dy=py-c.y;
+ return dx*dx+dy*dy<=c.r*c.r;
+}
+function sniperRushPointInRect(px,py,r){
+ return px>=r.x && px<=r.x+r.w && py>=r.y && py<=r.y+r.h;
+}
+
+function sniperRushIsOccupied(x,y){
+ return sniperRushEntities.some(e=>{
+  const g=sniperRushEntityGeometry(e,performance.now());
+  return Math.hypot(g.x-x,g.y-y)<75;
+ });
+}
+
+function spawnSniperRushEntity(){
+ if(!sniperRushRunning)return;
+
+ const elapsed=SNIPER_RUSH_DURATION-Math.max(0,sniperRushEndsAt-performance.now());
+ const progress=sniperClamp(elapsed/SNIPER_RUSH_DURATION,0,1);
+
+ const roll=Math.random();
+ let type='normal';
+
+ if(progress<0.12){
+  type=roll<0.76?'normal':'peek';
+ }else if(roll<0.32){
+  type='normal';
+ }else if(roll<0.51){
+  type='peek';
+ }else if(roll<0.67){
+  type='runner';
+ }else if(roll<0.84){
+  type='hostage';
+ }else{
+  type='civilian';
+ }
+
+ let e={
+  id:++sniperRushSpawnSerial,
+  type,
+  spawnAt:performance.now(),
+  duration:1800,
+  x:0,y:0,
+  base:100
+ };
+
+ if(type==='runner'){
+  e.fromX=Math.random()<.5?120:840;
+  e.toX=e.fromX===120?840:120;
+  e.x=e.fromX;
+  e.y=153;
+  e.duration=Math.round(1750-progress*350);
+  e.base=220;
+ }else if(type==='peek'){
+  const spot=sniperPick(SNIPER_ROOF_SPOTS);
+  e.x=spot.x;
+  e.y=spot.y;
+  e.coverX=spot.coverX;
+  e.peekDir=Math.random()<.5?-1:1;
+  e.duration=Math.round(1200-progress*220);
+  e.base=180;
+ }else{
+  let spot=sniperPick(SNIPER_WINDOW_SPOTS);
+  let tries=0;
+  while(sniperRushIsOccupied(spot.x,spot.y) && tries<8){
+   spot=sniperPick(SNIPER_WINDOW_SPOTS);
+   tries++;
+  }
+  e.x=spot.x;
+  e.y=spot.y;
+
+  if(type==='hostage'){
+   e.duration=Math.round(2250-progress*300);
+   e.base=300;
+  }else if(type==='civilian'){
+   e.duration=Math.round(1700-progress*150);
+   e.base=0;
+  }else{
+   e.duration=Math.round(1900-progress*300);
+   e.base=100;
+  }
+ }
+
+ sniperRushEntities.push(e);
+}
+
+function drawSniperRushBuilding(ctx){
+ const W=sniperRushCanvas.width,H=sniperRushCanvas.height;
+
+ const sky=ctx.createLinearGradient(0,0,0,H);
+ sky.addColorStop(0,'#081525');
+ sky.addColorStop(.62,'#132134');
+ sky.addColorStop(1,'#070b11');
+ ctx.fillStyle=sky;
+ ctx.fillRect(0,0,W,H);
+
+ // 먼 도시 실루엣
+ ctx.fillStyle='#0c1420';
+ for(let i=0;i<15;i++){
+  const bw=48+(i%4)*18;
+  const bh=70+(i%5)*18;
+  const bx=i*72-20;
+  ctx.fillRect(bx,190-bh,bw,bh);
+ }
+
+ // 건물 본체
+ ctx.fillStyle='#202a36';
+ ctx.fillRect(105,180,750,345);
+ ctx.fillStyle='#2b3745';
+ ctx.fillRect(105,180,750,18);
+
+ // 옥상 난간
+ ctx.fillStyle='#111923';
+ ctx.fillRect(100,174,760,10);
+
+ // 창문
+ for(const spot of SNIPER_WINDOW_SPOTS){
+  ctx.fillStyle='#07101a';
+  ctx.fillRect(spot.x-46,spot.y-62,92,92);
+  ctx.fillStyle='#0d2234';
+  ctx.fillRect(spot.x-42,spot.y-58,84,84);
+ }
+}
+
+function drawSniperRushTarget(ctx,e,now){
+ const g=sniperRushEntityGeometry(e,now);
+
+ if(e.type==='civilian'){
+  ctx.fillStyle='#3b82f6';
+  ctx.fillRect(g.body.x,g.body.y,g.body.w,g.body.h);
+  ctx.beginPath();
+  ctx.arc(g.head.x,g.head.y,g.head.r,0,Math.PI*2);
+  ctx.fillStyle='#93c5fd';
+  ctx.fill();
+  ctx.fillStyle='#dbeafe';
+  ctx.font='bold 10px system-ui';
+  ctx.textAlign='center';
+  ctx.fillText('민간인',g.x,g.y+26);
+  return;
+ }
+
+ // 적
+ ctx.fillStyle='#7f1d1d';
+ ctx.fillRect(g.body.x,g.body.y,g.body.w,g.body.h);
+ ctx.beginPath();
+ ctx.arc(g.head.x,g.head.y,g.head.r,0,Math.PI*2);
+ ctx.fillStyle=e.type==='hostage'?'#ef4444':'#dc2626';
+ ctx.fill();
+
+ // 얼굴/표식
+ ctx.fillStyle='#fee2e2';
+ ctx.fillRect(g.head.x-5,g.head.y-2,3,3);
+ ctx.fillRect(g.head.x+2,g.head.y-2,3,3);
+
+ // 인질은 적 앞에 겹쳐 그리기
+ if(g.hostage){
+  ctx.fillStyle='#2563eb';
+  ctx.fillRect(
+   g.hostage.body.x,g.hostage.body.y,
+   g.hostage.body.w,g.hostage.body.h
+  );
+  ctx.beginPath();
+  ctx.arc(
+   g.hostage.head.x,g.hostage.head.y,
+   g.hostage.head.r,0,Math.PI*2
+  );
+  ctx.fillStyle='#93c5fd';
+  ctx.fill();
+  ctx.fillStyle='#dbeafe';
+  ctx.font='bold 9px system-ui';
+  ctx.textAlign='center';
+  ctx.fillText('인질',g.hostage.head.x,g.hostage.body.y+42);
+ }
+}
+
+function drawSniperRushForeground(ctx){
+ // 창문 프레임
+ for(const spot of SNIPER_WINDOW_SPOTS){
+  ctx.strokeStyle='#4b5563';
+  ctx.lineWidth=7;
+  ctx.strokeRect(spot.x-46,spot.y-62,92,92);
+  ctx.beginPath();
+  ctx.moveTo(spot.x,spot.y-62);
+  ctx.lineTo(spot.x,spot.y+30);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(spot.x-46,spot.y-16);
+  ctx.lineTo(spot.x+46,spot.y-16);
+  ctx.stroke();
+ }
+
+ // 옥상 기둥
+ for(const spot of SNIPER_ROOF_SPOTS){
+  ctx.fillStyle='#374151';
+  ctx.fillRect(spot.coverX,105,34,82);
+  ctx.fillStyle='#4b5563';
+  ctx.fillRect(spot.coverX+4,109,26,74);
+ }
+
+ // 옥상 바닥/난간
+ ctx.fillStyle='#111827';
+ ctx.fillRect(102,170,756,16);
+ ctx.fillStyle='#6b7280';
+ ctx.fillRect(102,170,756,4);
+
+ // 구역 표기
+ ctx.font='bold 13px system-ui';
+ ctx.textAlign='left';
+ ctx.fillStyle='#cbd5e1';
+ ctx.fillText('옥상 존',118,198);
+ ctx.fillText('창문 존',118,228);
+}
+
+function renderSniperRushWorld(now){
+ const ctx=sniperRushWorldCtx;
+ ctx.clearRect(0,0,sniperRushWorld.width,sniperRushWorld.height);
+
+ drawSniperRushBuilding(ctx);
+
+ for(const e of sniperRushEntities){
+  drawSniperRushTarget(ctx,e,now);
+ }
+
+ drawSniperRushForeground(ctx);
+
+ // 하단 안내 바
+ ctx.fillStyle='#05070bcc';
+ ctx.fillRect(0,510,960,30);
+ ctx.fillStyle='#cbd5e1';
+ ctx.font='12px system-ui';
+ ctx.textAlign='left';
+ ctx.fillText(
+  sniperRushReloading
+   ?'재장전 중...'
+   :sniperRushScoped
+    ?'조준경 활성 · 정확 사격'
+    :`비조준 탄퍼짐 ${Math.round(22+sniperRushHeat*38)}px`,
+  14,530
+ );
+}
+
+function renderSniperRush(now=performance.now()){
+ renderSniperRushWorld(now);
+
+ const ctx=sniperRushCtx;
+ const W=sniperRushCanvas.width,H=sniperRushCanvas.height;
+ ctx.clearRect(0,0,W,H);
+
+ const recoilY=sniperRushRecoil*4;
+ ctx.drawImage(sniperRushWorld,0,recoilY,W,H);
+
+ if(sniperRushScoped && sniperRushMouse.inside){
+  const r=150;
+  const zoom=2.0;
+  const srcW=(r*2)/zoom;
+  const srcH=(r*2)/zoom;
+  const sx=sniperClamp(sniperRushMouse.x-srcW/2,0,W-srcW);
+  const sy=sniperClamp(sniperRushMouse.y-srcH/2,0,H-srcH);
+
+  ctx.save();
+  ctx.fillStyle='rgba(0,0,0,.63)';
+  ctx.fillRect(0,0,W,H);
+
+  ctx.beginPath();
+  ctx.arc(sniperRushMouse.x,sniperRushMouse.y,r,0,Math.PI*2);
+  ctx.clip();
+  ctx.drawImage(
+   sniperRushWorld,
+   sx,sy,srcW,srcH,
+   sniperRushMouse.x-r,sniperRushMouse.y-r,r*2,r*2
+  );
+  ctx.restore();
+
+  ctx.save();
+  ctx.strokeStyle='#e5e7eb';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.arc(sniperRushMouse.x,sniperRushMouse.y,r,0,Math.PI*2);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(sniperRushMouse.x-r,sniperRushMouse.y);
+  ctx.lineTo(sniperRushMouse.x+r,sniperRushMouse.y);
+  ctx.moveTo(sniperRushMouse.x,sniperRushMouse.y-r);
+  ctx.lineTo(sniperRushMouse.x,sniperRushMouse.y+r);
+  ctx.stroke();
+
+  ctx.fillStyle='#ef4444';
+  ctx.beginPath();
+  ctx.arc(sniperRushMouse.x,sniperRushMouse.y,2.5,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+ }else if(sniperRushMouse.inside){
+  const spread=22+sniperRushHeat*38;
+  ctx.save();
+  ctx.strokeStyle='rgba(255,255,255,.72)';
+  ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.arc(sniperRushMouse.x,sniperRushMouse.y,spread,0,Math.PI*2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(sniperRushMouse.x-10,sniperRushMouse.y);
+  ctx.lineTo(sniperRushMouse.x+10,sniperRushMouse.y);
+  ctx.moveTo(sniperRushMouse.x,sniperRushMouse.y-10);
+  ctx.lineTo(sniperRushMouse.x,sniperRushMouse.y+10);
+  ctx.stroke();
+  ctx.restore();
+ }
+
+ if(sniperRushImpact && now-sniperRushImpact.at<240){
+  const a=1-(now-sniperRushImpact.at)/240;
+  ctx.save();
+  ctx.globalAlpha=a;
+  ctx.strokeStyle=sniperRushImpact.good?'#f8fafc':'#ef4444';
+  ctx.lineWidth=3;
+  const x=sniperRushImpact.x,y=sniperRushImpact.y;
+  ctx.beginPath();
+  ctx.moveTo(x-9,y-9);ctx.lineTo(x+9,y+9);
+  ctx.moveTo(x+9,y-9);ctx.lineTo(x-9,y+9);
+  ctx.stroke();
+  ctx.restore();
+ }
+}
+
+function sniperRushRemoveEntity(id){
+ const i=sniperRushEntities.findIndex(e=>e.id===id);
+ if(i>=0)sniperRushEntities.splice(i,1);
+}
+
+function sniperRushLoseLife(reason){
+ if(!sniperRushRunning)return;
+
+ sniperRushLives=Math.max(0,sniperRushLives-1);
+ sniperRushCombo=0;
+
+ if(reason==='civilian'){
+  sniperRushScore=Math.max(0,sniperRushScore-500);
+  sniperRushSetMessage('인질/민간인 피격 · ♥ -1 · -500점','bad');
+ }else{
+  sniperRushEscaped++;
+  sniperRushScore=Math.max(0,sniperRushScore-100);
+  sniperRushSetMessage('적을 놓쳤습니다 · ♥ -1 · -100점','bad');
+ }
+
+ updateSniperRushHud();
+
+ if(sniperRushLives<=0){
+  stopSniperRush(true,'lives');
+ }
+}
+
+function checkSniperRushHit(x,y,now){
+ // 앞에 보이는 대상을 우선하도록 역순 판정
+ for(let i=sniperRushEntities.length-1;i>=0;i--){
+  const e=sniperRushEntities[i];
+  const g=sniperRushEntityGeometry(e,now);
+
+  if(e.type==='hostage' && g.hostage){
+   if(
+    sniperRushPointInCircle(x,y,g.hostage.head)
+    || sniperRushPointInRect(x,y,g.hostage.body)
+   ){
+    sniperRushCivilianHits++;
+    sniperRushRemoveEntity(e.id);
+    sniperRushLoseLife('civilian');
+    return {hit:true,good:false};
+   }
+  }
+
+  if(e.type==='civilian'){
+   if(
+    sniperRushPointInCircle(x,y,g.head)
+    || sniperRushPointInRect(x,y,g.body)
+   ){
+    sniperRushCivilianHits++;
+    sniperRushRemoveEntity(e.id);
+    sniperRushLoseLife('civilian');
+    return {hit:true,good:false};
+   }
+   continue;
+  }
+
+  const headshot=sniperRushPointInCircle(x,y,g.head);
+  const bodyhit=sniperRushPointInRect(x,y,g.body);
+
+  if(headshot || bodyhit){
+   const reaction=Math.max(0,now-e.spawnAt);
+   sniperRushKills++;
+   sniperRushCombo++;
+   sniperRushBestCombo=Math.max(sniperRushBestCombo,sniperRushCombo);
+   sniperRushReactionTotal+=reaction;
+   if(headshot)sniperRushHeadshots++;
+
+   const reactionBonus=Math.max(
+    0,
+    Math.round(150*(1-Math.min(reaction,e.duration)/e.duration))
+   );
+   const headBonus=headshot?120:0;
+   const gained=Math.round(
+    (e.base+reactionBonus+headBonus)*sniperRushComboMultiplier()
+   );
+
+   sniperRushScore+=gained;
+   sniperRushRemoveEntity(e.id);
+   sniperRushSetMessage(
+    `${headshot?'헤드샷 · ':''}+${gained.toLocaleString('ko-KR')}점 · ${Math.round(reaction)}ms · ×${sniperRushComboMultiplier().toFixed(1)}`,
+    'good'
+   );
+   updateSniperRushHud();
+   return {hit:true,good:true};
+  }
+ }
+
+ return {hit:false,good:false};
+}
+
+function fireSniperRush(){
+ if(!sniperRushRunning || sniperRushReloading || !sniperRushMouse.inside)return;
+
+ const now=performance.now();
+ if(now-sniperRushLastShotAt<SNIPER_RUSH_FIRE_COOLDOWN)return;
+
+ if(sniperRushAmmo<=0){
+  sniperRushSetMessage('탄창이 비었습니다. R키로 재장전해주세요.','bad');
+  return;
+ }
+
+ sniperRushLastShotAt=now;
+ sniperRushAmmo--;
+ sniperRushShots++;
+ sniperRushRecoil=1;
+
+ let x=sniperRushMouse.x;
+ let y=sniperRushMouse.y;
+
+ if(!sniperRushScoped){
+  const radius=22+sniperRushHeat*38;
+  const angle=Math.random()*Math.PI*2;
+  const distance=Math.sqrt(Math.random())*radius;
+  x+=Math.cos(angle)*distance;
+  y+=Math.sin(angle)*distance;
+  sniperRushHeat=Math.min(1,sniperRushHeat+.28);
+ }
+
+ x=sniperClamp(x,0,sniperRushCanvas.width);
+ y=sniperClamp(y,0,sniperRushCanvas.height);
+
+ const result=checkSniperRushHit(x,y,now);
+ sniperRushImpact={x,y,good:result.good,at:now};
+
+ if(!result.hit){
+  sniperRushScore=Math.max(0,sniperRushScore-25);
+  sniperRushCombo=0;
+  sniperRushSetMessage('빗나갔습니다 · -25점','bad');
+ }
+
+ if(sniperRushAmmo<=0 && sniperRushRunning){
+  sniperRushSetMessage('탄창이 비었습니다. R키로 재장전해주세요.','bad');
+ }
+
+ updateSniperRushHud();
+}
+
+function startSniperRushReload(){
+ if(
+  !sniperRushRunning
+  || sniperRushReloading
+  || sniperRushAmmo>=SNIPER_RUSH_MAG_SIZE
+ )return;
+
+ sniperRushReloading=true;
+ sniperRushReloadEnd=performance.now()+SNIPER_RUSH_RELOAD_MS;
+ sniperRushSetMessage('재장전 중...','');
+ updateSniperRushHud();
+}
+
+function finishSniperRushReload(){
+ sniperRushReloading=false;
+ sniperRushAmmo=SNIPER_RUSH_MAG_SIZE;
+ sniperRushSetMessage('재장전 완료','good');
+ updateSniperRushHud();
+}
+
+function sniperRushProcessEntities(now){
+ const expired=[];
+
+ for(const e of sniperRushEntities){
+  if(now-e.spawnAt>=e.duration){
+   expired.push(e);
+  }
+ }
+
+ for(const e of expired){
+  sniperRushRemoveEntity(e.id);
+
+  if(e.type!=='civilian'){
+   sniperRushLoseLife('escape');
+   if(!sniperRushRunning)break;
+  }
+ }
+}
+
+function sniperRushLoop(now){
+ if(!sniperRushRunning)return;
+
+ const dt=sniperRushLastFrame?now-sniperRushLastFrame:16;
+ sniperRushLastFrame=now;
+
+ const left=Math.max(0,sniperRushEndsAt-now);
+ $('#sniperRushTime').textContent=(left/1000).toFixed(1);
+
+ sniperRushHeat=Math.max(0,sniperRushHeat-dt/1000*.75);
+ sniperRushRecoil=Math.max(0,sniperRushRecoil-dt/120);
+
+ if(sniperRushReloading && now>=sniperRushReloadEnd){
+  finishSniperRushReload();
+ }
+
+ sniperRushProcessEntities(now);
+ if(!sniperRushRunning)return;
+
+ const elapsed=SNIPER_RUSH_DURATION-left;
+ const progress=sniperClamp(elapsed/SNIPER_RUSH_DURATION,0,1);
+ const spawnInterval=900-progress*390;
+ const maxActive=progress>.65?4:progress>.3?3:2;
+
+ if(
+  now-sniperRushLastSpawn>=spawnInterval
+  && sniperRushEntities.length<maxActive
+ ){
+  spawnSniperRushEntity();
+  sniperRushLastSpawn=now;
+ }
+
+ renderSniperRush(now);
+
+ if(left<=0){
+  stopSniperRush(true,'time');
+  return;
+ }
+
+ sniperRushTimer=requestAnimationFrame(sniperRushLoop);
+}
+
+async function loadSniperRushLeaderboard(){
+ const box=$('#sniperRushLeaderboard');
+ const mine=$('#sniperRushMyRank');
+
+ box.innerHTML='<div class="meta">랭킹을 불러오는 중입니다...</div>';
+
+ const {data,error}=await sb.rpc('get_sniper_rush_leaderboard');
+
+ if(error){
+  box.innerHTML=`<div class="notice">${esc(error.message)}</div>`;
+  mine.textContent='내 순위 · 확인 실패';
+  return;
+ }
+
+ const top=Array.isArray(data?.top)?data.top:[];
+ const me=data?.me||null;
+
+ sniperRushServerBest=Number(me?.best_score||0);
+ updateSniperRushBestLabel();
+
+ mine.textContent=me
+  ?`내 순위 · ${Number(me.rank).toLocaleString('ko-KR')}위 · ${Number(me.best_score).toLocaleString('ko-KR')}점 · ${Number(me.plays||0).toLocaleString('ko-KR')}회 플레이`
+  :'내 순위 · 아직 공식 기록이 없습니다.';
+
+ box.innerHTML=top.length
+  ?top.map(row=>{
+    const name=row.display_name||row.username||'사용자';
+    const isMe=row.user_id===session.user.id;
+
+    return `<div class="sniper-rush-rank-row ${isMe?'me':''}">
+     <div class="sniper-rush-rank-pos">${row.rank<=3?['🥇','🥈','🥉'][row.rank-1]:`#${row.rank}`}</div>
+     <div>
+      <b class="profile-link" onclick="openPublicProfile('${row.user_id}')">${esc(name)}</b>
+      <div class="meta">명중률 ${Number(row.best_accuracy||0).toFixed(1)}% · 헤드샷 ${Number(row.best_headshots||0)} · 최고 콤보 ${Number(row.best_combo||0)}</div>
+     </div>
+     <div class="sniper-rush-rank-score">${Number(row.best_score||0).toLocaleString('ko-KR')}점</div>
+    </div>`;
+   }).join('')
+  :'<div class="meta">아직 랭킹 기록이 없습니다.</div>';
+}
+
+async function submitSniperRushResult(finalScore,endedReason,avgReaction){
+ const runId=sniperRushRunId;
+ sniperRushRunId=null;
+
+ if(!runId)return;
+
+ const {data,error}=await sb.rpc('submit_sniper_rush_score',{
+  run_id:runId,
+  score_value:finalScore,
+  shots_value:sniperRushShots,
+  kills_value:sniperRushKills,
+  civilian_hits_value:sniperRushCivilianHits,
+  escaped_value:sniperRushEscaped,
+  remaining_lives_value:sniperRushLives,
+  headshots_value:sniperRushHeadshots,
+  best_combo_value:sniperRushBestCombo,
+  avg_reaction_value:avgReaction,
+  ended_reason:endedReason
+ });
+
+ if(error){
+  $('#sniperRushResultStats').innerHTML+=
+   `<br><span style="color:#fca5a5">랭킹 반영 실패 · ${esc(error.message)}</span>`;
+  return;
+ }
+
+ sniperRushServerBest=Number(data?.best_score||sniperRushServerBest||0);
+ updateSniperRushBestLabel();
+
+ if(data?.new_best){
+  $('#sniperRushResultStats').innerHTML+='<br>🏆 새로운 공식 최고 기록입니다!';
+ }
+
+ await loadSniperRushLeaderboard();
+}
+
+function stopSniperRush(showResult=true,endedReason='time'){
+ if(sniperRushTimer){
+  cancelAnimationFrame(sniperRushTimer);
+  sniperRushTimer=null;
+ }
+
+ if(!sniperRushRunning && !showResult)return;
+
+ sniperRushRunning=false;
+ sniperRushScoped=false;
+ sniperRushReloading=false;
+
+ $('#sniperRushStartBtn').textContent='게임 시작';
+ $('#sniperRushStartBtn').disabled=false;
+ $('#sniperRushGiveUpBtn').disabled=true;
+
+ if(!showResult){
+  renderSniperRush();
+  return;
+ }
+
+ const finalScore=Math.max(0,Math.round(sniperRushScore));
+ const avgReaction=sniperRushKills
+  ?Math.round(sniperRushReactionTotal/sniperRushKills)
+  :0;
+ const accuracy=sniperRushShots
+  ?Math.round(sniperRushKills/sniperRushShots*100)
+  :0;
+
+ $('#sniperRushFinalScore').textContent=`${finalScore.toLocaleString('ko-KR')}점`;
+ $('#sniperRushResultStats').innerHTML=
+  `${endedReason==='lives'?'💀 목숨을 모두 잃었습니다.':'⏱️ 제한시간이 종료되었습니다.'}<br>`+
+  `처치 ${sniperRushKills} · 헤드샷 ${sniperRushHeadshots} · 민간인/인질 피격 ${sniperRushCivilianHits} · 놓친 적 ${sniperRushEscaped}<br>`+
+  `명중률 ${accuracy}% · 최고 콤보 ${sniperRushBestCombo} · 평균 반응 ${avgReaction?`${avgReaction}ms`:'-'}<br>`+
+  '<span class="meta">공식 랭킹 반영 중입니다...</span>';
+
+ $('#sniperRushResult').classList.remove('hidden');
+ renderSniperRush();
+
+ submitSniperRushResult(finalScore,endedReason,avgReaction);
+}
+
+async function abandonSniperRushRun(showMessage=true){
+ const runId=sniperRushRunId;
+
+ if(sniperRushTimer){
+  cancelAnimationFrame(sniperRushTimer);
+  sniperRushTimer=null;
+ }
+
+ sniperRushRunning=false;
+ sniperRushScoped=false;
+ sniperRushReloading=false;
+ sniperRushRunId=null;
+ sniperRushEntities=[];
+
+ $('#sniperRushStartBtn').textContent='게임 시작';
+ $('#sniperRushStartBtn').disabled=false;
+ $('#sniperRushGiveUpBtn').disabled=true;
+ $('#sniperRushRetryBtn').disabled=false;
+
+ if(showMessage){
+  sniperRushSetMessage(
+   '게임을 포기했습니다. 이번 점수는 랭킹에 반영되지 않습니다.'
+  );
+ }
+
+ renderSniperRush();
+
+ if(!runId)return;
+
+ const {error}=await sb.rpc('abandon_sniper_rush_run',{
+  run_id:runId
+ });
+
+ if(error){
+  console.warn('사격장 러시 실행 기록 정리에 실패했습니다.',error);
+ }
+}
+
+async function startSniperRush(){
+ if(sniperRushRunning)return;
+
+ $('#sniperRushStartBtn').disabled=true;
+ $('#sniperRushRetryBtn').disabled=true;
+ $('#sniperRushGiveUpBtn').disabled=true;
+ sniperRushSetMessage('공식 게임 세션을 준비하는 중입니다...');
+
+ const {data,error}=await sb.rpc('start_sniper_rush_run');
+
+ $('#sniperRushStartBtn').disabled=false;
+ $('#sniperRushRetryBtn').disabled=false;
+
+ if(error){
+  sniperRushSetMessage(`게임을 시작하지 못했습니다. ${error.message}`,'bad');
+  return;
+ }
+
+ sniperRushRunId=data;
+ sniperRushRunning=true;
+ sniperRushScore=0;
+ sniperRushLives=SNIPER_RUSH_MAX_LIVES;
+ sniperRushAmmo=SNIPER_RUSH_MAG_SIZE;
+ sniperRushReloading=false;
+ sniperRushShots=0;
+ sniperRushKills=0;
+ sniperRushCivilianHits=0;
+ sniperRushEscaped=0;
+ sniperRushHeadshots=0;
+ sniperRushCombo=0;
+ sniperRushBestCombo=0;
+ sniperRushReactionTotal=0;
+ sniperRushLastShotAt=0;
+ sniperRushHeat=0;
+ sniperRushScoped=false;
+ sniperRushEntities=[];
+ sniperRushImpact=null;
+ sniperRushRecoil=0;
+ sniperRushLastFrame=0;
+ sniperRushEndsAt=performance.now()+SNIPER_RUSH_DURATION;
+ sniperRushLastSpawn=performance.now()-700;
+
+ $('#sniperRushResult').classList.add('hidden');
+ $('#sniperRushStartBtn').textContent='진행 중';
+ $('#sniperRushStartBtn').disabled=true;
+ $('#sniperRushGiveUpBtn').disabled=false;
+ $('#sniperRushTime').textContent='60.0';
+
+ updateSniperRushHud();
+ sniperRushSetMessage('표적을 확인하세요. 우클릭 조준 · 좌클릭 발사');
+ spawnSniperRushEntity();
+ renderSniperRush();
+ sniperRushTimer=requestAnimationFrame(sniperRushLoop);
+}
+
+window.openSniperRush=async()=>{
+ $('#globalSearchResults').classList.add('hidden');
+
+ if(!sniperRushRunning){
+  sniperRushEntities=[];
+  sniperRushScoped=false;
+  sniperRushReloading=false;
+  sniperRushMouse={x:480,y:270,inside:false};
+  $('#sniperRushTime').textContent='60.0';
+  $('#sniperRushScore').textContent='0';
+  $('#sniperRushLives').textContent='♥♥♥♥♥';
+  $('#sniperRushAmmo').textContent='5 / 5';
+  $('#sniperRushAccuracy').textContent='-';
+  $('#sniperRushCombo').textContent='0';
+  $('#sniperRushResult').classList.add('hidden');
+  $('#sniperRushGiveUpBtn').disabled=true;
+  sniperRushSetMessage('우클릭을 누르고 있으면 조준경 · 좌클릭 발사 · R 재장전');
+  renderSniperRush();
+ }
+
+ $('#sniperRushDialog').showModal();
+ await loadSniperRushLeaderboard();
+ requestAnimationFrame(()=>renderSniperRush());
+};
+
+$('#openSniperRushHomeBtn').onclick=e=>{
+ e.stopPropagation();
+ openSniperRush();
+};
+
+$('#sniperRushHomeCard').addEventListener('click',e=>{
+ if(e.target.closest('button'))return;
+ openSniperRush();
+});
+
+$('#sniperRushHomeCard').addEventListener('keydown',e=>{
+ if(e.key==='Enter' || e.key===' '){
+  e.preventDefault();
+  openSniperRush();
+ }
+});
+
+$('#sniperRushStartBtn').onclick=startSniperRush;
+$('#sniperRushRetryBtn').onclick=startSniperRush;
+$('#refreshSniperRushRankingBtn').onclick=loadSniperRushLeaderboard;
+
+$('#sniperRushGiveUpBtn').onclick=async()=>{
+ if(!sniperRushRunning)return;
+
+ const ok=confirm(
+  '현재 게임을 포기하시겠습니까? 이번 점수는 랭킹에 반영되지 않습니다.'
+ );
+
+ if(!ok)return;
+ await abandonSniperRushRun(true);
+};
+
+$('#closeSniperRushDialog').onclick=async()=>{
+ if(sniperRushRunning || sniperRushRunId){
+  await abandonSniperRushRun(false);
+ }
+ $('#sniperRushDialog').close();
+};
+
+$('#sniperRushDialog').addEventListener('cancel',()=>{
+ if(sniperRushRunning || sniperRushRunId){
+  abandonSniperRushRun(false);
+ }
+});
+
+sniperRushCanvas.addEventListener('contextmenu',e=>{
+ e.preventDefault();
+});
+
+sniperRushCanvas.addEventListener('mousemove',e=>{
+ sniperRushMouse={...sniperRushMouse,...sniperRushMousePos(e),inside:true};
+ if(!sniperRushRunning)renderSniperRush();
+});
+
+sniperRushCanvas.addEventListener('mouseenter',e=>{
+ sniperRushMouse={...sniperRushMouse,...sniperRushMousePos(e),inside:true};
+});
+
+sniperRushCanvas.addEventListener('mouseleave',()=>{
+ sniperRushMouse.inside=false;
+ sniperRushScoped=false;
+ if(!sniperRushRunning)renderSniperRush();
+});
+
+sniperRushCanvas.addEventListener('mousedown',e=>{
+ if(e.button===2){
+  e.preventDefault();
+  sniperRushMouse={...sniperRushMouse,...sniperRushMousePos(e),inside:true};
+  sniperRushScoped=true;
+  renderSniperRush();
+  return;
+ }
+
+ if(e.button===0){
+  e.preventDefault();
+  sniperRushMouse={...sniperRushMouse,...sniperRushMousePos(e),inside:true};
+  fireSniperRush();
+ }
+});
+
+window.addEventListener('mouseup',e=>{
+ if(e.button===2 && sniperRushScoped){
+  sniperRushScoped=false;
+  if(!sniperRushRunning)renderSniperRush();
+ }
+});
+
+document.addEventListener('keydown',e=>{
+ const dialog=$('#sniperRushDialog');
+ if(!dialog?.open)return;
+
+ const target=e.target;
+ if(
+  target
+  && (
+   target.matches?.('input,textarea,select')
+   || target.isContentEditable
+  )
+ )return;
+
+ if((e.key==='r' || e.key==='R') && sniperRushRunning){
+  e.preventDefault();
+  startSniperRushReload();
+ }else if(e.key==='Shift' && sniperRushRunning && !e.repeat){
+  e.preventDefault();
+  sniperRushScoped=true;
+ }
+},true);
+
+document.addEventListener('keyup',e=>{
+ const dialog=$('#sniperRushDialog');
+ if(!dialog?.open)return;
+
+ if(e.key==='Shift'){
+  sniperRushScoped=false;
+ }
+},true);
+
+renderSniperRush();
+
+
+
+
 // ============================================================
 // 통합 검색
 // ============================================================
@@ -7729,10 +9064,25 @@ $('#globalSearch').addEventListener('input',()=>{
   || easterEggQuery==='미니게임'
  ){
   results.push({
-   kind:'이스터에그',
+   kind:'미니게임',
    label:'🎴 몬스터 러시',
-   sub:'60초 점수 어택 미니게임',
+   sub:'60초 판단·반응 점수 어택',
    action:'openMonsterRush()'
+  });
+ }
+
+ if(
+  easterEggQuery==='사격장러시'
+  || easterEggQuery==='저격장러시'
+  || easterEggQuery==='sniperrush'
+  || easterEggQuery==='사격장'
+  || easterEggQuery==='미니게임'
+ ){
+  results.push({
+   kind:'미니게임',
+   label:'🎯 사격장 러시',
+   sub:'저격 점수 어택 · 조준경과 노스코프',
+   action:'openSniperRush()'
   });
  }
 
@@ -8552,6 +9902,7 @@ $('#backupDbBtn').onclick=async()=>{
   'user_anime',
   'anime_reviews',
   'monster_rush_scores',
+  'sniper_rush_scores',
   'user_favorites',
   'user_character_ratings',
   'character_guestbook',
@@ -8572,7 +9923,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.9.6',
+   version:'1.10.0',
    exported_at:new Date().toISOString(),
    tables:{}
   };
@@ -8921,7 +10272,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.9.6',72,635);
+ ctx.fillText('aninote · v1.10.0',72,635);
 }
 
 function annualWrapBlob(){
