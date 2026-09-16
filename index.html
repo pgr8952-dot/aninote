@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.8.0 ===== */
+/* ===== v1.8.1 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.8.0 1차 · 설정/운영 ===== */
+/* ===== v1.8.1 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.8.0 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.8.1 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.8.0 · 알림 / 채팅 ===== */
+/* ===== v1.8.1 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -450,7 +450,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 }
 
 
-/* ===== v1.8.0 ===== */
+/* ===== v1.8.1 ===== */
 .notification-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .notification-delete{padding:4px 7px;font-size:11px;line-height:1}
 .unread-chat-pill{
@@ -473,11 +473,14 @@ body.light-mode .friend-rating-row,
 body.light-mode .trend-row{border-color:#d6dde8}
 
 
-/* ===== v1.8.0 ===== */
+/* ===== v1.8.1 ===== */
 .genre-edit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#11151d}
 .genre-edit-details summary{cursor:pointer;font-weight:800;color:#c4b5fd}
 .genre-edit-details .genre-picker{margin-top:10px}
 .my-review-compose{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+#myMemo{min-height:210px;line-height:1.65;width:100%}
+.my-review-rating-row{margin-bottom:10px}
+.my-review-own-rating{margin-top:7px;font-weight:800}
 .my-review-own-list{margin-top:12px}
 .my-review-own-item{padding:12px;border:1px solid var(--line);border-radius:12px;background:#11151d;margin-top:8px}
 .review-limit-message{margin-top:8px;padding:9px 11px;border-radius:10px;border:1px solid #7f1d1d;background:#351719;color:#fecaca;font-size:13px;font-weight:800}
@@ -526,7 +529,7 @@ body.light-mode .review-editing-note{color:#6d28d9}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.8.0</div>
+    <div class="app-version">v1.8.1</div>
     
    </div>
    <div class="global-search-wrap">
@@ -820,7 +823,7 @@ body.light-mode .review-editing-note{color:#6d28d9}
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.8.0</span>
+  <span>애니노트 v1.8.1</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -942,28 +945,38 @@ body.light-mode .review-editing-note{color:#6d28d9}
   </div>
 
   <div class="panel">
-   <h3 style="margin-top:0">내 기록</h3>
-   <div class="formgrid">
-    <div class="field"><label>상태</label>
-      <select id="myStatus"><option value="">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
-    </div>
-    <div class="field"><label>평점 (0~5)</label><div class="rating-pair"><input id="myRating" type="number" min="0" max="5" step="0.1"><input id="myRatingRange" type="range" min="0" max="5" step="0.1" value="0"></div></div>
-   </div>
-   <div class="admin-tools">
-    <button id="saveMyReviewBtn" class="primary small">내 기록 저장</button>
-    <button id="deleteMyReviewBtn" class="danger small hidden">내 기록 삭제</button>
+   <h3 style="margin-top:0">내 감상</h3>
+
+   <div class="field">
+    <label>상태</label>
+    <select id="myStatus"><option value="">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
    </div>
 
    <div class="my-review-compose">
-    <h3 style="margin:0 0 10px">내 감상</h3>
-    <textarea id="myMemo" maxlength="5000" placeholder="감상을 작성해주세요."></textarea>
+    <div class="field my-review-rating-row">
+     <label>평점 (0~5)</label>
+     <div class="rating-pair">
+      <input id="myRating" type="number" min="0" max="5" step="0.1">
+      <input id="myRatingRange" type="range" min="0" max="5" step="0.1" value="0">
+     </div>
+    </div>
+
+    <div class="field">
+     <label>감상</label>
+     <textarea id="myMemo" maxlength="5000" placeholder="감상을 작성해주세요."></textarea>
+    </div>
+
     <div class="spoiler-toggle"><input id="mySpoiler" type="checkbox"><label for="mySpoiler">⚠️ 스포일러 포함</label></div>
     <div id="reviewEditingNote" class="review-editing-note hidden">감상을 수정하고 있습니다.</div>
     <div id="reviewLimitMsg" class="review-limit-message hidden">더 이상 감상을 작성할 수 없습니다.</div>
+
     <div class="admin-tools">
+     <button id="saveMyReviewBtn" class="small">상태·평점 저장</button>
      <button id="saveReviewPostBtn" class="primary small">감상 작성</button>
      <button id="cancelReviewEditBtn" class="small hidden">수정 취소</button>
+     <button id="deleteMyReviewBtn" class="danger small hidden">상태·평점 삭제</button>
     </div>
+
     <div id="myOwnReviewList" class="my-review-own-list"></div>
    </div>
   </div>
@@ -1271,7 +1284,7 @@ body.light-mode .review-editing-note{color:#6d28d9}
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.8.0</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.8.1</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1972,7 +1985,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.8.0 · 대표 최애 / 프로필 / 배지
+// v1.8.1 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2274,7 +2287,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.8.0 · 친구
+// v1.8.1 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2668,7 +2681,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.8.0 · 취향 일치도
+// v1.8.1 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2732,7 +2745,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.8.0 · 공개 프로필 관계 버튼
+// v1.8.1 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2810,7 +2823,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.8.0 · 공유 카드
+// v1.8.1 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2910,7 +2923,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.8.0',72,630);
+ ctx.fillText('aninote · v1.8.1',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2966,7 +2979,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.8.0 · 크레딧
+// v1.8.1 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -4018,7 +4031,7 @@ $('#saveMyReviewBtn').onclick=async()=>{
  $('#deleteMyReviewBtn').classList.toggle('hidden',!myRecord);
 
  await loadReviews(currentAnimeId);
- alert('내 기록을 저장했습니다.');
+ alert('상태와 평점을 저장했습니다.');
 };
 
 $('#deleteMyReviewBtn').onclick=async()=>{
@@ -4286,6 +4299,8 @@ function renderMyOwnAnimeReviews(){
   return;
  }
 
+ const state=animeStateForUser(currentAnimeId,session.user.id);
+
  box.innerHTML=rows.map(r=>`
   <div class="my-review-own-item">
    <div class="row">
@@ -4295,6 +4310,11 @@ function renderMyOwnAnimeReviews(){
      <button class="small danger" onclick="deleteMyAnimeReview('${r.id}')">삭제</button>
     </div>
    </div>
+
+   ${state?.rating!==null && state?.rating!==undefined
+    ?`<div class="star my-review-own-rating">★ ${Number(state.rating).toFixed(1)}</div>`
+    :''}
+
    ${reviewMemoHTML(r,true)}
   </div>
  `).join('');
@@ -5267,7 +5287,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.8.0 · 알림
+// v1.8.1 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -5438,7 +5458,7 @@ $('#deleteAllNotificationsBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.8.0 · 친구 1:1 채팅
+// v1.8.1 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -5605,7 +5625,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.8.0 · 배지 획득 알림 동기화
+// v1.8.1 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -5640,7 +5660,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.8.0 · Supabase Realtime
+// v1.8.1 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -7039,7 +7059,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.8.0',
+   version:'1.8.1',
    exported_at:new Date().toISOString(),
    tables:{}
   };
@@ -7388,7 +7408,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.8.0',72,635);
+ ctx.fillText('aninote · v1.8.1',72,635);
 }
 
 function annualWrapBlob(){
