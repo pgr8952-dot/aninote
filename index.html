@@ -381,6 +381,20 @@ body.light-mode .taste-score{color:#6d3fd1}
  .featured-editor-row{grid-template-columns:1fr}
 }
 
+
+.credits-intro{line-height:1.6}
+.official-credits{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
+.official-credit-card{border:1px solid #2f3949;border-radius:14px;padding:13px;background:#151c27}
+.official-credit-role{font-size:11px;font-weight:900;color:#a78bfa;letter-spacing:.02em}
+.official-credit-name{font-size:16px;font-weight:900;margin-top:4px}
+.official-credit-desc{font-size:12px;color:#9aa6b7;line-height:1.55;margin-top:5px}
+.credits-section-title{margin:18px 0 8px}
+.credits-disclaimer{font-size:11px;color:#7f8a9c;line-height:1.5;margin-top:12px}
+body.light-mode .official-credit-card{background:#fff;border-color:#d6dde8}
+body.light-mode .official-credit-name{color:#1f2937}
+body.light-mode .official-credit-desc{color:#667085}
+body.light-mode .credits-disclaimer{color:#667085}
+
 </style>
 </head>
 <body>
@@ -517,7 +531,10 @@ body.light-mode .taste-score{color:#6d3fd1}
    </div>
 
    <div class="panel" style="grid-column:1/-1">
-    <h3 style="margin-top:0">내 감상</h3>
+    <div class="row" style="align-items:center;margin-bottom:8px">
+     <h3 style="margin:0">내 감상</h3>
+     <button id="myReviewsCompactBtn" class="small hidden">간략히</button>
+    </div>
     <div class="filter-row">
       <select id="myStatusFilter"><option value="">전체 상태</option><option value="__none__">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
       <select id="myRatingFilter"><option value="">전체 평점</option><option value="5">4.5 이상</option><option value="4">4.0 이상</option><option value="3">3.0 이상</option><option value="none">평점 없음</option></select>
@@ -1030,10 +1047,24 @@ body.light-mode .taste-score{color:#6d3fd1}
    <h2>애니노트 크레딧</h2>
    <button id="closeCreditsDialog" class="icon-close" aria-label="닫기">×</button>
   </div>
-  <div class="notice">사이트 운영과 데이터 정리에 도움을 준 사람들을 기록하는 공간이야.</div>
-  <div id="creditsList" class="panel" style="margin-top:12px"></div>
+
+  <div class="notice credits-intro">
+   애니노트를 기획하고 만들고, 운영하고, 테스트하는 데 도움을 준 사람과 서비스를 기록하는 공간이야.
+  </div>
+
+  <div id="officialCreditsList" class="official-credits"></div>
+
+  <h3 class="credits-section-title">추가 기여자</h3>
+  <div class="meta">관리자가 도움을 준 사람을 이름이나 닉네임으로 계속 추가할 수 있어.</div>
+  <div id="creditsList" class="panel" style="margin-top:10px"></div>
+
+  <div class="credits-disclaimer">
+   GitHub, Vercel, Supabase 및 OpenAI는 애니노트와 별개의 서비스·회사이며,
+   이 표시는 애니노트 제작과 운영에 사용된 도구 및 서비스에 대한 감사 표기야.
+  </div>
+
   <div id="creditAdminTools" class="panel hidden" style="margin-top:14px">
-   <h3 style="margin-top:0">크레딧 관리</h3>
+   <h3 style="margin-top:0">추가 기여자 관리</h3>
    <div class="formgrid">
     <div class="field"><label>분류</label><input id="creditCategory" placeholder="예: DB 기여"></div>
     <div class="field"><label>이름</label><input id="creditName"></div>
@@ -2349,6 +2380,50 @@ $('#nativeShareCardBtn').onclick=async()=>{
 // v1.5.0 · 크레딧
 // ============================================================
 
+const officialCredits=[
+ {
+  role:'기획 · 운영',
+  name:'애니노트 운영자',
+  description:'서비스의 방향과 기능을 기획하고, 애니노트의 운영과 데이터 관리를 담당.'
+ },
+ {
+  role:'개발 구현 총괄 지원',
+  name:'ChatGPT · OpenAI',
+  description:'프론트엔드, Supabase DB 구조, 기능 설계와 구현·디버깅을 함께 지원.'
+ },
+ {
+  role:'인증 · 데이터베이스 · 스토리지',
+  name:'Supabase',
+  description:'회원 인증, PostgreSQL 데이터베이스와 이미지 스토리지 인프라 제공.'
+ },
+ {
+  role:'배포 · 웹 호스팅',
+  name:'Vercel',
+  description:'애니노트 웹사이트의 배포와 호스팅 인프라 제공.'
+ },
+ {
+  role:'소스 코드 · 배포 연동',
+  name:'GitHub',
+  description:'소스 코드 보관, 변경 이력 관리와 Vercel 배포 연동에 사용.'
+ },
+ {
+  role:'테스트 · 피드백',
+  name:'테스트를 도와준 친구들',
+  description:'실사용 테스트, 오류 확인과 사용성 피드백으로 사이트 개선에 도움.'
+ }
+];
+
+function renderOfficialCredits(){
+ const box=$('#officialCreditsList');
+ if(!box)return;
+
+ box.innerHTML=officialCredits.map(c=>`<div class="official-credit-card">
+  <div class="official-credit-role">${esc(c.role)}</div>
+  <div class="official-credit-name">${esc(c.name)}</div>
+  <div class="official-credit-desc">${esc(c.description)}</div>
+ </div>`).join('');
+}
+
 async function loadCredits(){
  const {data,error}=await sb.from('site_credits')
   .select('*')
@@ -2383,12 +2458,13 @@ function renderCredits(){
      </div>`:''}
     </div>
    </div>`).join('')
-  :'<div class="meta">아직 등록된 크레딧이 없어.</div>';
+  :'<div class="meta">아직 이름을 따로 등록한 추가 기여자는 없어.</div>';
 
  $('#creditAdminTools')?.classList.toggle('hidden',!isAdmin);
 }
 
 async function openCredits(){
+ renderOfficialCredits();
  await loadCredits();
  $('#creditsDialog').showModal();
 }
@@ -3975,6 +4051,10 @@ function renderMyReviews(){
  }).join(''):'<div class="meta">조건에 맞는 감상이 없어.</div>';
 
  const moreArea=$('#myReviewMoreArea');
+ const compactBtn=$('#myReviewsCompactBtn');
+
+ // 20개/전체 보기 상태일 때만 우측 상단 '간략히' 표시
+ compactBtn.classList.toggle('hidden',myReviewDisplayLimit<=5);
 
  if(!totalRows || totalRows<=5 || myReviewDisplayLimit===Infinity){
   moreArea.innerHTML=totalRows
@@ -3996,6 +4076,11 @@ function renderMyReviews(){
   moreArea.innerHTML=`<span class="meta">${totalRows}개 표시</span>`;
  }
 }
+
+$('#myReviewsCompactBtn').onclick=()=>{
+ myReviewDisplayLimit=5;
+ renderMyReviews();
+};
 
 ['myStatusFilter','myRatingFilter','myYearFilter','myReviewSort'].forEach(id=>{
  $('#'+id).addEventListener('change',()=>{
