@@ -185,7 +185,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.5.4 ===== */
+/* ===== v1.5.5 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -216,7 +216,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.5.4 1차 · 설정/운영 ===== */
+/* ===== v1.5.5 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -343,7 +343,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.5.4 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.5.5 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -401,20 +401,44 @@ body.light-mode .credits-disclaimer{color:#667085}
 
 .credit-manage-row{display:flex;justify-content:flex-end;margin-top:10px}
 body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-color:#cbd5e1}
+.auth-sub{color:var(--muted);font-size:13px;line-height:1.55;margin:-2px 0 14px}
+.auth-inline-note{font-size:12px;color:var(--muted);margin-top:4px}
+.auth-guide{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
+.auth-guide h3{margin:0 0 8px;font-size:15px}
+.auth-guide ol{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.65}
+.auth-tip{margin-top:10px;font-size:12px;line-height:1.55;color:#fcd34d}
+.auth-msg-box{margin-top:12px;padding:10px 12px;border:1px dashed #49546b;border-radius:12px;background:#11151d;color:#cbd5e1;font-size:13px;line-height:1.6}
+body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
+body.light-mode .auth-tip{color:#92400e}
+body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 </style>
 </head>
 <body>
 
 <div id="authView" class="auth">
   <h2>📒 애니노트</h2>
-  
-  <div class="field"><label>이메일</label><input id="email" type="email"></div>
-  <div class="field"><label>비밀번호</label><input id="password" type="password"></div>
+  <div class="auth-sub">처음 들어오는 사람은 <b>회원가입</b> → <b>메일 인증</b> → 다시 <b>로그인</b> 순서로 진행하면 돼.</div>
+  <div class="field"><label>이메일</label><input id="email" type="email" placeholder="example@gmail.com"></div>
+  <div class="field">
+    <label>비밀번호</label>
+    <input id="password" type="password" placeholder="6자 이상">
+    <div class="auth-inline-note">비밀번호는 6자 이상으로 적어줘.</div>
+  </div>
   <div style="display:flex;gap:8px">
     <button id="loginBtn" class="primary" style="flex:1">로그인</button>
-    <button id="signupBtn" style="flex:1">회원가입</button>
+    <button id="signupBtn" style="flex:1">처음이면 회원가입</button>
   </div>
-  <div id="authMsg" class="meta" style="margin-top:12px"></div>
+  <div id="authMsg" class="auth-msg-box">처음 이용자라면 회원가입을 누른 뒤, 메일함에서 인증 링크를 눌러준 다음 다시 로그인하면 돼.</div>
+  <div class="auth-guide">
+    <h3>회원가입 방법</h3>
+    <ol>
+      <li>이메일과 비밀번호를 입력하고 <b>처음이면 회원가입</b> 버튼을 눌러줘.</li>
+      <li>입력한 메일 주소로 온 인증 메일을 열어줘.</li>
+      <li><b>받은편지함 / 스팸함 / 프로모션함</b>까지 확인해줘.</li>
+      <li>메일 안의 인증 링크를 누른 뒤, 다시 이 화면으로 돌아와 <b>로그인</b>하면 끝이야.</li>
+    </ol>
+    <div class="auth-tip">※ 이 사이트는 회원가입 버튼을 누른 뒤 바로 가입이 끝나는 방식이 아니라, 메일 인증을 한 번 거쳐야 해.</div>
+  </div>
   <div class="legal-actions">
    <button id="authPrivacyBtn" class="small legal-btn" type="button">개인정보처리방침</button>
   </div>
@@ -426,7 +450,7 @@ body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-c
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.5.4</div>
+    <div class="app-version">v1.5.5</div>
     
    </div>
    <div class="global-search-wrap">
@@ -694,7 +718,7 @@ body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-c
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.5.4</span>
+  <span>애니노트 v1.5.5</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1109,7 +1133,7 @@ body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-c
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.5.4</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.5.5</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1268,6 +1292,18 @@ function showAuth(){
  $('#authView').classList.remove('hidden');
  $('#appView').classList.add('hidden');
  $('#scrollTopBtn')?.classList.add('hidden');
+ if(!$('#authMsg').dataset.locked){
+  $('#authMsg').innerHTML='처음 이용자라면 회원가입을 누른 뒤, 메일함에서 인증 링크를 눌러준 다음 다시 로그인하면 돼.';
+ }
+}
+
+function showSignupGuide(email){
+ $('#authMsg').dataset.locked='1';
+ $('#authMsg').innerHTML=
+  `<b>회원가입 요청 완료!</b><br>`+
+  `${esc(email)} 메일함으로 인증 메일을 보냈어.<br>`+
+  `메일이 안 보이면 <b>스팸함 / 프로모션함</b>도 확인해줘.<br>`+
+  `메일 안의 링크를 누른 뒤, 다시 여기 와서 <b>로그인</b>하면 돼.`;
 }
 
 async function showApp(){
@@ -1377,10 +1413,11 @@ document.addEventListener('visibilitychange',()=>{
 
 
 $('#loginBtn').onclick=async()=>{
+ $('#authMsg').dataset.locked='1';
  $('#authMsg').textContent='로그인 중...';
  const {data,error}=await sb.auth.signInWithPassword({email:$('#email').value.trim(),password:$('#password').value});
  if(error){$('#authMsg').textContent=error.message;return;}
- session=data.session;$('#authMsg').textContent='';await showApp();
+ session=data.session;$('#authMsg').dataset.locked='';$('#authMsg').innerHTML='';await showApp();
 };
 
 $('#signupBtn').onclick=async()=>{
@@ -1389,6 +1426,11 @@ $('#signupBtn').onclick=async()=>{
 
  if(!email || !password){
   alert('이메일과 비밀번호를 입력해줘.');
+  return;
+ }
+
+ if(password.length<6){
+  alert('비밀번호는 6자 이상으로 적어줘.');
   return;
  }
 
@@ -1433,7 +1475,8 @@ $('#signupBtn').onclick=async()=>{
 
   // 새 계정이지만 이메일 인증이 필요한 경우
   if(data?.user && !data?.session){
-   alert('회원가입 요청 완료! 이메일 인증 링크를 확인해줘.');
+   showSignupGuide(email);
+   alert('회원가입 요청 완료! 메일함에서 인증 링크를 확인한 뒤 다시 로그인해줘.');
    return;
   }
 
@@ -1444,7 +1487,8 @@ $('#signupBtn').onclick=async()=>{
    return;
   }
 
-  alert('회원가입 요청을 처리했어.');
+  showSignupGuide(email);
+  alert('회원가입 요청을 처리했어. 메일함을 한 번 확인해줘.');
 
  }catch(e){
   alert(`회원가입 실패\n${e.message}`);
@@ -1453,6 +1497,9 @@ $('#signupBtn').onclick=async()=>{
   btn.textContent=originalText;
  }
 };
+
+$('#email').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').click();});
+$('#password').addEventListener('keydown',e=>{if(e.key==='Enter')$('#loginBtn').click();});
 
 $('#logoutBtn').onclick=async()=>{await sb.auth.signOut();session=null;showAuth();};
 
@@ -1676,7 +1723,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.5.4 · 대표 최애 / 프로필 / 배지
+// v1.5.5 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -1971,7 +2018,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.5.4 · 친구
+// v1.5.5 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2195,7 +2242,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.5.4 · 취향 일치도
+// v1.5.5 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2259,7 +2306,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.5.4 · 공개 프로필 관계 버튼
+// v1.5.5 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2335,7 +2382,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.5.4 · 공유 카드
+// v1.5.5 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2435,7 +2482,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.5.4',72,630);
+ ctx.fillText('aninote · v1.5.5',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2491,7 +2538,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.5.4 · 크레딧
+// v1.5.5 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -5570,7 +5617,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.5.4',
+   version:'1.5.5',
    exported_at:new Date().toISOString(),
    tables:{}
   };
