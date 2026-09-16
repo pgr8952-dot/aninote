@@ -185,7 +185,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.2.1 ===== */
+/* ===== v1.2.3 ===== */
 .app-version{font-size:11px;color:#7f8999;margin-top:-5px;letter-spacing:.04em}
 .panel-head-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .report-request{border:1px solid #d85a67!important;background:#211318!important;box-shadow:0 0 0 1px #d85a6722 inset}
@@ -226,7 +226,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.2.1</div>
+    <div class="app-version">v1.2.3</div>
     
    </div>
    <div class="global-search-wrap">
@@ -404,7 +404,7 @@ textarea{min-height:110px;resize:vertical}
   </div>
  </section>
 </main>
-<div class="meta" style="text-align:center;padding:30px 0 40px">애니노트 v1.2.1</div>
+<div class="meta" style="text-align:center;padding:30px 0 40px">애니노트 v1.2.3</div>
 </div>
 
 
@@ -719,6 +719,12 @@ textarea{min-height:110px;resize:vertical}
   <div class="modal-title-row"><h2 id="infoEditRequestTitle">정보 수정 요청</h2><button id="closeInfoEditRequestDialog" class="icon-close" aria-label="닫기">×</button></div>
   <div class="panel"><div class="info-request-grid">
    <div class="field full"><label>이름</label><input id="infoRequestName"></div>
+   <div id="infoRequestAnimeFields" class="full info-request-grid hidden">
+    <div class="field"><label>연도</label><input id="infoRequestAnimeYear" type="number" min="1900" max="2100"></div>
+    <div class="field"><label>라프텔 링크</label><input id="infoRequestAnimeLaftel" placeholder="https://laftel.net/..."></div>
+    <div class="field full"><label>장르</label><input id="infoRequestAnimeGenres" placeholder="액션, 판타지, 코미디"></div>
+    <div class="field full meta">이미지와 시리즈 키 수정이 필요하면 아래 추가 설명에 적어줘.</div>
+   </div>
    <div id="infoRequestVoiceProfileField" class="field full"><label>프로필</label><textarea id="infoRequestVoiceProfile"></textarea></div>
    <div id="infoRequestCharacterFields" class="full info-request-grid"><div class="field"><label>성별</label><input id="infoRequestGender"></div><div class="field"><label>나이</label><input id="infoRequestAge"></div><div class="field full"><label>메모</label><textarea id="infoRequestCharacterMemo"></textarea></div></div>
    <div class="field full"><label>추가 설명</label><textarea id="infoRequestMessage" placeholder="왜 수정이 필요한지 적어줘. 이미지 관련 수정이 필요하면 여기에 설명해줘."></textarea></div>
@@ -913,10 +919,74 @@ $('#loginBtn').onclick=async()=>{
 };
 
 $('#signupBtn').onclick=async()=>{
- $('#authMsg').textContent='가입 중...';
- const {data,error}=await sb.auth.signUp({email:$('#email').value.trim(),password:$('#password').value});
- if(error){$('#authMsg').textContent=error.message;return;}
- $('#authMsg').textContent=data.session?'가입 완료!':'가입 완료. 이메일 인증 후 로그인해줘.';
+ const email=$('#email').value.trim().toLowerCase();
+ const password=$('#password').value;
+
+ if(!email || !password){
+  alert('이메일과 비밀번호를 입력해줘.');
+  return;
+ }
+
+ const btn=$('#signupBtn');
+ const originalText=btn.textContent;
+ btn.disabled=true;
+ btn.textContent='가입 확인 중...';
+
+ try{
+  const {data,error}=await sb.auth.signUp({
+   email,
+   password
+  });
+
+  if(error){
+   const msg=String(error.message||'').toLowerCase();
+
+   if(
+    msg.includes('already registered')
+    || msg.includes('already been registered')
+    || msg.includes('user already registered')
+    || msg.includes('email address is already')
+   ){
+    alert('이미 가입된 이메일이야. 로그인해줘.');
+    return;
+   }
+
+   throw error;
+  }
+
+  // Supabase는 계정 존재 여부 노출 방지를 위해
+  // 이미 가입된 이메일에도 에러 대신 빈 identities를 돌려줄 수 있음.
+  // 이 경우 신규 가입으로 처리하지 않는다.
+  if(
+   data?.user
+   && Array.isArray(data.user.identities)
+   && data.user.identities.length===0
+  ){
+   alert('이미 가입된 이메일이야. 로그인해줘.');
+   return;
+  }
+
+  // 새 계정이지만 이메일 인증이 필요한 경우
+  if(data?.user && !data?.session){
+   alert('회원가입 요청 완료! 이메일 인증 링크를 확인해줘.');
+   return;
+  }
+
+  // 이메일 인증이 꺼져 있거나 즉시 세션이 발급되는 경우
+  if(data?.session){
+   session=data.session;
+   await showApp();
+   return;
+  }
+
+  alert('회원가입 요청을 처리했어.');
+
+ }catch(e){
+  alert(`회원가입 실패\n${e.message}`);
+ }finally{
+  btn.disabled=false;
+  btn.textContent=originalText;
+ }
 };
 
 $('#logoutBtn').onclick=async()=>{await sb.auth.signOut();session=null;showAuth();};
@@ -2453,16 +2523,63 @@ function renderMyReviews(){
 
 
 // ============================================================
-// 성우 / 캐릭터 정보 수정 요청
+// 애니 / 성우 / 캐릭터 정보 수정 요청
 // ============================================================
 window.openInfoEditRequest=async(type,id)=>{
  pendingInfoEdit={type,id};
- if(type==='voice_actor'){
-  const v=voiceData.find(x=>x.id===id);if(!v)return;$('#infoEditRequestTitle').textContent=`정보 수정 요청 · ${v.name}`;$('#infoRequestName').value=v.name||'';$('#infoRequestVoiceProfile').value=v.profile||'';$('#infoRequestVoiceProfileField').classList.remove('hidden');$('#infoRequestCharacterFields').classList.add('hidden');
+
+ if(type==='anime'){
+  const a=animeData.find(x=>x.id===id);
+  if(!a)return;
+
+  $('#infoEditRequestTitle').textContent=`정보 수정 요청 · ${a.title}`;
+  $('#infoRequestName').value=a.title||'';
+  $('#infoRequestAnimeYear').value=a.year??'';
+  $('#infoRequestAnimeLaftel').value=a.laftel_url||'';
+  $('#infoRequestAnimeGenres').value=normalizeGenres(a.genres).join(', ');
+
+  $('#infoRequestAnimeFields').classList.remove('hidden');
+  $('#infoRequestVoiceProfileField').classList.add('hidden');
+  $('#infoRequestCharacterFields').classList.add('hidden');
+
+ }else if(type==='voice_actor'){
+  const v=voiceData.find(x=>x.id===id);
+  if(!v)return;
+
+  $('#infoEditRequestTitle').textContent=`정보 수정 요청 · ${v.name}`;
+  $('#infoRequestName').value=v.name||'';
+  $('#infoRequestVoiceProfile').value=v.profile||'';
+
+  $('#infoRequestAnimeFields').classList.add('hidden');
+  $('#infoRequestVoiceProfileField').classList.remove('hidden');
+  $('#infoRequestCharacterFields').classList.add('hidden');
+
  }else{
-  let c=currentCharacterData;if(!c||c.id!==id){const {data}=await sb.from('characters').select('id,name,gender,age,memo').eq('id',id).maybeSingle();c=data;}if(!c)return;$('#infoEditRequestTitle').textContent=`정보 수정 요청 · ${c.name}`;$('#infoRequestName').value=c.name||'';$('#infoRequestGender').value=c.gender||'';$('#infoRequestAge').value=c.age||'';$('#infoRequestCharacterMemo').value=c.memo||'';$('#infoRequestVoiceProfileField').classList.add('hidden');$('#infoRequestCharacterFields').classList.remove('hidden');
+  let c=currentCharacterData;
+
+  if(!c||c.id!==id){
+   const {data}=await sb.from('characters')
+    .select('id,name,gender,age,memo')
+    .eq('id',id)
+    .maybeSingle();
+   c=data;
+  }
+
+  if(!c)return;
+
+  $('#infoEditRequestTitle').textContent=`정보 수정 요청 · ${c.name}`;
+  $('#infoRequestName').value=c.name||'';
+  $('#infoRequestGender').value=c.gender||'';
+  $('#infoRequestAge').value=c.age||'';
+  $('#infoRequestCharacterMemo').value=c.memo||'';
+
+  $('#infoRequestAnimeFields').classList.add('hidden');
+  $('#infoRequestVoiceProfileField').classList.add('hidden');
+  $('#infoRequestCharacterFields').classList.remove('hidden');
  }
- $('#infoRequestMessage').value='';$('#infoEditRequestDialog').showModal();
+
+ $('#infoRequestMessage').value='';
+ $('#infoEditRequestDialog').showModal();
 };
 function closeInfoEditRequest(){pendingInfoEdit=null;if($('#infoEditRequestDialog').open)$('#infoEditRequestDialog').close();}
 $('#closeInfoEditRequestDialog').onclick=closeInfoEditRequest;$('#cancelInfoEditRequestBtn').onclick=closeInfoEditRequest;
@@ -2477,11 +2594,32 @@ $('#sendInfoEditRequestBtn').onclick=async()=>{
  try{
   let proposedData;
 
-  if(pendingInfoEdit.type==='voice_actor'){
+  if(pendingInfoEdit.type==='anime'){
+   const yearRaw=$('#infoRequestAnimeYear').value.trim();
+   const year=yearRaw===''?null:Number(yearRaw);
+
+   if(yearRaw!=='' && (
+    Number.isNaN(year)
+    || year<1900
+    || year>2100
+   )){
+    alert('연도는 1900~2100 사이로 입력해줘.');
+    return;
+   }
+
+   proposedData={
+    name:$('#infoRequestName').value.trim(),
+    year,
+    laftel_url:normalizeLaftelUrl($('#infoRequestAnimeLaftel').value),
+    genres:normalizeGenres($('#infoRequestAnimeGenres').value)
+   };
+
+  }else if(pendingInfoEdit.type==='voice_actor'){
    proposedData={
     name:$('#infoRequestName').value.trim(),
     profile:$('#infoRequestVoiceProfile').value.trim()
    };
+
   }else{
    proposedData={
     name:$('#infoRequestName').value.trim(),
@@ -2529,8 +2667,7 @@ function openRequest(type,targetType,targetId,targetLabel){
 window.openRequest=openRequest;
 
 $('#requestEditAnimeBtn').onclick=()=>{
- const a=animeData.find(x=>x.id===currentAnimeId);
- openRequest('수정 요청','anime',currentAnimeId,a?.title||'작품');
+ openInfoEditRequest('anime',currentAnimeId);
 };
 
 $('#reportAnimeBtn').onclick=()=>{
@@ -2593,6 +2730,9 @@ function proposalHTML(r){
  const labels={
   name:'이름',
   profile:'프로필',
+  year:'연도',
+  laftel_url:'라프텔 링크',
+  genres:'장르',
   gender:'성별',
   age:'나이',
   memo:'메모'
@@ -2603,7 +2743,7 @@ function proposalHTML(r){
   ${Object.entries(r.proposed_data).map(([k,v])=>`
    <div style="margin-top:5px">
     <span class="meta">${esc(labels[k]||k)}</span>
-    <div style="white-space:pre-wrap">${esc(v??'')}</div>
+    <div style="white-space:pre-wrap">${esc(Array.isArray(v)?v.join(', '):(v??''))}</div>
    </div>`).join('')}
  </div>`;
 }
@@ -2618,7 +2758,7 @@ function renderRequests(){
   const approvalReady=
    r.request_type==='수정 요청'
    && r.proposed_data
-   && ['voice_actor','character'].includes(r.target_type);
+   && ['anime','voice_actor','character'].includes(r.target_type);
 
   return `<div class="req ${r.request_type==='신고'?'report-request':''}">
    <div class="row">
@@ -2673,13 +2813,19 @@ window.approveInfoRequest=async(id)=>{
    currentAnimeId?loadCast(currentAnimeId):Promise.resolve()
   ]);
 
-  if(currentCharacterId&&$('#characterDialog').open){
+  if(data?.target_type==='anime' && $('#animeDialog').open){
+   const targetId=data.target_id;
+   $('#animeDialog').close();
+   await openAnime(targetId);
+  }
+
+  if(data?.target_type==='character' && currentCharacterId&&$('#characterDialog').open){
    const targetId=currentCharacterId;
    $('#characterDialog').close();
    await openCharacter(targetId);
   }
 
-  if(currentVoiceId&&$('#voiceProfileDialog').open){
+  if(data?.target_type==='voice_actor' && currentVoiceId&&$('#voiceProfileDialog').open){
    const targetId=currentVoiceId;
    $('#voiceProfileDialog').close();
    await openVoiceProfile(targetId);
@@ -3319,7 +3465,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.2.1',
+   version:'1.2.3',
    exported_at:new Date().toISOString(),
    tables:{}
   };
