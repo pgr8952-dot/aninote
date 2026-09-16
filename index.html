@@ -37,6 +37,7 @@ label{color:var(--muted);font-size:13px}
 .card h3{margin:0 0 6px}.meta{color:var(--muted);font-size:13px}
 .badge{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:4px 8px;margin:3px 3px 0 0;font-size:12px}
 .admin-badge{background:#3a2400;border-color:#6b4b00;color:#ffd166}
+.owner-badge{background:#3b245e;border-color:#7650a8;color:#eadcff}
 .star{color:#ffd166}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .listrow{padding:11px 0;border-bottom:1px solid #242b39}.listrow:last-child{border-bottom:0}
 .link{color:#c4b5fd;cursor:pointer}
@@ -185,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.6.0 ===== */
+/* ===== v1.6.1 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -216,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.6.0 1차 · 설정/운영 ===== */
+/* ===== v1.6.1 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -343,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.6.0 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.6.1 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -412,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.6.0 · 알림 / 채팅 ===== */
+/* ===== v1.6.1 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -487,7 +488,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.6.0</div>
+    <div class="app-version">v1.6.1</div>
     
    </div>
    <div class="global-search-wrap">
@@ -704,7 +705,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
  <section id="admin" class="section">
   <div class="panel">
    <h3 style="margin-top:0">DB 백업</h3>
-   <div class="meta" style="margin-bottom:10px">공용 DB와 감상, 즐겨찾기, 신고, 활동 로그를 JSON 파일로 내려받아 보관해.</div>
+   <div class="meta" style="margin-bottom:10px">공용 DB와 감상, 즐겨찾기, 신고, 활동 로그를 JSON 파일로 내려받아 보관할 수 있습니다.</div>
    <div class="backup-actions">
     <button id="backupDbBtn" class="good">전체 JSON 백업</button>
    </div>
@@ -712,7 +713,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   </div>
   <div class="panel" style="margin-top:14px">
    <div class="row"><h3 style="margin:0">유저 관리</h3><div class="panel-head-actions"><button id="toggleUsersBtn" class="small">더보기</button><button id="refreshUsersBtn" class="small">새로고침</button></div></div>
-   <div class="meta" style="margin:7px 0 10px">닉네임을 누르면 공개 프로필을 확인할 수 있습니다. 이용 제한된 유저는 DB 접근이 차단됩니다.</div>
+   <div class="meta" style="margin:7px 0 10px">총괄관리자와 관리자는 동일한 운영 기능을 사용할 수 있습니다. 총괄관리자 계정은 이용 제한 대상에서 제외됩니다.</div>
    <div class="admin-user-controls">
     <input id="adminUserSearch" placeholder="닉네임 / 아이디 / 이메일 검색...">
     <select id="adminUserSort">
@@ -758,6 +759,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
      <option value="user_character_ratings">캐릭터 평점</option>
      <option value="character_guestbook">캐릭터 방명록</option>
      <option value="user_ban">밴</option>
+     <option value="admin_role">관리자 권한</option>
     </select>
    </div>
    <div id="auditList"></div>
@@ -766,7 +768,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.6.0</span>
+  <span>애니노트 v1.6.1</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1181,7 +1183,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.0</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.1</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1315,6 +1317,7 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
 
 let session=null;
 let isAdmin=false;
+let adminRole=null;
 let animeData=[];
 let animeDisplayLimit=30;
 let recommendationShownId=null;
@@ -1426,9 +1429,12 @@ async function showApp(){
  $('#appView').classList.remove('hidden');
  $('#whoami').textContent=session.user.email||'';
 
- const {data:adminFlag,error}=await sb.rpc('is_admin');
- isAdmin=!error && !!adminFlag;
+ const {data:roleValue,error:roleError}=await sb.rpc('get_my_admin_role');
+ adminRole=roleError?null:roleValue;
+ isAdmin=adminRole==='owner'||adminRole==='admin';
 
+ $('#adminBadge').textContent=adminRole==='owner'?'총괄관리자':'관리자';
+ $('#adminBadge').classList.toggle('owner-badge',adminRole==='owner');
  $('#adminBadge').classList.toggle('hidden',!isAdmin);
  $('#adminTabBtn').classList.toggle('hidden',!isAdmin);
  $('#seriesTabBtn').classList.toggle('hidden',!isAdmin);
@@ -1832,7 +1838,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.6.0 · 대표 최애 / 프로필 / 배지
+// v1.6.1 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2131,7 +2137,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.6.0 · 친구
+// v1.6.1 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2356,7 +2362,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.6.0 · 취향 일치도
+// v1.6.1 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2420,7 +2426,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.6.0 · 공개 프로필 관계 버튼
+// v1.6.1 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2498,7 +2504,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.6.0 · 공유 카드
+// v1.6.1 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2598,7 +2604,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.6.0',72,630);
+ ctx.fillText('aninote · v1.6.1',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2654,7 +2660,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.6.0 · 크레딧
+// v1.6.1 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -4660,7 +4666,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.6.0 · 알림
+// v1.6.1 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -4810,7 +4816,7 @@ $('#markAllNotificationsReadBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.6.0 · 친구 1:1 채팅
+// v1.6.1 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -4966,7 +4972,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.6.0 · 배지 획득 알림 동기화
+// v1.6.1 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -5001,7 +5007,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.6.0 · Supabase Realtime
+// v1.6.1 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -5490,27 +5496,70 @@ function renderAdminUsers(){
  $('#adminUserList').innerHTML=visibleRows.length?visibleRows.map(u=>{
   const label=u.display_name||u.username||u.email||'사용자';
   const self=u.user_id===session.user.id;
+  const owner=u.admin_role==='owner';
+  const admin=u.admin_role==='admin';
+
+  const roleBadge=owner
+   ?`<span class="badge owner-badge">총괄관리자</span>`
+   :(admin?`<span class="badge admin-badge">관리자</span>`:'');
+
+  const banButton=(self||owner)
+   ?''
+   :(u.banned
+      ?`<button class="small good" onclick="setUserBan('${u.user_id}',false,'${esc(label).replaceAll("'","&#39;")}')">밴 해제</button>`
+      :`<button class="small danger" onclick="setUserBan('${u.user_id}',true,'${esc(label).replaceAll("'","&#39;")}')">밴</button>`);
+
+  const adminButton=(self||owner)
+   ?''
+   :(admin
+      ?`<button class="small" onclick="setUserAdmin('${u.user_id}',false,'${esc(label).replaceAll("'","&#39;")}')">관리자 해제</button>`
+      :`<button class="small" onclick="setUserAdmin('${u.user_id}',true,'${esc(label).replaceAll("'","&#39;")}')">관리자 지정</button>`);
 
   return `<div class="user-admin-row">
     <div class="user-admin-main">
       <div>
         <b class="admin-user-name" onclick="openPublicProfile('${u.user_id}')">${esc(label)}</b>
+        ${roleBadge}
         ${u.banned?`<span class="badge banned-badge">밴됨</span>`:''}
         ${self?`<span class="badge">내 계정</span>`:''}
       </div>
       <div class="meta">${esc(u.email||'')} · 가입 ${new Date(u.joined_at).toLocaleDateString('ko-KR')} · 감상 ${u.review_count||0}개</div>
+      ${owner?`<div class="meta" style="margin-top:4px">총괄관리자 계정은 이용 제한할 수 없습니다.</div>`:''}
       ${u.banned&&u.ban_reason?`<div class="meta" style="margin-top:4px">사유: ${esc(u.ban_reason)}</div>`:''}
     </div>
-    <div>
-      ${self?'':u.banned
-        ?`<button class="small good" onclick="setUserBan('${u.user_id}',false,'${esc(label).replaceAll("'","&#39;")}')">밴 해제</button>`
-        :`<button class="small danger" onclick="setUserBan('${u.user_id}',true,'${esc(label).replaceAll("'","&#39;")}')">밴</button>`}
+    <div class="admin-tools">
+      ${adminButton}
+      ${banButton}
     </div>
   </div>`;
  }).join(''):'<div class="meta">조건에 맞는 유저가 없습니다.</div>';
  $('#toggleUsersBtn').textContent=adminUsersExpanded?'간략히':`더보기${rows.length>5?` (${rows.length})`:''}`;$('#toggleUsersBtn').classList.toggle('hidden',rows.length<=5);
 }
 $('#toggleUsersBtn').onclick=()=>{adminUsersExpanded=!adminUsersExpanded;renderAdminUsers();};
+
+
+window.setUserAdmin=async(userId,shouldAdmin,label)=>{
+ if(!isAdmin)return;
+
+ const message=shouldAdmin
+  ?`${label}님을 관리자로 지정하시겠습니까?`
+  :`${label}님의 관리자 권한을 해제하시겠습니까?`;
+
+ if(!confirm(message))return;
+
+ const {error}=await sb.rpc('admin_set_admin_role',{
+  target_user:userId,
+  should_admin:shouldAdmin
+ });
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ alert(shouldAdmin?'관리자 권한을 부여했습니다.':'관리자 권한을 해제했습니다.');
+ await Promise.all([loadAdminUsers(),loadAuditLogs()]);
+};
 
 window.setUserBan=async(userId,shouldBan,label)=>{
  if(!isAdmin)return;
@@ -6076,7 +6125,8 @@ function auditTargetLabel(type){
   character_guestbook:'캐릭터 방명록',
   user_favorites:'즐겨찾기',
   user_account:'계정',
-  user_ban:'밴'
+  user_ban:'밴',
+  admin_role:'관리자 권한'
  };
  return labels[type]||type;
 }
@@ -6165,6 +6215,7 @@ $('#backupDbBtn').onclick=async()=>{
 
  const status=$('#backupStatus');
  const tables=[
+  'admin_users',
   'anime',
   'voice_actors',
   'characters',
@@ -6191,7 +6242,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.6.0',
+   version:'1.6.1',
    exported_at:new Date().toISOString(),
    tables:{}
   };
