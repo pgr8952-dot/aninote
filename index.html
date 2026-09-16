@@ -185,7 +185,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.5.2 ===== */
+/* ===== v1.5.4 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -216,7 +216,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.5.2 1차 · 설정/운영 ===== */
+/* ===== v1.5.4 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -343,7 +343,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.5.2 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.5.4 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -426,7 +426,7 @@ body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-c
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.5.2</div>
+    <div class="app-version">v1.5.4</div>
     
    </div>
    <div class="global-search-wrap">
@@ -694,7 +694,7 @@ body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-c
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.5.2</span>
+  <span>애니노트 v1.5.4</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1109,7 +1109,7 @@ body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-c
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.5.2</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.5.4</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1676,7 +1676,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.5.2 · 대표 최애 / 프로필 / 배지
+// v1.5.4 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -1701,43 +1701,144 @@ function averageRatingRows(rows){
 }
 
 function badgeDefinitionsFor(rows,favs){
- const completed=(rows||[]).filter(x=>x.status==='시청 완료');
- const rated=(rows||[]).filter(x=>x.rating!==null);
- const written=(rows||[]).filter(x=>x.memo?.trim());
+ const allRows=rows||[];
+ const completed=allRows.filter(x=>x.status==='시청 완료');
+ const rated=allRows.filter(x=>x.rating!==null);
+ const written=allRows.filter(x=>x.memo?.trim());
 
+ const animeFav=(favs||[]).filter(x=>x.favorite_type==='anime').length;
+ const voiceFav=(favs||[]).filter(x=>x.favorite_type==='voice_actor').length;
+ const charFav=(favs||[]).filter(x=>x.favorite_type==='character').length;
+
+ const dropped=allRows.filter(x=>x.status==='하차').length;
+
+ // 장르 집계는 '시청 완료' 작품 기준
  const genreCounts={};
- for(const r of (rows||[])){
+ const distinctGenres=new Set();
+
+ for(const r of completed){
   const a=animeData.find(x=>x.id===r.anime_id);
+
   for(const g of normalizeGenres(a?.genres)){
    genreCounts[g]=(genreCounts[g]||0)+1;
+   distinctGenres.add(g);
   }
  }
 
  const topGenre=Object.entries(genreCounts)
   .sort((a,b)=>b[1]-a[1])[0];
 
- const voiceFav=(favs||[]).filter(x=>x.favorite_type==='voice_actor').length;
- const charFav=(favs||[]).filter(x=>x.favorite_type==='character').length;
+ // 연대별 완료 작품 수
+ const decadeCounts={};
+
+ for(const r of completed){
+  const a=animeData.find(x=>x.id===r.anime_id);
+  const year=Number(a?.year);
+
+  if(!Number.isFinite(year) || year<=0)continue;
+
+  const decade=Math.floor(year/10)*10;
+  decadeCounts[decade]=(decadeCounts[decade]||0)+1;
+ }
+
+ const decadesWith40=Object.values(decadeCounts)
+  .filter(count=>count>=40)
+  .length;
+
+ const count2000s=decadeCounts[2000]||0;
+ const count2010s=decadeCounts[2010]||0;
+ const count2020s=decadeCounts[2020]||0;
+
+ // 별 5.0 작품 수
+ const fiveStarCount=rated.filter(x=>Number(x.rating)===5).length;
+
+ // 평점 + 감상문 둘 다 작성
+ const detailedRecords=allRows.filter(
+  x=>x.rating!==null && x.memo?.trim()
+ ).length;
+
+ // 커뮤니티 평점이 적은 작품에 내가 평점을 남긴 횟수
+ // 여기서는 '평점이 2개 이하인 작품'을 발굴 대상으로 봄.
+ let discoveryCount=0;
+
+ for(const r of rated){
+  const a=animeData.find(x=>x.id===r.anime_id);
+  if(!a)continue;
+
+  const communityRatings=(a.user_anime||[])
+   .filter(x=>x.rating!==null)
+   .length;
+
+  if(communityRatings<=2){
+   discoveryCount++;
+  }
+ }
+
+ // 친구 수
+ const acceptedFriends=(friendRows||[])
+  .filter(x=>x.status==='accepted')
+  .length;
 
  return [
-  {name:'첫 기록',icon:'🌱',ok:(rows||[]).length>=1,desc:'첫 애니 기록'},
+  {name:'첫 기록',icon:'🌱',ok:allRows.length>=1,desc:'첫 애니 기록'},
+
+  // 시청량
   {name:'애니 10',icon:'🎬',ok:completed.length>=10,desc:'10작품 시청 완료'},
   {name:'애니 50',icon:'📚',ok:completed.length>=50,desc:'50작품 시청 완료'},
   {name:'애니 100',icon:'💯',ok:completed.length>=100,desc:'100작품 시청 완료'},
   {name:'애니 250',icon:'🏆',ok:completed.length>=250,desc:'250작품 시청 완료'},
   {name:'애니 500',icon:'👑',ok:completed.length>=500,desc:'500작품 시청 완료'},
-  {name:'평점 수집가',icon:'⭐',ok:rated.length>=100,desc:'100작품 이상 평점'},
-  {name:'감상 기록가',icon:'✍️',ok:written.length>=50,desc:'감상 50개 작성'},
+  {name:'끝없는 정주행',icon:'🌠',ok:completed.length>=750,desc:'750작품 시청 완료'},
+  {name:'살아있는 도서관',icon:'🏛️',ok:completed.length>=1000,desc:'1000작품 시청 완료'},
+  {name:'인생이 애니메이션',icon:'🎞️',ok:completed.length>=5000,desc:'5000작품 시청 완료'},
+
+  // 평점 / 감상
+  {name:'별을 매기는 자',icon:'⭐',ok:rated.length>=50,desc:'50작품 이상 평점'},
+  {name:'평점 수집가',icon:'🌟',ok:rated.length>=100,desc:'100작품 이상 평점'},
+  {name:'은하수 수집가',icon:'🌌',ok:rated.length>=500,desc:'500작품 이상 평점'},
+  {name:'별 다섯 수집가',icon:'✨',ok:fiveStarCount>=25,desc:'★5.0 작품 25개 이상'},
+  {name:'감상 기록가',icon:'✍️',ok:written.length>=50,desc:'감상문 50개 작성'},
+  {name:'평론가',icon:'📖',ok:written.length>=100,desc:'감상문 100개 작성'},
+  {name:'평론 전문가',icon:'🖋️',ok:written.length>=500,desc:'감상문 500개 작성'},
+  {name:'꼼꼼한 기록자',icon:'📝',ok:detailedRecords>=50,desc:'평점과 감상문을 모두 작성한 작품 50개'},
+  {name:'발굴가',icon:'🔎',ok:discoveryCount>=20,desc:'커뮤니티 평점이 2개 이하인 작품 20개에 평점 기록'},
+
+  // 즐겨찾기
+  {name:'최애가 너무 많아',icon:'❤️',ok:animeFav>=20,desc:'애니 즐겨찾기 20개'},
   {name:'성우 팬',icon:'🎙️',ok:voiceFav>=3,desc:'성우 즐겨찾기 3명'},
+  {name:'목소리를 기억하는 자',icon:'🎧',ok:voiceFav>=10,desc:'성우 즐겨찾기 10명'},
   {name:'캐릭터 수집가',icon:'💖',ok:charFav>=10,desc:'캐릭터 즐겨찾기 10명'},
+  {name:'최애 군단',icon:'💘',ok:charFav>=30,desc:'캐릭터 즐겨찾기 30명'},
+
+  // 장르
   {
    name:topGenre?`${topGenre[0]} 애호가`:'장르 애호가',
    icon:'🎭',
    ok:!!topGenre && topGenre[1]>=30,
-   desc:topGenre?`${topGenre[0]} ${topGenre[1]}작품 기록`:'한 장르 30작품'
-  }
+   desc:topGenre?`${topGenre[0]} 장르 30작품 이상 시청 완료`:'한 장르 30작품'
+  },
+  {
+   name:topGenre?`${topGenre[0]} 마스터`:'장르 마스터',
+   icon:'🎪',
+   ok:!!topGenre && topGenre[1]>=75,
+   desc:topGenre?`${topGenre[0]} 장르 75작품 이상 시청 완료`:'한 장르 75작품'
+  },
+  {name:'잡식성',icon:'🌈',ok:distinctGenres.size>=10,desc:'서로 다른 장르 10종 이상 시청'},
+  {name:'장르 개척자',icon:'🧭',ok:distinctGenres.size>=15,desc:'서로 다른 장르 15종 이상 시청'},
+
+  // 연대
+  {name:'2000년대 탐험가',icon:'📼',ok:count2000s>=30,desc:'2000~2009년 작품 30개 시청 완료'},
+  {name:'2010년대의 증인',icon:'💿',ok:count2010s>=50,desc:'2010~2019년 작품 50개 시청 완료'},
+  {name:'2020년대 정주행러',icon:'📱',ok:count2020s>=50,desc:'2020~2029년 작품 50개 시청 완료'},
+  {name:'시대를 넘어서',icon:'⏳',ok:decadesWith40>=3,desc:'서로 다른 3개 연대에서 각각 40작품 이상 시청 완료'},
+
+  // 플레이 스타일 / 소셜
+  {name:'완주 본능',icon:'🔥',ok:completed.length>=100 && dropped<=5,desc:'100작품 이상 시청 완료 + 하차 5작품 이하'},
+  {name:'취향 친구',icon:'🤝',ok:acceptedFriends>=1,desc:'친구 1명 이상'},
+  {name:'애니 동아리',icon:'👥',ok:acceptedFriends>=5,desc:'친구 5명 이상'}
  ];
 }
+
 
 function badgeHTML(defs,showLocked=false){
  const rows=showLocked?defs:defs.filter(x=>x.ok);
@@ -1870,7 +1971,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.5.2 · 친구
+// v1.5.4 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2094,7 +2195,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.5.2 · 취향 일치도
+// v1.5.4 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2158,7 +2259,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.5.2 · 공개 프로필 관계 버튼
+// v1.5.4 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2234,7 +2335,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.5.2 · 공유 카드
+// v1.5.4 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2334,7 +2435,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.5.2',72,630);
+ ctx.fillText('aninote · v1.5.4',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2390,7 +2491,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.5.2 · 크레딧
+// v1.5.4 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -5469,7 +5570,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.5.2',
+   version:'1.5.4',
    exported_at:new Date().toISOString(),
    tables:{}
   };
