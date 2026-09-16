@@ -185,7 +185,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.5.0 ===== */
+/* ===== v1.5.2 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -216,7 +216,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.5.0 1차 · 설정/운영 ===== */
+/* ===== v1.5.2 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -343,7 +343,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.5.0 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.5.2 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -395,6 +395,12 @@ body.light-mode .official-credit-name{color:#1f2937}
 body.light-mode .official-credit-desc{color:#667085}
 body.light-mode .credits-disclaimer{color:#667085}
 
+
+#additionalCreditsSection{display:none!important}
+
+
+.credit-manage-row{display:flex;justify-content:flex-end;margin-top:10px}
+body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-color:#cbd5e1}
 </style>
 </head>
 <body>
@@ -420,7 +426,7 @@ body.light-mode .credits-disclaimer{color:#667085}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.5.0</div>
+    <div class="app-version">v1.5.2</div>
     
    </div>
    <div class="global-search-wrap">
@@ -475,7 +481,9 @@ body.light-mode .credits-disclaimer{color:#667085}
    </select>
    <button id="openAddAnime" class="primary">+ 없는 작품 추가</button>
   </div>
+  <div id="animeListTopActions" class="row" style="justify-content:flex-end;margin:8px 0"></div>
   <div id="animeList"></div>
+  <div id="animeListMoreArea" class="row" style="justify-content:center;margin-top:14px"></div>
  </section>
 
  <section id="voice" class="section">
@@ -686,7 +694,7 @@ body.light-mode .credits-disclaimer{color:#667085}
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.5.0</span>
+  <span>애니노트 v1.5.2</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1048,27 +1056,30 @@ body.light-mode .credits-disclaimer{color:#667085}
    <button id="closeCreditsDialog" class="icon-close" aria-label="닫기">×</button>
   </div>
 
-  <div class="notice credits-intro">
-   애니노트를 기획하고 만들고, 운영하고, 테스트하는 데 도움을 준 사람과 서비스를 기록하는 공간이야.
-  </div>
-
   <div id="officialCreditsList" class="official-credits"></div>
 
-  <h3 class="credits-section-title">추가 기여자</h3>
-  <div class="meta">관리자가 도움을 준 사람을 이름이나 닉네임으로 계속 추가할 수 있어.</div>
-  <div id="creditsList" class="panel" style="margin-top:10px"></div>
+  <div id="creditManageRow" class="credit-manage-row hidden">
+   <button id="toggleCreditManageBtn" class="small">크레딧 관리</button>
+  </div>
 
   <div class="credits-disclaimer">
    GitHub, Vercel, Supabase 및 OpenAI는 애니노트와 별개의 서비스·회사이며,
-   이 표시는 애니노트 제작과 운영에 사용된 도구 및 서비스에 대한 감사 표기야.
+   이 표시는 애니노트 제작과 운영에 사용된 도구 및 서비스에 대한 감사 표기.
   </div>
 
   <div id="creditAdminTools" class="panel hidden" style="margin-top:14px">
-   <h3 style="margin-top:0">추가 기여자 관리</h3>
+   <div class="row">
+    <h3 style="margin:0">크레딧 관리</h3>
+    <button id="closeCreditManageBtn" class="small">닫기</button>
+   </div>
+
+   <div id="creditsList" style="margin-top:10px"></div>
+
+   <h4 style="margin-bottom:8px">기여자 추가</h4>
    <div class="formgrid">
-    <div class="field"><label>분류</label><input id="creditCategory" placeholder="예: DB 기여"></div>
-    <div class="field"><label>이름</label><input id="creditName"></div>
-    <div class="field full"><label>설명</label><input id="creditDescription"></div>
+    <div class="field"><label>역할</label><input id="creditCategory" placeholder="예: 데이터 정리"></div>
+    <div class="field"><label>이름 / 닉네임</label><input id="creditName"></div>
+    <div class="field full"><label>설명 (관리용 · 선택)</label><input id="creditDescription"></div>
     <div class="field"><label>정렬 순서</label><input id="creditSortOrder" type="number" value="100"></div>
    </div>
    <button id="addCreditBtn" class="primary">추가</button>
@@ -1098,7 +1109,7 @@ body.light-mode .credits-disclaimer{color:#667085}
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.5.0</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.5.2</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1196,6 +1207,8 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
 let session=null;
 let isAdmin=false;
 let animeData=[];
+let animeDisplayLimit=30;
+let recommendationShownId=null;
 let voiceData=[];
 let currentAnimeId=null;
 let currentVoiceId=null;
@@ -1663,7 +1676,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.5.0 · 대표 최애 / 프로필 / 배지
+// v1.5.2 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -1857,7 +1870,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.5.0 · 친구
+// v1.5.2 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2081,7 +2094,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.5.0 · 취향 일치도
+// v1.5.2 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2145,7 +2158,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.5.0 · 공개 프로필 관계 버튼
+// v1.5.2 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2221,7 +2234,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.5.0 · 공유 카드
+// v1.5.2 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2321,7 +2334,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.5.0',72,630);
+ ctx.fillText('aninote · v1.5.2',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2377,24 +2390,21 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.5.0 · 크레딧
+// v1.5.2 · 크레딧
 // ============================================================
 
 const officialCredits=[
  {
   role:'기획 · 운영',
   name:'pgr8952'
- 
  },
  {
   role:'개발 구현 총괄 지원',
   name:'ChatGPT · OpenAI'
- 
  },
  {
   role:'인증 · 데이터베이스 · 스토리지',
   name:'Supabase'
-
  },
  {
   role:'배포 · 웹 호스팅',
@@ -2407,7 +2417,6 @@ const officialCredits=[
  {
   role:'테스트 · 피드백',
   name:'테스트를 도와준 친구들'
- 
  }
 ];
 
@@ -2415,10 +2424,16 @@ function renderOfficialCredits(){
  const box=$('#officialCreditsList');
  if(!box)return;
 
- box.innerHTML=officialCredits.map(c=>`<div class="official-credit-card">
+ const extra=creditsData.map(c=>({
+  role:c.category||'특별 감사',
+  name:c.display_name||''
+ }));
+
+ const all=[...officialCredits,...extra];
+
+ box.innerHTML=all.map(c=>`<div class="official-credit-card">
   <div class="official-credit-role">${esc(c.role)}</div>
   <div class="official-credit-name">${esc(c.name)}</div>
-  <div class="official-credit-desc">${esc(c.description)}</div>
  </div>`).join('');
 }
 
@@ -2430,15 +2445,17 @@ async function loadCredits(){
   .order('created_at',{ascending:true});
 
  if(error){
-  $('#creditsList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;
-  return;
+  console.warn('크레딧 로드 실패:',error.message);
+  creditsData=[];
+ }else{
+  creditsData=data||[];
  }
 
- creditsData=data||[];
- renderCredits();
+ renderOfficialCredits();
+ renderCreditsAdminList();
 }
 
-function renderCredits(){
+function renderCreditsAdminList(){
  const box=$('#creditsList');
  if(!box)return;
 
@@ -2450,19 +2467,18 @@ function renderCredits(){
       <div class="credit-name">${esc(c.display_name)}</div>
       ${c.description?`<div class="meta">${esc(c.description)}</div>`:''}
      </div>
-     ${isAdmin?`<div class="friend-actions">
+     <div class="friend-actions">
       <button class="small" onclick="editCredit('${c.id}')">수정</button>
       <button class="small danger" onclick="deleteCredit('${c.id}')">삭제</button>
-     </div>`:''}
+     </div>
     </div>
    </div>`).join('')
-  :'<div class="meta">아직 이름을 따로 등록한 추가 기여자는 없어.</div>';
-
- $('#creditAdminTools')?.classList.toggle('hidden',!isAdmin);
+  :'<div class="meta">사이트에서 추가한 기여자가 아직 없어.</div>';
 }
 
 async function openCredits(){
- renderOfficialCredits();
+ $('#creditManageRow').classList.toggle('hidden',!isAdmin);
+ $('#creditAdminTools').classList.add('hidden');
  await loadCredits();
  $('#creditsDialog').showModal();
 }
@@ -2470,6 +2486,15 @@ async function openCredits(){
 $('#creditsBtn').onclick=openCredits;
 $('#settingsCreditsBtn').onclick=openCredits;
 $('#closeCreditsDialog').onclick=()=>$('#creditsDialog').close();
+
+$('#toggleCreditManageBtn').onclick=()=>{
+ if(!isAdmin)return;
+ $('#creditAdminTools').classList.remove('hidden');
+};
+
+$('#closeCreditManageBtn').onclick=()=>{
+ $('#creditAdminTools').classList.add('hidden');
+};
 
 $('#addCreditBtn').onclick=async()=>{
  if(!isAdmin)return;
@@ -2514,13 +2539,13 @@ window.editCredit=async id=>{
  const row=creditsData.find(x=>x.id===id);
  if(!row)return;
 
- const category=prompt('분류',row.category||'특별 감사');
+ const category=prompt('역할',row.category||'특별 감사');
  if(category===null)return;
 
- const name=prompt('이름',row.display_name||'');
+ const name=prompt('이름 / 닉네임',row.display_name||'');
  if(name===null || !name.trim())return;
 
- const description=prompt('설명',row.description||'');
+ const description=prompt('설명 (관리용)',row.description||'');
  if(description===null)return;
 
  const sortRaw=prompt('정렬 순서',String(row.sort_order??100));
@@ -2540,7 +2565,6 @@ window.editCredit=async id=>{
 
  await loadCredits();
 };
-
 
 function isAdultAnime(a){return String(a?.age_rating||'미분류')==='19세';}
 function canShowAnime(a){return appSettings.show_adult||!isAdultAnime(a);}
@@ -2584,10 +2608,61 @@ function seriesCard(group){
  </div>`;
 }
 
+function animeListPagingActive(q,y){
+ // '전체 연도'에서 작품명 검색도 하지 않을 때만 긴 전체 목록을 나눠 보여준다.
+ return !q && !y;
+}
+
+function updateAnimeListPager(total,shown,pagingActive){
+ const top=$('#animeListTopActions');
+ const bottom=$('#animeListMoreArea');
+
+ if(!top||!bottom)return;
+
+ top.innerHTML='';
+ bottom.innerHTML='';
+
+ if(!pagingActive || total<=30)return;
+
+ if(animeDisplayLimit>30){
+  top.innerHTML=`<button id="animeCompactBtn" class="small">간략히</button>`;
+  $('#animeCompactBtn').onclick=()=>{
+   animeDisplayLimit=30;
+   renderAnime();
+   document.querySelector('#anime')?.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+ }
+
+ const shownText=`<span class="meta">${Math.min(shown,total)} / ${total}개</span>`;
+
+ if(animeDisplayLimit<=30){
+  bottom.innerHTML=`${shownText}<button id="animeMore60Btn" class="small">더보기 · 60개</button>`;
+  $('#animeMore60Btn').onclick=()=>{
+   animeDisplayLimit=60;
+   renderAnime();
+  };
+ }else if(animeDisplayLimit<=60 && total>60){
+  bottom.innerHTML=`${shownText}<button id="animeMore90Btn" class="small">더더보기 · 90개</button>`;
+  $('#animeMore90Btn').onclick=()=>{
+   animeDisplayLimit=90;
+   renderAnime();
+  };
+ }else if(animeDisplayLimit<=90 && total>90){
+  bottom.innerHTML=`${shownText}<button id="animeMoreAllBtn" class="small">전체보기</button>`;
+  $('#animeMoreAllBtn').onclick=()=>{
+   animeDisplayLimit=Infinity;
+   renderAnime();
+  };
+ }else{
+  bottom.innerHTML=shownText;
+ }
+}
+
 function renderAnime(){
  const q=$('#animeSearch').value.trim().toLowerCase();
  const y=$('#yearFilter').value;
  const mode=$('#sortMode').value;
+ const pagingActive=animeListPagingActive(q,y);
 
  let rows=animeData.filter(a=>
    canShowAnime(a) &&
@@ -2597,6 +2672,7 @@ function renderAnime(){
 
  if(!rows.length){
    $('#animeList').innerHTML='<div class="notice">검색 결과가 없어.</div>';
+   updateAnimeListPager(0,0,false);
    return;
  }
 
@@ -2604,9 +2680,15 @@ function renderAnime(){
 
  if(mode==='rating_desc'){
    metricRows.sort((a,b)=>(b._avg??-1)-(a._avg??-1)||a.title.localeCompare(b.title,'ko'));
-   $('#animeList').innerHTML=`<div class="grid">${metricRows.map(animeCard).join('')}</div>`;
+   const displayRows=pagingActive && animeDisplayLimit!==Infinity
+    ?metricRows.slice(0,animeDisplayLimit)
+    :metricRows;
+
+   $('#animeList').innerHTML=`<div class="grid">${displayRows.map(animeCard).join('')}</div>`;
+   updateAnimeListPager(metricRows.length,displayRows.length,pagingActive);
    return;
  }
+
  if(mode==='rating_asc'){
    metricRows.sort((a,b)=>{
      if(a._avg==null&&b._avg==null)return a.title.localeCompare(b.title,'ko');
@@ -2614,18 +2696,32 @@ function renderAnime(){
      if(b._avg==null)return -1;
      return a._avg-b._avg||a.title.localeCompare(b.title,'ko');
    });
-   $('#animeList').innerHTML=`<div class="grid">${metricRows.map(animeCard).join('')}</div>`;
+
+   const displayRows=pagingActive && animeDisplayLimit!==Infinity
+    ?metricRows.slice(0,animeDisplayLimit)
+    :metricRows;
+
+   $('#animeList').innerHTML=`<div class="grid">${displayRows.map(animeCard).join('')}</div>`;
+   updateAnimeListPager(metricRows.length,displayRows.length,pagingActive);
    return;
  }
+
  if(mode==='reviews_desc'||mode==='reviews_asc'){
    const mul=mode==='reviews_desc'?-1:1;
    metricRows.sort((a,b)=>mul*(a._reviews-b._reviews)||a.title.localeCompare(b.title,'ko'));
-   $('#animeList').innerHTML=`<div class="grid">${metricRows.map(animeCard).join('')}</div>`;
+
+   const displayRows=pagingActive && animeDisplayLimit!==Infinity
+    ?metricRows.slice(0,animeDisplayLimit)
+    :metricRows;
+
+   $('#animeList').innerHTML=`<div class="grid">${displayRows.map(animeCard).join('')}</div>`;
+   updateAnimeListPager(metricRows.length,displayRows.length,pagingActive);
    return;
  }
 
  // 가나다 / 기본 정렬에서는 시리즈를 한 카드로 묶음
  const bySeries=new Map();
+
  for(const a of rows){
    const key=a.series_key||`single:${a.id}`;
    if(!bySeries.has(key))bySeries.set(key,[]);
@@ -2640,20 +2736,33 @@ function renderAnime(){
 
  if(mode==='alpha'){
    units.sort((a,b)=>a.title.localeCompare(b.title,'ko'));
-   $('#animeList').innerHTML=`<div class="grid">${units.map(u=>u.group.length>1?seriesCard(u.group):animeCard(u.group[0])).join('')}</div>`;
+
+   const displayUnits=pagingActive && animeDisplayLimit!==Infinity
+    ?units.slice(0,animeDisplayLimit)
+    :units;
+
+   $('#animeList').innerHTML=`<div class="grid">${displayUnits.map(u=>u.group.length>1?seriesCard(u.group):animeCard(u.group[0])).join('')}</div>`;
+   updateAnimeListPager(units.length,displayUnits.length,pagingActive);
    return;
  }
 
  // 기본: 연도 내림차순 → 가나다순
  units.sort((a,b)=>b.maxYear-a.maxYear||a.title.localeCompare(b.title,'ko'));
- const years=[...new Set(units.map(u=>u.maxYear))].sort((a,b)=>b-a);
+
+ const displayUnits=pagingActive && animeDisplayLimit!==Infinity
+  ?units.slice(0,animeDisplayLimit)
+  :units;
+
+ const years=[...new Set(displayUnits.map(u=>u.maxYear))].sort((a,b)=>b-a);
+
  $('#animeList').innerHTML=years.map(year=>{
-   const group=units.filter(u=>u.maxYear===year);
+   const group=displayUnits.filter(u=>u.maxYear===year);
    return `<div class="year-title">${year||'연도 미상'}</div>
      <div class="grid">${group.map(u=>u.group.length>1?seriesCard(u.group):animeCard(u.group[0])).join('')}</div>`;
  }).join('');
-}
 
+ updateAnimeListPager(units.length,displayUnits.length,pagingActive);
+}
 
 function getMyAnimeRecord(a){
  return (a.user_anime||[]).find(x=>x.user_id===session.user.id)||null;
@@ -2873,12 +2982,39 @@ function recommendationHTML(rows){
  }).join('');
 }
 
-function renderRecommendations(){
+function renderRecommendations(forceNew=false){
  if(!session)return;
 
  const rows=getRecommendationRows();
- const html=recommendationHTML(rows);
- const fallbackOnly=rows.length && rows.every(x=>x.fallback);
+ let shownRows=[];
+
+ if(rows.length){
+  let candidates=rows;
+
+  // 다른 탭에 다녀온 뒤에는 가능하면 직전 작품과 다른 작품을 보여준다.
+  if(forceNew && recommendationShownId && rows.length>1){
+   const filtered=rows.filter(x=>x.anime.id!==recommendationShownId);
+   if(filtered.length)candidates=filtered;
+  }
+
+  let selected=null;
+
+  if(!forceNew && recommendationShownId){
+   selected=rows.find(x=>x.anime.id===recommendationShownId)||null;
+  }
+
+  if(!selected){
+   selected=candidates[Math.floor(Math.random()*candidates.length)];
+  }
+
+  if(selected){
+   recommendationShownId=selected.anime.id;
+   shownRows=[selected];
+  }
+ }
+
+ const html=recommendationHTML(shownRows);
+ const fallbackOnly=shownRows.length && shownRows.every(x=>x.fallback);
  const sub=fallbackOnly
   ?'취향 데이터가 부족해서 평점 높은 안 본 작품 중 랜덤 추천'
   :'내 평점과 장르 취향으로 고른 안 본 작품';
@@ -2889,9 +3025,20 @@ function renderRecommendations(){
  if($('#recommendInlineList'))$('#recommendInlineList').innerHTML=html;
 }
 
-$('#animeSearch').addEventListener('input',renderAnime);
-$('#yearFilter').addEventListener('change',renderAnime);
-$('#sortMode').addEventListener('change',renderAnime);
+$('#animeSearch').addEventListener('input',()=>{
+ animeDisplayLimit=30;
+ renderAnime();
+});
+
+$('#yearFilter').addEventListener('change',()=>{
+ animeDisplayLimit=30;
+ renderAnime();
+});
+
+$('#sortMode').addEventListener('change',()=>{
+ animeDisplayLimit=30;
+ renderAnime();
+});
 
 
 function normalizeDuplicateName(value){
@@ -5322,7 +5469,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.5.0',
+   version:'1.5.2',
    exported_at:new Date().toISOString(),
    tables:{}
   };
@@ -5390,6 +5537,11 @@ document.querySelectorAll('.tabs button').forEach(btn=>btn.onclick=()=>{
  btn.classList.add('active');
  $('#'+btn.dataset.tab).classList.add('active');
  $('#recommendSidebar').classList.toggle('hidden',btn.dataset.tab!=='anime');
+
+ if(btn.dataset.tab==='anime'){
+  renderRecommendations(true);
+ }
+
  if(btn.dataset.tab==='stats')renderStats();
  if(btn.dataset.tab==='ranking')renderRanking();
  if(btn.dataset.tab==='profile'){
