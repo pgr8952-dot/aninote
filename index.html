@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.6.3 ===== */
+/* ===== v1.7.0 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.6.3 1차 · 설정/운영 ===== */
+/* ===== v1.7.0 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.6.3 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.7.0 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.6.3 · 알림 / 채팅 ===== */
+/* ===== v1.7.0 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -448,6 +448,29 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
  .notification-button{min-width:40px}
  .chat-message{max-width:88%}
 }
+
+
+/* ===== v1.7.0 ===== */
+.notification-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.notification-delete{padding:4px 7px;font-size:11px;line-height:1}
+.unread-chat-pill{
+ display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;
+ padding:0 7px;border-radius:999px;background:#ef4444;color:#fff;font-size:11px;font-weight:900
+}
+.friend-recommend-block{border-top:1px solid #293241;margin-top:12px;padding-top:10px}
+.anime-friend-summary{font-weight:800;margin-bottom:7px}
+.friend-rating-row{padding:9px 0;border-top:1px solid var(--line)}
+.friend-rating-row:first-child{border-top:0}
+.admin-pager{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.stats-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.stats-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.trend-row{padding:8px 0;border-top:1px solid var(--line)}
+.trend-row:first-child{border-top:0}
+.wrap-top5{margin:0;padding-left:22px}
+.wrap-top5 li{margin:8px 0;line-height:1.45}
+body.light-mode .friend-recommend-block{border-color:#d6dde8}
+body.light-mode .friend-rating-row,
+body.light-mode .trend-row{border-color:#d6dde8}
 
 </style>
 </head>
@@ -488,7 +511,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.6.3</div>
+    <div class="app-version">v1.7.0</div>
     
    </div>
    <div class="global-search-wrap">
@@ -513,6 +536,11 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
  <div class="recommend-title">✨ 취향 추천</div>
  <div id="recommendSidebarSub" class="recommend-sub">내 평점과 장르 취향으로 고른 안 본 작품</div>
  <div id="recommendSidebarList"></div>
+ <div class="friend-recommend-block">
+  <div class="recommend-title">👥 친구 추천</div>
+  <div class="recommend-sub">친구들이 높게 평가한 아직 기록하지 않은 작품</div>
+  <div id="friendRecommendSidebar"></div>
+ </div>
 </aside>
 
 <main class="wrap">
@@ -533,6 +561,11 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
    <div class="recommend-title">✨ 취향 추천</div>
    <div id="recommendInlineSub" class="recommend-sub">내 평점과 장르 취향으로 고른 안 본 작품</div>
    <div id="recommendInlineList"></div>
+   <div class="friend-recommend-block">
+    <div class="recommend-title">👥 친구 추천</div>
+    <div class="recommend-sub">친구들이 높게 평가한 아직 기록하지 않은 작품</div>
+    <div id="friendRecommendInline"></div>
+   </div>
   </div>
   <div class="toolbar">
    <input id="animeSearch" placeholder="작품명 검색...">
@@ -731,10 +764,12 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
    </div>
    <div id="adminUserCount" class="meta" style="margin:8px 0"></div>
    <div id="adminUserList"></div>
+   <div id="adminUserPager" class="admin-pager"></div>
   </div>
   <div class="panel" style="margin-top:14px">
    <div class="row"><h3 style="margin:0">수정 요청 / 신고</h3><button id="toggleRequestsBtn" class="small">더보기</button></div>
    <div id="requestList"></div>
+   <div id="requestPager" class="admin-pager"></div>
   </div>
   <div class="panel" style="margin-top:14px">
    <div class="row"><h3 style="margin:0">활동 로그</h3><div class="panel-head-actions"><button id="toggleAuditBtn" class="small">더보기</button><button id="refreshAuditBtn" class="small">새로고침</button></div></div>
@@ -764,12 +799,13 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
     </select>
    </div>
    <div id="auditList"></div>
+   <div id="auditPager" class="admin-pager"></div>
   </div>
  </section>
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.6.3</span>
+  <span>애니노트 v1.7.0</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -872,6 +908,17 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
    <div id="relatedAnimeList" class="related-anime-list"></div>
   </div>
 
+  <div id="friendAnimePanel" class="panel hidden" style="margin-bottom:14px">
+   <div class="row">
+    <div>
+     <h3 style="margin:0">👥 친구 기록</h3>
+     <div id="friendAnimeSummary" class="meta" style="margin-top:5px"></div>
+    </div>
+    <button id="toggleFriendAnimeRatingsBtn" class="small">친구 평가 보기</button>
+   </div>
+   <div id="friendAnimeRatings" class="hidden" style="margin-top:10px"></div>
+  </div>
+
   <div class="panel">
    <h3 style="margin-top:0">내 감상</h3>
    <div class="formgrid">
@@ -881,7 +928,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
     <div class="field"><label>평점 (0~5)</label><div class="rating-pair"><input id="myRating" type="number" min="0" max="5" step="0.1"><input id="myRatingRange" type="range" min="0" max="5" step="0.1" value="0"></div></div>
     <div class="field full">
      <label>새 메모 / 감상</label>
-     <textarea id="myMemo" placeholder="새 감상을 쓰면 기존 감상을 대체해"></textarea>
+     <textarea id="myMemo" placeholder="새 감상을 작성하면 기존 감상을 대체합니다."></textarea>
      <div class="spoiler-toggle"><input id="mySpoiler" type="checkbox"><label for="mySpoiler">⚠️ 스포일러 포함</label></div>
      <div id="currentMyMemoBox" class="review hidden" style="margin-top:8px">
       <div class="meta" style="margin-bottom:5px">현재 저장된 감상</div>
@@ -1176,6 +1223,21 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
  </div>
 </dialog>
 
+
+<dialog id="annualWrapDialog">
+ <div class="modal">
+  <div class="modal-title-row">
+   <h2 id="annualWrapDialogTitle">애니노트 연간 결산</h2>
+   <button id="closeAnnualWrapDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
+  <canvas id="annualWrapCanvas" class="share-preview" width="1200" height="675"></canvas>
+  <div class="modal-actions">
+   <button id="downloadAnnualWrapBtn">이미지 저장</button>
+   <button id="shareAnnualWrapBtn" class="primary">공유</button>
+  </div>
+ </div>
+</dialog>
+
 <dialog id="privacyDialog">
  <div class="modal">
   <div class="modal-title-row">
@@ -1184,7 +1246,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.3</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.7.0</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -1196,7 +1258,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
     <li>운영정보: 수정 요청, 신고, 문의, 활동 로그</li>
     <li>사용자가 직접 등록하는 애니·성우·캐릭터 정보 및 이미지</li>
    </ul>
-   <div class="meta">비밀번호 인증은 Supabase Auth를 통해 처리되며 애니노트 운영 화면에서 비밀번호 원문을 조회하지 않아.</div>
+   <div class="meta">비밀번호 인증은 Supabase Auth를 통해 처리되며, 애니노트 운영 화면에서는 비밀번호 원문을 조회하지 않습니다.</div>
 
    <h3>2. 이용 목적</h3>
    <ul>
@@ -1223,7 +1285,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
    <div>로그인 후 사이트 하단의 <b>문의</b> 버튼을 이용해주세요. 계정 삭제는 <b>내 프로필 → 계정 삭제 요청</b>에서 요청할 수 있으며, 버그나 서비스 문제는 하단의 빨간 <b>버그제보</b> 버튼으로 전달할 수 있습니다.</div>
 
    <h3>8. 방침 변경</h3>
-   <div>수집 항목이나 이용 목적이 크게 바뀌는 경우 이 방침의 내용과 시행일을 갱신해 안내해.</div>
+   <div>수집 항목이나 이용 목적이 크게 변경되는 경우, 이 방침의 내용과 시행일을 갱신하여 안내합니다.</div>
   </div>
 
   <div class="modal-actions">
@@ -1276,7 +1338,10 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
   </div>
   <div class="row">
    <div class="meta">최근 알림 100개까지 표시합니다.</div>
-   <button id="markAllNotificationsReadBtn" class="small">모두 읽음</button>
+   <div class="notification-actions">
+    <button id="markAllNotificationsReadBtn" class="small">모두 읽음</button>
+    <button id="deleteAllNotificationsBtn" class="small danger">전체 삭제</button>
+   </div>
   </div>
   <div id="notificationList" style="margin-top:10px"></div>
  </div>
@@ -1289,7 +1354,10 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
     <h2 id="chatDialogTitle">친구 채팅</h2>
     <div id="chatDialogSub" class="meta"></div>
    </div>
-   <button id="closeChatDialog" class="icon-close" aria-label="닫기">×</button>
+   <div class="row">
+    <button id="chatOpenProfileBtn" class="small">프로필 보기</button>
+    <button id="closeChatDialog" class="icon-close" aria-label="닫기">×</button>
+   </div>
   </div>
 
   <div id="chatMessages" class="chat-messages"></div>
@@ -1342,6 +1410,9 @@ let selectedAddGenres=new Set();
 let favoriteData=[];
 let friendRows=[];
 let friendProfileMap={};
+let friendAnimeActivity=[];
+let unreadChatCounts={};
+let friendAnimeRatingsExpanded=false;
 let currentPublicUserId=null;
 let creditsData=[];
 let appSettings={
@@ -1366,6 +1437,10 @@ let requestData=[];
 let adminUsersExpanded=false;
 let requestsExpanded=false;
 let auditExpanded=false;
+let adminUsersPage=1;
+let requestsPage=1;
+let auditPage=1;
+const adminPageSize=20;
 let requestProfileMap={};
 let notificationData=[];
 let notificationProfileMap={};
@@ -1622,7 +1697,7 @@ $('#logoutBtn').onclick=async()=>{await sb.auth.signOut();session=null;showAuth(
 async function loadAnime(){
  const {data,error}=await sb.from('anime').select(`
    id,title,year,series_key,image_url,laftel_url,genres,age_rating,created_by,created_at,
-   user_anime(id,user_id,status,rating,memo,spoiler,updated_at)
+   user_anime(id,user_id,status,rating,memo,spoiler,updated_at,completed_at)
  `).order('year',{ascending:false}).order('title',{ascending:true});
 
  if(error){$('#animeList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;return;}
@@ -1839,7 +1914,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.6.3 · 대표 최애 / 프로필 / 배지
+// v1.7.0 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2138,7 +2213,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.6.3 · 친구
+// v1.7.0 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2192,8 +2267,170 @@ async function loadFriends(){
   );
  }
 
+ await Promise.all([
+  loadUnreadChatCounts(),
+  loadFriendAnimeActivity()
+ ]);
+
  renderFriends();
+ renderFriendRecommendation();
+
+ if($('#animeDialog')?.open && currentAnimeId){
+  renderFriendAnimePanel(currentAnimeId);
+ }
 }
+
+
+async function loadUnreadChatCounts(){
+ if(!session)return;
+
+ const {data,error}=await sb.rpc('get_unread_chat_counts');
+
+ if(error){
+  console.warn('안 읽은 채팅 수를 불러오지 못했습니다:',error.message);
+  unreadChatCounts={};
+  return;
+ }
+
+ let rows=data;
+ if(typeof rows==='string'){
+  try{rows=JSON.parse(rows);}catch{rows=[];}
+ }
+ if(!Array.isArray(rows))rows=[];
+
+ unreadChatCounts=Object.fromEntries(
+  rows.map(x=>[x.user_id,Number(x.unread_count||0)])
+ );
+}
+
+async function loadFriendAnimeActivity(){
+ if(!session)return;
+
+ const {data,error}=await sb.rpc('get_my_friend_anime_activity');
+
+ if(error){
+  console.warn('친구 애니 기록을 불러오지 못했습니다:',error.message);
+  friendAnimeActivity=[];
+  return;
+ }
+
+ let rows=data;
+ if(typeof rows==='string'){
+  try{rows=JSON.parse(rows);}catch{rows=[];}
+ }
+ if(!Array.isArray(rows))rows=[];
+
+ friendAnimeActivity=rows;
+}
+
+function friendRecommendationRow(){
+ const myAnimeIds=new Set(myReviewData.map(x=>x.anime_id));
+ const byAnime=new Map();
+
+ for(const row of friendAnimeActivity){
+  if(row.rating===null || row.rating===undefined)continue;
+
+  const rating=Number(row.rating);
+  if(!Number.isFinite(rating))continue;
+
+  const anime=animeData.find(a=>a.id===row.anime_id);
+  if(!anime || !canShowAnime(anime) || myAnimeIds.has(anime.id))continue;
+
+  if(!byAnime.has(anime.id)){
+   byAnime.set(anime.id,{anime,ratings:[],friends:new Set()});
+  }
+
+  const item=byAnime.get(anime.id);
+  item.ratings.push(rating);
+  item.friends.add(row.friend_user_id);
+ }
+
+ return [...byAnime.values()]
+  .map(x=>({
+   anime:x.anime,
+   avg:x.ratings.reduce((a,b)=>a+b,0)/x.ratings.length,
+   count:x.friends.size
+  }))
+  .filter(x=>x.avg>=4)
+  .sort((a,b)=>b.avg-a.avg || b.count-a.count || a.anime.title.localeCompare(b.anime.title,'ko'))[0]||null;
+}
+
+function renderFriendRecommendation(){
+ const row=friendRecommendationRow();
+
+ const html=row
+  ?`<div class="recommend-item" onclick="openAnime('${row.anime.id}')">
+    ${row.anime.image_url
+      ?`<img class="recommend-thumb" src="${esc(row.anime.image_url)}" loading="lazy" alt="">`
+      :`<div class="recommend-placeholder">👥</div>`}
+    <div>
+     <div class="recommend-name">${esc(row.anime.title)}</div>
+     <div class="recommend-reason">친구 ${row.count}명 평가 · 평균 ★ ${row.avg.toFixed(2)}</div>
+     <div class="recommend-score">친구 추천</div>
+    </div>
+   </div>`
+  :'<div class="meta">아직 친구 추천이 없습니다.</div>';
+
+ if($('#friendRecommendSidebar'))$('#friendRecommendSidebar').innerHTML=html;
+ if($('#friendRecommendInline'))$('#friendRecommendInline').innerHTML=html;
+}
+
+function friendAnimeRows(animeId){
+ return friendAnimeActivity.filter(x=>x.anime_id===animeId);
+}
+
+function renderFriendAnimePanel(animeId){
+ const panel=$('#friendAnimePanel');
+ if(!panel)return;
+
+ const rows=friendAnimeRows(animeId);
+ const completedUsers=new Set(
+  rows.filter(x=>x.status==='시청 완료').map(x=>x.friend_user_id)
+ );
+ const ratingRows=rows
+  .filter(x=>x.rating!==null && x.rating!==undefined)
+  .sort((a,b)=>Number(b.rating)-Number(a.rating));
+
+ if(!rows.length){
+  panel.classList.add('hidden');
+  return;
+ }
+
+ panel.classList.remove('hidden');
+
+ const watchedCount=completedUsers.size;
+ $('#friendAnimeSummary').textContent=watchedCount
+  ?`친구 ${watchedCount}명이 봤습니다.`
+  :'친구의 기록이 있습니다.';
+
+ const btn=$('#toggleFriendAnimeRatingsBtn');
+ btn.classList.toggle('hidden',ratingRows.length===0);
+ btn.textContent=friendAnimeRatingsExpanded
+  ?'친구 평가 접기'
+  :`친구 평가 보기${ratingRows.length?` (${ratingRows.length})`:''}`;
+
+ const list=$('#friendAnimeRatings');
+ list.classList.toggle('hidden',!friendAnimeRatingsExpanded);
+
+ list.innerHTML=ratingRows.length
+  ?ratingRows.map(r=>{
+    const name=r.display_name||r.username||'사용자';
+    return `<div class="friend-rating-row">
+     <div class="row">
+      <b class="profile-link" onclick="openPublicProfile('${r.friend_user_id}')">${esc(name)}</b>
+      <b class="star">★ ${Number(r.rating).toFixed(1)}</b>
+     </div>
+     <div class="meta">${esc(r.status||'상태 없음')}</div>
+    </div>`;
+   }).join('')
+  :'<div class="meta">친구가 남긴 평점이 없습니다.</div>';
+}
+
+$('#toggleFriendAnimeRatingsBtn').onclick=()=>{
+ friendAnimeRatingsExpanded=!friendAnimeRatingsExpanded;
+ if(currentAnimeId)renderFriendAnimePanel(currentAnimeId);
+};
+
 
 function renderFriends(){
  const incoming=friendRows.filter(r=>
@@ -2210,8 +2447,15 @@ function renderFriends(){
 
  const rowHTML=(userId,actions='')=>`
   <div class="friend-row">
-   <b class="profile-link" onclick="openPublicProfile('${userId}')">${esc(friendLabel(userId))}</b>
-   <div class="meta">${esc(friendProfileMap[userId]?.username||'')}</div>
+   <div class="row">
+    <div>
+     <b class="profile-link" onclick="openPublicProfile('${userId}')">${esc(friendLabel(userId))}</b>
+     <div class="meta">${esc(friendProfileMap[userId]?.username||'')}</div>
+    </div>
+    ${Number(unreadChatCounts[userId]||0)>0
+      ?`<span class="unread-chat-pill" title="안 읽은 메시지">${Number(unreadChatCounts[userId])}</span>`
+      :''}
+   </div>
    ${actions?`<div class="friend-actions">${actions}</div>`:''}
   </div>`;
 
@@ -2363,7 +2607,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.6.3 · 취향 일치도
+// v1.7.0 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2427,7 +2671,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.6.3 · 공개 프로필 관계 버튼
+// v1.7.0 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2505,7 +2749,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.6.3 · 공유 카드
+// v1.7.0 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2605,7 +2849,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.6.3',72,630);
+ ctx.fillText('aninote · v1.7.0',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2661,7 +2905,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.6.3 · 크레딧
+// v1.7.0 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -3637,6 +3881,8 @@ window.openAnime=async(id)=>{
  $('#mySpoiler').checked=!!myRecord?.spoiler;
  setFavoriteButton($('#animeFavoriteBtn'),'anime',id);
 
+ friendAnimeRatingsExpanded=false;
+ renderFriendAnimePanel(id);
  await Promise.all([loadCast(id),loadReviews(id),renderAnimeRegistrant(a)]);
  $('#animeDialog').showModal();
 };
@@ -3963,6 +4209,7 @@ $('#saveCastBtn').onclick=async()=>{
  $('#characterName').value='';$('#voiceActorName').value='';selectedVoiceId=null;
  $('#voiceSuggestions').classList.add('hidden');
  await Promise.all([loadCast(currentAnimeId),loadVoices()]);
+ await openCharacter(characterId);
 };
 
 window.renameCharacter=async(id,current)=>{
@@ -3980,7 +4227,7 @@ window.deleteCharacter=async(id)=>{
 
 window.changeCastVoice=async(linkId,currentName)=>{
  if(!isAdmin)return;
- const name=prompt('새 성우 이름\n기존 성우와 정확히 같은 이름을 입력하면 기존 성우를 사용해.',currentName);
+ const name=prompt('새 성우 이름\n기존 성우와 정확히 같은 이름을 입력하면 기존 성우를 사용합니다.',currentName);
  if(!name?.trim())return;
 
  let voiceId;
@@ -4263,7 +4510,7 @@ $('#saveVoiceBtn').onclick=async()=>{
   .select('id,name');
 
  if(error){
-  return alert(error.code==='23505'?'이미 등록된 성우야.':error.message);
+  return alert(error.code==='23505'?'이미 등록된 성우입니다.':error.message);
  }
 
  const voice=voiceRows?.[0];
@@ -4294,7 +4541,7 @@ $('#saveVoiceBtn').onclick=async()=>{
     .select('id');
 
    if(charError){
-    alert(`성우는 등록됐지만 "${item.characterName}" 캐릭터 추가에 실패했습니다.\\n${charError.message}`);
+    alert(`성우는 등록되었지만 "${item.characterName}" 캐릭터 추가에 실패했습니다.\\n${charError.message}`);
     continue;
    }
    characterId=charRows?.[0]?.id;
@@ -4316,6 +4563,7 @@ $('#saveVoiceBtn').onclick=async()=>{
  $('#voiceDialog').close();
  await loadVoices();
  alert('성우 정보를 추가했습니다.');
+ await openVoiceProfile(voice.id);
 };
 
 
@@ -4408,7 +4656,7 @@ $('#saveProfile').onclick=async()=>{
 
 async function loadMyReviews(){
  const {data,error}=await sb.from('user_anime')
-  .select('id,anime_id,status,rating,memo,spoiler,updated_at')
+  .select('id,anime_id,status,rating,memo,spoiler,updated_at,completed_at')
   .eq('user_id',session.user.id)
   .order('updated_at',{ascending:false});
 
@@ -4416,6 +4664,7 @@ async function loadMyReviews(){
  myReviewData=data||[];
  rebuildMyReviewYearFilter();
  renderMyReviews();
+ renderFriendRecommendation();
  if($('#myProfileSummary'))renderProfileExtras();
 }
 
@@ -4667,7 +4916,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.6.3 · 알림
+// v1.7.0 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -4760,7 +5009,10 @@ function renderNotifications(){
     ${n.read_at?'':'<span class="notification-dot"></span>'}
    </div>
    ${n.body?`<div class="notification-body">${esc(n.body)}</div>`:''}
-   <div class="meta" style="margin-top:6px">${esc(when)}</div>
+   <div class="row" style="margin-top:6px">
+    <div class="meta">${esc(when)}</div>
+    <button class="notification-delete danger" title="알림 삭제" onclick="event.stopPropagation();deleteNotificationItem('${n.id}')">삭제</button>
+   </div>
   </div>`;
  }).join('');
 }
@@ -4815,9 +5067,27 @@ $('#markAllNotificationsReadBtn').onclick=async()=>{
  await loadNotifications();
 };
 
+window.deleteNotificationItem=async id=>{
+ const {error}=await sb.rpc('delete_notification',{
+  notification_id:id
+ });
+ if(error)return alert(error.message);
+ await loadNotifications();
+};
+
+$('#deleteAllNotificationsBtn').onclick=async()=>{
+ if(!notificationData.length)return;
+ if(!confirm('모든 알림을 삭제하시겠습니까?'))return;
+
+ const {error}=await sb.rpc('delete_all_notifications');
+ if(error)return alert(error.message);
+
+ await loadNotifications();
+};
+
 
 // ============================================================
-// v1.6.3 · 친구 1:1 채팅
+// v1.7.0 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -4925,6 +5195,8 @@ window.openChat=async userId=>{
 
  await loadNotifications();
  await markChatNotificationsRead(userId);
+ await loadUnreadChatCounts();
+ renderFriends();
  await loadChatMessages();
 };
 
@@ -4956,6 +5228,15 @@ async function sendCurrentChatMessage(){
  input.focus();
 }
 
+$('#chatOpenProfileBtn').onclick=async()=>{
+ if(!currentChatUserId)return;
+ const userId=currentChatUserId;
+ $('#chatDialog').close();
+ currentChatUserId=null;
+ currentChatMessages=[];
+ await openPublicProfile(userId);
+};
+
 $('#sendChatMessageBtn').onclick=sendCurrentChatMessage;
 
 $('#chatMessageInput').addEventListener('keydown',e=>{
@@ -4973,7 +5254,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.6.3 · 배지 획득 알림 동기화
+// v1.7.0 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -5008,7 +5289,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.6.3 · Supabase Realtime
+// v1.7.0 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -5064,6 +5345,9 @@ function setupRealtime(){
 
     if(!involved)return;
 
+    await loadUnreadChatCounts();
+    renderFriends();
+
     if(
      currentChatUserId
      && (
@@ -5079,6 +5363,8 @@ function setupRealtime(){
 
       await loadNotifications();
       await markChatNotificationsRead(currentChatUserId);
+      await loadUnreadChatCounts();
+      renderFriends();
      }
 
      await loadChatMessages();
@@ -5095,6 +5381,7 @@ function applySettings(){
  if(session){
   renderAnime();
   renderRecommendations();
+  renderFriendRecommendation();
   renderRanking();
   renderMyFavorites();
   renderProfileExtras();
@@ -5305,7 +5592,13 @@ function proposalHTML(r){
 }
 function renderRequests(){
  const rows=requestData;
- const visible=requestsExpanded?rows:rows.slice(0,5);
+ const pageCount=Math.max(1,Math.ceil(rows.length/adminPageSize));
+
+ if(requestsPage>pageCount)requestsPage=pageCount;
+
+ const visible=requestsExpanded
+  ?rows.slice((requestsPage-1)*adminPageSize,requestsPage*adminPageSize)
+  :rows.slice(0,5);
 
  $('#requestList').innerHTML=visible.length?visible.map(r=>{
   const p=requestProfileMap[r.created_by];
@@ -5347,12 +5640,34 @@ function renderRequests(){
   </div>`;
  }).join(''):'<div class="meta">요청이 없습니다.</div>';
 
- $('#toggleRequestsBtn').textContent=requestsExpanded
-  ?'간략히'
-  :`더보기${rows.length>5?` (${rows.length})`:''}`;
-
+ $('#toggleRequestsBtn').textContent=requestsExpanded?'간략히':'페이지 보기';
  $('#toggleRequestsBtn').classList.toggle('hidden',rows.length<=5);
+
+ const pager=$('#requestPager');
+
+ if(!requestsExpanded || rows.length<=adminPageSize){
+  pager.innerHTML='';
+ }else{
+  pager.innerHTML=`
+   <button class="small" onclick="changeRequestPage(-1)" ${requestsPage<=1?'disabled':''}>이전</button>
+   <span class="meta">${requestsPage} / ${pageCount}</span>
+   <button class="small" onclick="changeRequestPage(1)" ${requestsPage>=pageCount?'disabled':''}>다음</button>`;
+ }
 }
+
+window.changeRequestPage=delta=>{
+ const pageCount=Math.max(1,Math.ceil(requestData.length/adminPageSize));
+ requestsPage=Math.max(1,Math.min(pageCount,requestsPage+delta));
+ renderRequests();
+};
+
+$('#toggleRequestsBtn').onclick=()=>{
+ requestsExpanded=!requestsExpanded;
+ requestsPage=1;
+ renderRequests();
+};
+
+
 window.approveInfoRequest=async(id)=>{
  if(!isAdmin)return;
  if(!confirm('이 수정 요청을 승인하고 실제 정보에 반영하시겠습니까?'))return;
@@ -5443,7 +5758,6 @@ window.setRequestStatus=async(id,status)=>{
   alert(`요청 처리 실패\n${e.message}`);
  }
 };
-$('#toggleRequestsBtn').onclick=()=>{requestsExpanded=!requestsExpanded;renderRequests();};
 
 
 // ============================================================
@@ -5513,7 +5827,12 @@ function renderAdminUsers(){
   return new Date(a.joined_at)-new Date(b.joined_at);
  });
 
- const visibleRows=adminUsersExpanded?rows:rows.slice(0,5);
+ const pageCount=Math.max(1,Math.ceil(rows.length/adminPageSize));
+ if(adminUsersPage>pageCount)adminUsersPage=pageCount;
+
+ const visibleRows=adminUsersExpanded
+  ?rows.slice((adminUsersPage-1)*adminPageSize,adminUsersPage*adminPageSize)
+  :rows.slice(0,5);
 
  if($('#adminUserCount')){
   const total=adminUsersData.length;
@@ -5564,9 +5883,42 @@ function renderAdminUsers(){
     </div>
   </div>`;
  }).join(''):'<div class="meta">조건에 맞는 유저가 없습니다.</div>';
- $('#toggleUsersBtn').textContent=adminUsersExpanded?'간략히':`더보기${rows.length>5?` (${rows.length})`:''}`;$('#toggleUsersBtn').classList.toggle('hidden',rows.length<=5);
+
+ $('#toggleUsersBtn').textContent=adminUsersExpanded?'간략히':'페이지 보기';
+ $('#toggleUsersBtn').classList.toggle('hidden',rows.length<=5);
+
+ const pager=$('#adminUserPager');
+ if(!adminUsersExpanded || rows.length<=adminPageSize){
+  pager.innerHTML='';
+ }else{
+  pager.innerHTML=`
+   <button class="small" onclick="changeAdminUserPage(-1)" ${adminUsersPage<=1?'disabled':''}>이전</button>
+   <span class="meta">${adminUsersPage} / ${pageCount}</span>
+   <button class="small" onclick="changeAdminUserPage(1)" ${adminUsersPage>=pageCount?'disabled':''}>다음</button>`;
+ }
 }
-$('#toggleUsersBtn').onclick=()=>{adminUsersExpanded=!adminUsersExpanded;renderAdminUsers();};
+
+window.changeAdminUserPage=delta=>{
+ const q=$('#adminUserSearch').value.trim().toLowerCase();
+ const banFilter=$('#adminUserBanFilter').value;
+ const count=adminUsersData.filter(u=>{
+  const hay=[u.display_name,u.username,u.email].filter(Boolean).join(' ').toLowerCase();
+  if(q&&!hay.includes(q))return false;
+  if(banFilter==='normal'&&u.banned)return false;
+  if(banFilter==='banned'&&!u.banned)return false;
+  return true;
+ }).length;
+
+ const pageCount=Math.max(1,Math.ceil(count/adminPageSize));
+ adminUsersPage=Math.max(1,Math.min(pageCount,adminUsersPage+delta));
+ renderAdminUsers();
+};
+
+$('#toggleUsersBtn').onclick=()=>{
+ adminUsersExpanded=!adminUsersExpanded;
+ adminUsersPage=1;
+ renderAdminUsers();
+};
 
 
 window.setUserAdmin=async(userId,shouldAdmin,label)=>{
@@ -5623,9 +5975,9 @@ window.setUserBan=async(userId,shouldBan,label)=>{
 };
 
 $('#refreshUsersBtn').onclick=loadAdminUsers;
-$('#adminUserSearch').addEventListener('input',renderAdminUsers);
-$('#adminUserSort').addEventListener('change',renderAdminUsers);
-$('#adminUserBanFilter').addEventListener('change',renderAdminUsers);
+$('#adminUserSearch').addEventListener('input',()=>{adminUsersPage=1;renderAdminUsers();});
+$('#adminUserSort').addEventListener('change',()=>{adminUsersPage=1;renderAdminUsers();});
+$('#adminUserBanFilter').addEventListener('change',()=>{adminUsersPage=1;renderAdminUsers();});
 
 // ============================================================
 // 통합 검색
@@ -6190,7 +6542,12 @@ function renderAuditLogs(){
   return true;
  });
 
- const visibleRows=auditExpanded?rows:rows.slice(0,5);
+ const pageCount=Math.max(1,Math.ceil(rows.length/adminPageSize));
+ if(auditPage>pageCount)auditPage=pageCount;
+
+ const visibleRows=auditExpanded
+  ?rows.slice((auditPage-1)*adminPageSize,auditPage*adminPageSize)
+  :rows.slice(0,5);
 
  $('#auditList').innerHTML=visibleRows.length?visibleRows.map(x=>{
   const p=auditProfileMap[x.actor_id];
@@ -6211,14 +6568,54 @@ function renderAuditLogs(){
     </div>
   </div>`;
  }).join(''):'<div class="meta">조건에 맞는 활동 기록이 없습니다.</div>';
- $('#toggleAuditBtn').textContent=auditExpanded?'간략히':`더보기${rows.length>5?` (${rows.length})`:''}`;$('#toggleAuditBtn').classList.toggle('hidden',rows.length<=5);
+
+ $('#toggleAuditBtn').textContent=auditExpanded?'간략히':'페이지 보기';
+ $('#toggleAuditBtn').classList.toggle('hidden',rows.length<=5);
+
+ const pager=$('#auditPager');
+ if(!auditExpanded || rows.length<=adminPageSize){
+  pager.innerHTML='';
+ }else{
+  pager.innerHTML=`
+   <button class="small" onclick="changeAuditPage(-1)" ${auditPage<=1?'disabled':''}>이전</button>
+   <span class="meta">${auditPage} / ${pageCount}</span>
+   <button class="small" onclick="changeAuditPage(1)" ${auditPage>=pageCount?'disabled':''}>다음</button>`;
+ }
 }
-$('#toggleAuditBtn').onclick=()=>{auditExpanded=!auditExpanded;renderAuditLogs();};
+
+window.changeAuditPage=delta=>{
+ const q=$('#auditSearch').value.trim().toLowerCase();
+ const action=$('#auditActionFilter').value;
+ const target=$('#auditTargetFilter').value;
+
+ const count=auditData.filter(x=>{
+  const p=auditProfileMap[x.actor_id];
+  const actorName=p?.display_name||p?.username||'사용자';
+  const username=p?.username||'';
+  const hay=[actorName,username,x.target_label,auditTargetLabel(x.target_type),x.action_type]
+   .filter(Boolean).join(' ').toLowerCase();
+  if(q&&!hay.includes(q))return false;
+  if(action&&x.action_type!==action)return false;
+  if(target&&x.target_type!==target)return false;
+  return true;
+ }).length;
+
+ const pageCount=Math.max(1,Math.ceil(count/adminPageSize));
+ auditPage=Math.max(1,Math.min(pageCount,auditPage+delta));
+ renderAuditLogs();
+};
+
+$('#toggleAuditBtn').onclick=()=>{
+ auditExpanded=!auditExpanded;
+ auditPage=1;
+ renderAuditLogs();
+};
+
 
 $('#refreshAuditBtn').onclick=loadAuditLogs;
-$('#auditSearch').addEventListener('input',renderAuditLogs);
-$('#auditActionFilter').addEventListener('change',renderAuditLogs);
-$('#auditTargetFilter').addEventListener('change',renderAuditLogs);
+$('#auditSearch').addEventListener('input',()=>{auditPage=1;renderAuditLogs();});
+$('#auditActionFilter').addEventListener('change',()=>{auditPage=1;renderAuditLogs();});
+$('#auditTargetFilter').addEventListener('change',()=>{auditPage=1;renderAuditLogs();});
 
 
 
@@ -6276,7 +6673,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.6.3',
+   version:'1.7.0',
    exported_at:new Date().toISOString(),
    tables:{}
   };
@@ -6312,32 +6709,371 @@ $('#backupDbBtn').onclick=async()=>{
 // ============================================================
 // 통계
 // ============================================================
+function reviewAnime(row){
+ return animeData.find(a=>a.id===row.anime_id)||null;
+}
+
+function completedDate(row){
+ if(row.status!=='시청 완료' || !row.completed_at)return null;
+ const d=new Date(row.completed_at);
+ return Number.isNaN(d.getTime())?null:d;
+}
+
+function monthKey(date){
+ return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
+}
+
+function monthLabel(key){
+ const [y,m]=key.split('-');
+ return `${y}.${Number(m)}`;
+}
+
+function completedRowsForYear(year){
+ return myReviewData.filter(r=>{
+  const d=completedDate(r);
+  return d && d.getFullYear()===Number(year);
+ });
+}
+
+function statsTopGenre(rows){
+ const counts={};
+
+ for(const r of rows){
+  const anime=reviewAnime(r);
+  for(const g of normalizeGenres(anime?.genres)){
+   counts[g]=(counts[g]||0)+1;
+  }
+ }
+
+ return Object.entries(counts)
+  .sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko'))[0]||null;
+}
+
+function annualStats(year){
+ const rows=completedRowsForYear(year);
+ const rated=rows.filter(r=>r.rating!==null);
+ const avg=rated.length
+  ?rated.reduce((sum,r)=>sum+Number(r.rating),0)/rated.length
+  :null;
+
+ const topGenre=statsTopGenre(rows);
+
+ const top5=[...rated]
+  .sort((a,b)=>
+   Number(b.rating)-Number(a.rating)
+   || new Date(b.completed_at)-new Date(a.completed_at)
+  )
+  .slice(0,5)
+  .map(r=>({
+   title:reviewAnime(r)?.title||'삭제된 작품',
+   rating:Number(r.rating)
+  }));
+
+ return {rows,rated,avg,topGenre,top5};
+}
+
+function availableCompletionYears(){
+ const years=new Set([new Date().getFullYear()]);
+
+ for(const r of myReviewData){
+  const d=completedDate(r);
+  if(d)years.add(d.getFullYear());
+ }
+
+ return [...years].sort((a,b)=>b-a);
+}
+
 async function renderStats(){
- const allReviews=animeData.flatMap(a=>(a.user_anime||[]).map(r=>({...r,anime:a})));
- const my=allReviews.filter(r=>r.user_id===session.user.id);
- const myRated=my.filter(r=>r.rating!==null);
- const myAvg=myRated.length?myRated.reduce((s,r)=>s+Number(r.rating),0)/myRated.length:null;
+ const completed=myReviewData.filter(r=>completedDate(r));
+ const rated=myReviewData.filter(r=>r.rating!==null);
+ const myAvg=rated.length
+  ?rated.reduce((sum,r)=>sum+Number(r.rating),0)/rated.length
+  :null;
+
+ const now=new Date();
+ const currentMonth=monthKey(now);
+ const thisMonthCount=completed.filter(r=>monthKey(completedDate(r))===currentMonth).length;
+
  const [{count:userCount},{count:charCount}]=await Promise.all([
   sb.from('profiles').select('*',{count:'exact',head:true}),
   sb.from('characters').select('*',{count:'exact',head:true})
  ]);
- const topVoices=voiceData.map(v=>({name:v.name,count:(v.character_cast||[]).length})).sort((a,b)=>b.count-a.count).slice(0,10);
- const yearCounts={};for(const r of my){const y=r.anime?.year;if(y)yearCounts[y]=(yearCounts[y]||0)+1;}
- const years=Object.entries(yearCounts).sort((a,b)=>Number(b[0])-Number(a[0])).slice(0,12);const maxYear=Math.max(1,...years.map(x=>x[1]));
+
+ const topVoices=voiceData
+  .map(v=>({id:v.id,name:v.name,count:(v.character_cast||[]).length}))
+  .sort((a,b)=>b.count-a.count)
+  .slice(0,10);
+
+ // 연도별 시청 완료
+ const yearCounts={};
+ for(const r of completed){
+  const y=completedDate(r).getFullYear();
+  yearCounts[y]=(yearCounts[y]||0)+1;
+ }
+ const years=Object.entries(yearCounts)
+  .sort((a,b)=>Number(b[0])-Number(a[0]));
+ const maxYear=Math.max(1,...years.map(x=>x[1]));
+
+ // 최근 12개월 평균 평점 변화
+ const monthRated={};
+ for(const r of completed){
+  if(r.rating===null)continue;
+  const key=monthKey(completedDate(r));
+  if(!monthRated[key])monthRated[key]=[];
+  monthRated[key].push(Number(r.rating));
+ }
+
+ const recentMonthKeys=[];
+ const cursor=new Date(now.getFullYear(),now.getMonth(),1);
+
+ for(let i=11;i>=0;i--){
+  const d=new Date(cursor.getFullYear(),cursor.getMonth()-i,1);
+  recentMonthKeys.push(monthKey(d));
+ }
+
+ const ratingTrend=recentMonthKeys
+  .map(key=>{
+   const values=monthRated[key]||[];
+   return {
+    key,
+    avg:values.length?values.reduce((a,b)=>a+b,0)/values.length:null,
+    count:values.length
+   };
+  })
+  .filter(x=>x.count>0);
+
+ // 최근 6개월 장르 취향
+ const genreTrend=[];
+ for(let i=5;i>=0;i--){
+  const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+  const key=monthKey(d);
+  const rows=completed.filter(r=>monthKey(completedDate(r))===key);
+  const top=statsTopGenre(rows);
+
+  genreTrend.push({
+   key,
+   genre:top?.[0]||null,
+   count:top?.[1]||0,
+   watched:rows.length
+  });
+ }
+
+ const completionYears=availableCompletionYears();
+ const defaultYear=completionYears.includes(now.getFullYear())
+  ?now.getFullYear()
+  :completionYears[0];
+
+ const currentAnnual=annualStats(defaultYear);
+
  $('#statsContent').innerHTML=`
+  <div class="stats-head">
+   <div>
+    <h2 style="margin:0">내 통계</h2>
+    <div class="meta" style="margin-top:5px">시청 완료 시점을 기준으로 기록합니다.</div>
+   </div>
+   <div class="stats-head-actions">
+    <select id="statsYearSelect">
+     ${completionYears.map(y=>`<option value="${y}" ${y===defaultYear?'selected':''}>${y}년</option>`).join('')}
+    </select>
+    <button id="openAnnualWrapBtn" class="primary">📤 연간 결산 카드</button>
+   </div>
+  </div>
+
   <div class="stat-grid">
    <div class="stat-box"><div class="meta">공용 작품</div><div class="stat-value">${animeData.length}</div></div>
-   <div class="stat-box"><div class="meta">성우</div><div class="stat-value">${voiceData.length}</div></div>
-   <div class="stat-box"><div class="meta">캐릭터</div><div class="stat-value">${charCount??'-'}</div></div>
    <div class="stat-box"><div class="meta">사용자</div><div class="stat-value">${userCount??'-'}</div></div>
-   <div class="stat-box"><div class="meta">내 기록</div><div class="stat-value">${my.length}</div></div>
+   <div class="stat-box"><div class="meta">내 시청 완료</div><div class="stat-value">${completed.length}</div></div>
+   <div class="stat-box"><div class="meta">이번 달 시청 완료</div><div class="stat-value">${thisMonthCount}</div></div>
    <div class="stat-box"><div class="meta">내 평균 평점</div><div class="stat-value">${myAvg!==null?myAvg.toFixed(2):'-'}</div></div>
+   <div class="stat-box"><div class="meta">캐릭터</div><div class="stat-value">${charCount??'-'}</div></div>
   </div>
+
   <div class="grid">
-   <div class="panel"><h3 style="margin-top:0">내 연도별 시청 기록</h3>${years.map(([y,c])=>`<div class="bar-row"><span>${y}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c/maxYear*100)}%"></div></div><b>${c}</b></div>`).join('')||'<div class="meta">기록 없음</div>'}</div>
-   <div class="panel"><h3 style="margin-top:0">등록 출연 많은 성우 TOP 10</h3>${topVoices.map((v,i)=>`<div class="listrow row"><span>#${i+1} <b class="voice-name" onclick="openVoiceProfile('${voiceData.find(x=>x.name===v.name)?.id}')">${esc(v.name)}</b></span><span>${v.count}개</span></div>`).join('')||'<div class="meta">성우 데이터 없음</div>'}</div>
+   <div class="panel">
+    <h3 style="margin-top:0">내가 본 작품의 연도별 기록</h3>
+    ${years.length
+      ?years.map(([y,c])=>`<div class="bar-row"><span>${y}년</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c/maxYear*100)}%"></div></div><b>${c}</b></div>`).join('')
+      :'<div class="meta">시청 완료 기록이 없습니다.</div>'}
+   </div>
+
+   <div class="panel">
+    <h3 style="margin-top:0">월별 평균 평점 변화</h3>
+    <div class="meta" style="margin-bottom:8px">해당 월에 시청 완료한 작품의 현재 평점을 기준으로 계산합니다.</div>
+    ${ratingTrend.length
+      ?ratingTrend.map(x=>`<div class="bar-row"><span>${monthLabel(x.key)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.round(x.avg/5*100)}%"></div></div><b>★ ${x.avg.toFixed(2)}</b></div>`).join('')
+      :'<div class="meta">표시할 평점 기록이 없습니다.</div>'}
+   </div>
+
+   <div class="panel">
+    <h3 style="margin-top:0">최근 장르 취향 변화</h3>
+    ${genreTrend.map(x=>`<div class="trend-row row"><span>${monthLabel(x.key)}</span><span>${x.genre?`<b>${esc(x.genre)}</b> · ${x.count}작품`:'기록 없음'}</span></div>`).join('')}
+   </div>
+
+   <div class="panel">
+    <h3 id="annualTop5Title" style="margin-top:0">${defaultYear}년 가장 높게 평가한 작품 TOP 5</h3>
+    <div id="annualTop5List">
+     ${annualTop5HTML(currentAnnual.top5)}
+    </div>
+   </div>
+
+   <div class="panel">
+    <h3 style="margin-top:0">등록 출연 많은 성우 TOP 10</h3>
+    ${topVoices.map((v,i)=>`<div class="listrow row"><span>#${i+1} <b class="voice-name" onclick="openVoiceProfile('${v.id}')">${esc(v.name)}</b></span><span>${v.count}개</span></div>`).join('')||'<div class="meta">성우 데이터가 없습니다.</div>'}
+   </div>
   </div>`;
+
+ $('#statsYearSelect').onchange=()=>{
+  const year=Number($('#statsYearSelect').value);
+  const stats=annualStats(year);
+  $('#annualTop5Title').textContent=`${year}년 가장 높게 평가한 작품 TOP 5`;
+  $('#annualTop5List').innerHTML=annualTop5HTML(stats.top5);
+ };
+
+ $('#openAnnualWrapBtn').onclick=async()=>{
+  const year=Number($('#statsYearSelect').value);
+  await drawAnnualWrapCard(year);
+  $('#annualWrapDialogTitle').textContent=`${year}년 애니노트 결산`;
+  $('#annualWrapDialog').showModal();
+ };
 }
+
+function annualTop5HTML(top5){
+ return top5.length
+  ?`<ol class="wrap-top5">${top5.map(x=>`<li><b class="link">${esc(x.title)}</b> <span class="star">★ ${x.rating.toFixed(1)}</span></li>`).join('')}</ol>`
+  :'<div class="meta">해당 연도에 평점을 남긴 시청 완료 작품이 없습니다.</div>';
+}
+
+async function drawAnnualWrapCard(year){
+ const canvas=$('#annualWrapCanvas');
+ const ctx=canvas.getContext('2d');
+ const W=canvas.width,H=canvas.height;
+ const stats=annualStats(year);
+
+ ctx.clearRect(0,0,W,H);
+ ctx.fillStyle='#0f141c';
+ ctx.fillRect(0,0,W,H);
+
+ const grad=ctx.createLinearGradient(0,0,W,H);
+ grad.addColorStop(0,'rgba(124,92,255,.45)');
+ grad.addColorStop(1,'rgba(40,195,165,.12)');
+ ctx.fillStyle=grad;
+ ctx.fillRect(0,0,W,H);
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='800 48px sans-serif';
+ ctx.fillText('📒 애니노트',70,78);
+
+ ctx.fillStyle='#c4b5fd';
+ ctx.font='900 36px sans-serif';
+ ctx.fillText(`${year}년 결산`,72,127);
+
+ ctx.fillStyle='#dbe4f0';
+ ctx.font='600 22px sans-serif';
+ ctx.fillText(
+  currentProfile?.display_name||currentProfile?.username||'사용자',
+  74,
+  164
+ );
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='900 78px sans-serif';
+ ctx.fillText(String(stats.rows.length),72,270);
+
+ ctx.fillStyle='#aab4c4';
+ ctx.font='600 21px sans-serif';
+ ctx.fillText('시청 완료 작품',76,305);
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='900 58px sans-serif';
+ ctx.fillText(stats.avg!==null?stats.avg.toFixed(2):'-',390,265);
+
+ ctx.fillStyle='#ffd166';
+ ctx.font='700 21px sans-serif';
+ ctx.fillText('★ 평균 평점',392,303);
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='900 42px sans-serif';
+ ctx.fillText(stats.topGenre?.[0]||'-',680,260);
+
+ ctx.fillStyle='#aab4c4';
+ ctx.font='600 21px sans-serif';
+ ctx.fillText(
+  stats.topGenre?`최다 장르 · ${stats.topGenre[1]}작품`:'최다 장르',
+  682,
+  300
+ );
+
+ ctx.fillStyle='#ffffff';
+ ctx.font='800 25px sans-serif';
+ ctx.fillText('올해 가장 높게 평가한 작품 TOP 5',72,378);
+
+ ctx.font='600 21px sans-serif';
+ ctx.fillStyle='#dbe4f0';
+
+ const rows=stats.top5.length
+  ?stats.top5
+  :[{title:'평점 기록 없음',rating:null}];
+
+ rows.forEach((item,i)=>{
+  const title=String(item.title).slice(0,34);
+  const rating=item.rating!==null?`  ★ ${item.rating.toFixed(1)}`:'';
+  ctx.fillText(`${i+1}. ${title}${rating}`,78,420+i*42);
+ });
+
+ ctx.fillStyle='#768196';
+ ctx.font='500 17px sans-serif';
+ ctx.fillText('aninote · v1.7.0',72,635);
+}
+
+function annualWrapBlob(){
+ return new Promise(resolve=>{
+  $('#annualWrapCanvas').toBlob(resolve,'image/png',0.95);
+ });
+}
+
+$('#closeAnnualWrapDialog').onclick=()=>$('#annualWrapDialog').close();
+
+$('#downloadAnnualWrapBtn').onclick=async()=>{
+ const blob=await annualWrapBlob();
+ if(!blob)return;
+
+ const year=$('#statsYearSelect')?.value||new Date().getFullYear();
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;
+ a.download=`aninote-${year}-wrap.png`;
+ a.click();
+
+ setTimeout(()=>URL.revokeObjectURL(url),1200);
+};
+
+$('#shareAnnualWrapBtn').onclick=async()=>{
+ const blob=await annualWrapBlob();
+ if(!blob)return;
+
+ const year=$('#statsYearSelect')?.value||new Date().getFullYear();
+ const file=new File(
+  [blob],
+  `aninote-${year}-wrap.png`,
+  {type:'image/png'}
+ );
+
+ if(navigator.canShare?.({files:[file]})){
+  try{
+   await navigator.share({
+    title:`${year}년 애니노트 결산`,
+    text:`${year}년 애니 기록`,
+    files:[file]
+   });
+  }catch(e){
+   if(e.name!=='AbortError')console.warn(e);
+  }
+ }else{
+  $('#downloadAnnualWrapBtn').click();
+ }
+};
+
+
 document.querySelectorAll('.tabs button').forEach(btn=>btn.onclick=()=>{
  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
