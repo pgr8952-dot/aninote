@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.9.5 ===== */
+/* ===== v1.9.6 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.9.5 1차 · 설정/운영 ===== */
+/* ===== v1.9.6 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.9.5 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.9.6 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.9.5 · 알림 / 채팅 ===== */
+/* ===== v1.9.6 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -450,7 +450,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 }
 
 
-/* ===== v1.9.5 ===== */
+/* ===== v1.9.6 ===== */
 .notification-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .notification-delete{padding:4px 7px;font-size:11px;line-height:1}
 .unread-chat-pill{
@@ -473,7 +473,7 @@ body.light-mode .friend-rating-row,
 body.light-mode .trend-row{border-color:#d6dde8}
 
 
-/* ===== v1.9.5 ===== */
+/* ===== v1.9.6 ===== */
 .genre-edit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#11151d}
 .genre-edit-details summary{cursor:pointer;font-weight:800;color:#c4b5fd}
 .genre-edit-details .genre-picker{margin-top:10px}
@@ -491,7 +491,7 @@ body.light-mode .review-limit-message{background:#fff1f2;border-color:#fecdd3;co
 body.light-mode .review-editing-note{color:#6d28d9}
 
 
-/* ===== v1.9.5 ===== */
+/* ===== v1.9.6 ===== */
 .admin-overview-grid{
  display:grid;
  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -590,7 +590,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
 }
 
 
-/* ===== v1.9.5 · 몬스터 러시 ===== */
+/* ===== v1.9.6 · 몬스터 러시 ===== */
 .monster-rush-modal{max-width:760px}
 .monster-rush-intro{
  display:flex;
@@ -794,24 +794,24 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
 }
 
 
-/* v1.9.5 · 애니 탭 상단 미니게임 카드 */
+/* v1.9.6 · 애니 탭 상단 컴팩트 미니게임 카드 */
 .anime-home-feature-grid{
  display:grid;
- grid-template-columns:minmax(0,1fr) minmax(285px,340px);
- gap:14px;
- align-items:stretch;
+ grid-template-columns:minmax(0,1fr) 240px;
+ gap:12px;
+ align-items:start;
  margin-bottom:14px;
 }
 .anime-home-feature-grid .recommend-inline{
  margin-bottom:0;
  min-width:0;
- height:100%;
 }
 .monster-rush-home-card{
  min-width:0;
+ padding:14px 15px;
  display:flex;
  flex-direction:column;
- justify-content:space-between;
+ gap:12px;
  overflow:hidden;
  position:relative;
  cursor:pointer;
@@ -819,60 +819,49 @@ body.light-mode .monster-rush-attack-track{background:#edf1f7;border-color:#d6dd
 .monster-rush-home-card::after{
  content:'';
  position:absolute;
- right:-42px;
- top:-44px;
- width:132px;
- height:132px;
+ right:-34px;
+ top:-38px;
+ width:100px;
+ height:100px;
  border-radius:50%;
- background:rgba(139,92,246,.10);
+ background:rgba(139,92,246,.09);
  pointer-events:none;
 }
 .monster-rush-home-main{
  position:relative;
  z-index:1;
 }
+.monster-rush-home-heading{
+ display:flex;
+ align-items:center;
+ gap:9px;
+}
 .monster-rush-home-icon{
- font-size:48px;
+ font-size:29px;
  line-height:1;
- margin-bottom:14px;
+ flex:0 0 auto;
 }
 .monster-rush-home-title{
- font-size:20px;
+ font-size:16px;
  font-weight:900;
- letter-spacing:-.3px;
+ letter-spacing:-.2px;
 }
 .monster-rush-home-sub{
  margin-top:7px;
  color:var(--muted);
- font-size:12px;
- line-height:1.55;
-}
-.monster-rush-home-tags{
- display:flex;
- gap:6px;
- flex-wrap:wrap;
- margin-top:14px;
-}
-.monster-rush-home-tag{
- border:1px solid var(--line);
- border-radius:999px;
- padding:5px 8px;
  font-size:11px;
- color:#cbd5e1;
- background:#151a24;
+ line-height:1.45;
 }
 .monster-rush-home-actions{
  position:relative;
  z-index:1;
- margin-top:18px;
+ margin-top:0;
 }
 .monster-rush-home-actions button{
  width:100%;
-}
-body.light-mode .monster-rush-home-tag{
- background:#f7f8fb;
- color:#475569;
- border-color:#d6dde8;
+ min-height:36px;
+ padding:7px 10px;
+ font-size:12px;
 }
 
 @media(max-width:950px){
@@ -880,21 +869,8 @@ body.light-mode .monster-rush-home-tag{
   grid-template-columns:1fr;
  }
  .monster-rush-home-card{
-  min-height:220px;
- }
-}
-
-@media(min-width:1640px){
- .anime-home-feature-grid{
-  display:block;
- }
- .anime-home-feature-grid .recommend-inline{
-  display:none;
- }
- .monster-rush-home-card{
-  width:min(340px,100%);
-  min-height:230px;
-  margin-left:auto;
+  width:100%;
+  max-width:none;
  }
 }
 
@@ -937,7 +913,7 @@ body.light-mode .monster-rush-home-tag{
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.9.5</div>
+    <div class="app-version">v1.9.6</div>
     
    </div>
    <div class="global-search-wrap">
@@ -997,14 +973,11 @@ body.light-mode .monster-rush-home-tag{
 
    <div id="monsterRushHomeCard" class="monster-rush-home-card panel" role="button" tabindex="0" aria-label="몬스터 러시 열기">
     <div class="monster-rush-home-main">
-     <div class="monster-rush-home-icon">👾</div>
-     <div class="monster-rush-home-title">몬스터 러시</div>
-     <div class="monster-rush-home-sub">60초 동안 몰려오는 몬스터에 대응하고 최고 기록에 도전해보세요.</div>
-     <div class="monster-rush-home-tags">
-      <span class="monster-rush-home-tag">⏱️ 60초</span>
-      <span class="monster-rush-home-tag">♥ 목숨 5개</span>
-      <span class="monster-rush-home-tag">🏆 전체 랭킹</span>
+     <div class="monster-rush-home-heading">
+      <div class="monster-rush-home-icon">👾</div>
+      <div class="monster-rush-home-title">몬스터 러시</div>
      </div>
+     <div class="monster-rush-home-sub">60초 점수 어택 · 전체 랭킹</div>
     </div>
     <div class="monster-rush-home-actions">
      <button id="openMonsterRushHomeBtn" class="primary">게임 시작</button>
@@ -1350,7 +1323,7 @@ body.light-mode .monster-rush-home-tag{
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.9.5</span>
+  <span>애니노트 v1.9.6</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1918,7 +1891,7 @@ body.light-mode .monster-rush-home-tag{
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.9.5</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.9.6</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -2712,7 +2685,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.9.5 · 대표 최애 / 프로필 / 배지
+// v1.9.6 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -3012,7 +2985,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.9.5 · 친구
+// v1.9.6 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -3406,7 +3379,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.9.5 · 취향 일치도
+// v1.9.6 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -3470,7 +3443,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.9.5 · 공개 프로필 관계 버튼
+// v1.9.6 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -3548,7 +3521,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.9.5 · 공유 카드
+// v1.9.6 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -3648,7 +3621,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.9.5',72,630);
+ ctx.fillText('aninote · v1.9.6',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -3704,7 +3677,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.9.5 · 크레딧
+// v1.9.6 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -6028,7 +6001,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.9.5 · 알림
+// v1.9.6 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -6199,7 +6172,7 @@ $('#deleteAllNotificationsBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.9.5 · 친구 1:1 채팅
+// v1.9.6 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -6366,7 +6339,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.9.5 · 배지 획득 알림 동기화
+// v1.9.6 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -6401,7 +6374,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.9.5 · Supabase Realtime
+// v1.9.6 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -7093,7 +7066,7 @@ $('#adminUserBanFilter').addEventListener('change',()=>{adminUsersPage=1;renderA
 
 
 // ============================================================
-// v1.9.5 이스터에그 · 몬스터 러시
+// v1.9.6 이스터에그 · 몬스터 러시
 // - 목숨 5개
 // - 2.5초 내 미대응 시 적 공격
 // - 계정별 최고기록 + TOP 10 랭킹
@@ -8599,7 +8572,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.9.5',
+   version:'1.9.6',
    exported_at:new Date().toISOString(),
    tables:{}
   };
@@ -8948,7 +8921,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.9.5',72,635);
+ ctx.fillText('aninote · v1.9.6',72,635);
 }
 
 function annualWrapBlob(){
