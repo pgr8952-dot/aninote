@@ -185,7 +185,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.5.6 ===== */
+/* ===== v1.6.0 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -216,7 +216,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.5.6 1차 · 설정/운영 ===== */
+/* ===== v1.6.0 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -343,7 +343,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.5.6 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.6.0 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -411,6 +411,43 @@ body.light-mode .credit-manage-row button{background:#fff;color:#1f2937;border-c
 body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
+
+/* ===== v1.6.0 · 알림 / 채팅 ===== */
+.notification-button{position:relative;min-width:42px}
+.notification-count{
+ position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
+ display:flex;align-items:center;justify-content:center;border-radius:999px;
+ background:#ef4444;color:#fff;font-size:10px;font-weight:900;border:2px solid var(--bg)
+}
+.notification-item{padding:12px;border:1px solid var(--line);border-radius:13px;margin-top:8px;cursor:pointer;background:#11151d}
+.notification-item:hover{border-color:#566176}
+.notification-item.unread{background:#171d2b;border-color:#6e5cc4}
+.notification-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.notification-title{font-weight:900}
+.notification-body{margin-top:5px;line-height:1.5}
+.notification-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;flex:0 0 auto;margin-top:6px}
+.chat-messages{
+ height:min(52vh,520px);overflow:auto;padding:12px;border:1px solid var(--line);
+ border-radius:14px;background:#0f131b;display:flex;flex-direction:column;gap:9px
+}
+.chat-message{max-width:min(78%,520px);padding:9px 11px;border-radius:14px;line-height:1.5;word-break:break-word}
+.chat-message.mine{align-self:flex-end;background:#6d4bd3;color:#fff;border-bottom-right-radius:5px}
+.chat-message.other{align-self:flex-start;background:#202735;border:1px solid #313b4d;border-bottom-left-radius:5px}
+.chat-meta{font-size:10px;opacity:.7;margin-top:4px}
+.chat-compose{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.chat-compose textarea{min-height:54px;max-height:140px}
+.notification-settings .setting-line{grid-template-columns:1fr minmax(130px,180px)}
+body.light-mode .notification-count{border-color:#fff}
+body.light-mode .notification-item{background:#fff;border-color:#d6dde8;color:#1f2937}
+body.light-mode .notification-item.unread{background:#f4f0ff;border-color:#9d87e8}
+body.light-mode .chat-messages{background:#f6f8fb;border-color:#d6dde8}
+body.light-mode .chat-message.other{background:#fff;border-color:#d6dde8;color:#1f2937}
+body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
+@media(max-width:700px){
+ .notification-button{min-width:40px}
+ .chat-message{max-width:88%}
+}
+
 </style>
 </head>
 <body>
@@ -450,7 +487,7 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.5.6</div>
+    <div class="app-version">v1.6.0</div>
     
    </div>
    <div class="global-search-wrap">
@@ -460,6 +497,10 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
    <div class="row">
     <span id="adminBadge" class="badge admin-badge hidden">관리자</span>
     <span id="whoami" class="meta"></span>
+    <button id="notificationBtn" class="small notification-button" title="알림" aria-label="알림">
+     🔔
+     <span id="notificationCount" class="notification-count hidden">0</span>
+    </button>
     <button id="openSettingsBtn" class="small">⚙ 설정</button>
     <button id="logoutBtn" class="small">로그아웃</button>
    </div>
@@ -621,13 +662,20 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
     <div class="setting-line"><div><b>글자 크기</b></div><select id="settingFontScale"><option value="0.9">작게</option><option value="1">기본</option><option value="1.12">크게</option><option value="1.25">매우 크게</option></select></div>
    </div>
    <div class="setting-card"><h3 style="margin-top:0">콘텐츠</h3>
-    <div class="setting-line"><div><b>19금 작품 표시</b><div class="meta">끄면 목록·검색·추천·랭킹에서 숨겨.</div></div><select id="settingShowAdult"><option value="false">숨기기</option><option value="true">보이기</option></select></div>
+    <div class="setting-line"><div><b>19금 작품 표시</b><div class="meta">끄면 목록·검색·추천·랭킹에서 숨겨집니다.</div></div><select id="settingShowAdult"><option value="false">숨기기</option><option value="true">보이기</option></select></div>
    </div>
    <div class="setting-card"><h3 style="margin-top:0">친구 / 공개 범위</h3>
     <div class="setting-line"><div><b>친구 요청</b></div><select id="settingFriendMode"><option value="everyone">모두 허용</option><option value="friends_of_friends">친구의 친구만</option><option value="nobody">받지 않음</option></select></div>
     <div class="setting-line"><div><b>프로필 공개</b></div><select id="settingProfileVisibility"><option value="everyone">로그인 유저 전체</option><option value="friends">친구만</option></select></div>
     <div class="setting-line"><div><b>감상 공개</b></div><select id="settingReviewsVisibility"><option value="everyone">로그인 유저 전체</option><option value="friends">친구만</option><option value="private">나만</option></select></div>
     <div class="setting-line"><div><b>즐겨찾기 공개</b></div><select id="settingFavoritesVisibility"><option value="everyone">로그인 유저 전체</option><option value="friends">친구만</option><option value="private">나만</option></select></div>
+   </div>
+   <div class="setting-card notification-settings"><h3 style="margin-top:0">알림</h3>
+    <div class="setting-line"><div><b>친구 채팅</b><div class="meta">친구에게 새 메시지가 도착하면 알려드립니다.</div></div><select id="settingNotifyChat"><option value="true">켜기</option><option value="false">끄기</option></select></div>
+    <div class="setting-line"><div><b>친구 요청</b><div class="meta">친구 요청과 수락 결과를 알려드립니다.</div></div><select id="settingNotifyFriendRequests"><option value="true">켜기</option><option value="false">끄기</option></select></div>
+    <div class="setting-line"><div><b>취향 장르 신작</b><div class="meta">많이 본 상위 장르에 새 작품이 등록되면 알려드립니다.</div></div><select id="settingNotifyTasteAnime"><option value="true">켜기</option><option value="false">끄기</option></select></div>
+    <div class="setting-line"><div><b>요청 처리 결과</b><div class="meta">수정 요청·신고·문의 처리 결과를 알려드립니다.</div></div><select id="settingNotifyModeration"><option value="true">켜기</option><option value="false">끄기</option></select></div>
+    <div class="setting-line"><div><b>배지 획득</b><div class="meta">새 배지를 획득하면 알려드립니다.</div></div><select id="settingNotifyBadges"><option value="true">켜기</option><option value="false">끄기</option></select></div>
    </div>
    <div class="setting-card"><h3 style="margin-top:0">계정</h3><div class="row"><button id="settingsLogoutBtn">로그아웃</button><button id="settingsDeleteAccountBtn" class="danger">계정 탈퇴 요청</button></div></div>
   </div>
@@ -718,7 +766,7 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.5.6</span>
+  <span>애니노트 v1.6.0</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1133,13 +1181,15 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.5.6</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.6.0</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
     <li>회원가입·로그인: 이메일 주소, 계정 식별자</li>
     <li>프로필: 아이디(username), 표시 이름, 소개</li>
     <li>서비스 이용정보: 감상, 평점, 시청 상태, 즐겨찾기, 캐릭터 방명록</li>
+    <li>친구 기능: 친구 관계, 차단 정보, 친구 간 채팅 메시지, 메시지 읽음 상태</li>
+    <li>알림 기능: 알림 내용, 읽음 상태, 알림 수신 설정</li>
     <li>운영정보: 수정 요청, 신고, 문의, 활동 로그</li>
     <li>사용자가 직접 등록하는 애니·성우·캐릭터 정보 및 이미지</li>
    </ul>
@@ -1149,7 +1199,7 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
    <ul>
     <li>회원 식별 및 로그인</li>
     <li>개인 감상 기록, 즐겨찾기, 통계 및 취향 추천 제공</li>
-    <li>공개 프로필과 커뮤니티 기능 제공</li>
+    <li>공개 프로필, 친구 간 채팅 및 알림 기능 제공</li>
     <li>신고·수정요청 처리, 서비스 보안 및 운영 기록 관리</li>
    </ul>
 
@@ -1160,7 +1210,7 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
    <div>애니노트는 인증·데이터베이스·파일 저장을 위해 Supabase를, 웹사이트 호스팅과 전송을 위해 Vercel을 사용합니다. 각 서비스 제공 과정에서 보안·운영에 필요한 기술 정보가 처리될 수 있습니다.</div>
 
    <h3>5. 보유 기간과 계정 삭제</h3>
-   <div>회원 정보는 원칙적으로 계정을 사용하는 동안 보관해. 계정 삭제 요청이 처리되면 프로필, 개인 감상, 즐겨찾기, 캐릭터 평점·방명록 등 계정에 연결된 개인 데이터와 해당 이용자의 활동 로그를 정리해.</div>
+   <div>회원 정보는 원칙적으로 계정을 사용하는 동안 보관합니다. 계정 삭제 요청이 처리되면 프로필, 개인 감상, 즐겨찾기, 캐릭터 평점·방명록, 친구 관계, 채팅 메시지 및 알림 등 계정에 연결된 개인 데이터를 정리합니다.</div>
    <div style="margin-top:7px">다만 애니·성우·캐릭터처럼 여러 이용자가 함께 사용하는 <b>공용 DB 기여분은 서비스 데이터의 연속성을 위해 남을 수 있으며</b>, 계정과의 연결 정보는 제거될 수 있습니다.</div>
 
    <h3>6. 계정 삭제 방법</h3>
@@ -1214,6 +1264,41 @@ body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155
  </div>
 </dialog>
 
+
+<dialog id="notificationDialog">
+ <div class="modal">
+  <div class="modal-title-row">
+   <h2>알림</h2>
+   <button id="closeNotificationDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
+  <div class="row">
+   <div class="meta">최근 알림 100개까지 표시합니다.</div>
+   <button id="markAllNotificationsReadBtn" class="small">모두 읽음</button>
+  </div>
+  <div id="notificationList" style="margin-top:10px"></div>
+ </div>
+</dialog>
+
+<dialog id="chatDialog">
+ <div class="modal">
+  <div class="modal-title-row">
+   <div>
+    <h2 id="chatDialogTitle">친구 채팅</h2>
+    <div id="chatDialogSub" class="meta"></div>
+   </div>
+   <button id="closeChatDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
+
+  <div id="chatMessages" class="chat-messages"></div>
+
+  <div class="chat-compose">
+   <textarea id="chatMessageInput" maxlength="1000" placeholder="메시지를 입력해주세요. Shift+Enter로 줄바꿈할 수 있습니다."></textarea>
+   <button id="sendChatMessageBtn" class="primary">전송</button>
+  </div>
+  <div class="meta" style="margin-top:6px">친구 관계가 유지되는 동안 1:1 채팅을 이용할 수 있습니다.</div>
+ </div>
+</dialog>
+
 <button id="scrollTopBtn" class="floating-top hidden" title="맨 위로">↑</button>
 
 <script>
@@ -1255,7 +1340,20 @@ let friendRows=[];
 let friendProfileMap={};
 let currentPublicUserId=null;
 let creditsData=[];
-let appSettings={theme:'dark',font_scale:1,show_adult:false,friend_request_mode:'everyone',profile_visibility:'everyone',reviews_visibility:'everyone',favorites_visibility:'everyone'};
+let appSettings={
+ theme:'dark',
+ font_scale:1,
+ show_adult:false,
+ friend_request_mode:'everyone',
+ profile_visibility:'everyone',
+ reviews_visibility:'everyone',
+ favorites_visibility:'everyone',
+ notify_chat:true,
+ notify_friend_requests:true,
+ notify_taste_anime:true,
+ notify_moderation:true,
+ notify_badges:true
+};
 let duplicateResolver=null;
 let currentCharacterId=null;
 let currentCharacterData=null;
@@ -1265,6 +1363,13 @@ let adminUsersExpanded=false;
 let requestsExpanded=false;
 let auditExpanded=false;
 let requestProfileMap={};
+let notificationData=[];
+let notificationProfileMap={};
+let currentChatUserId=null;
+let currentChatMessages=[];
+let realtimeNotificationChannel=null;
+let realtimeChatChannel=null;
+let badgeSyncBusy=false;
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -1289,6 +1394,7 @@ async function boot(){
 
 function showAuth(){
  stopAutoRefresh();
+ stopRealtime();
  $('#authView').classList.remove('hidden');
  $('#appView').classList.add('hidden');
  $('#scrollTopBtn')?.classList.add('hidden');
@@ -1312,7 +1418,7 @@ async function showApp(){
    await sb.auth.signOut();
    session=null;
    showAuth();
-   $('#authMsg').textContent=`이 계정은 이용이 제한됐어.${banReason?` 사유: ${banReason}`:''}`;
+   $('#authMsg').textContent=`이 계정은 이용이 제한되었습니다.${banReason?` 사유: ${banReason}`:''}`;
    return;
  }
 
@@ -1333,6 +1439,8 @@ async function showApp(){
  await Promise.all([loadAnime(),loadVoices(),loadProfile(),loadFavorites()]);
  await Promise.all([loadMyReviews(),renderMyFavorites(),loadFriends()]);
  renderProfileExtras();
+ await loadNotifications();
+ setupRealtime();
  if(isAdmin){ await loadAdminUsers(); await loadRequests(); await loadAuditLogs(); renderSeriesManager(); }
  renderRanking();
  await renderStats();
@@ -1357,7 +1465,8 @@ async function refreshLiveData(){
    loadVoices(),
    loadMyReviews(),
    loadFavorites(),
-   loadFriends()
+   loadFriends(),
+   loadNotifications()
   ]);
   await renderMyFavorites();
   renderProfileExtras();
@@ -1723,7 +1832,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.5.6 · 대표 최애 / 프로필 / 배지
+// v1.6.0 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2008,17 +2117,21 @@ function renderProfileExtras(){
 
  renderFeaturedEditor();
 
+ const badgeDefs=badgeDefinitionsFor(myReviewData,favoriteData);
+
  if($('#myBadgeWall')){
   $('#myBadgeWall').innerHTML=badgeHTML(
-   badgeDefinitionsFor(myReviewData,favoriteData),
+   badgeDefs,
    true
   );
  }
+
+ syncBadgeNotifications(badgeDefs);
 }
 
 
 // ============================================================
-// v1.5.6 · 친구
+// v1.6.0 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2120,7 +2233,8 @@ function renderFriends(){
       const userId=otherFriendId(r);
       return rowHTML(
        userId,
-       `<button class="small" onclick="removeFriendUser('${userId}')">친구 해제</button>
+       `<button class="small primary" onclick="openChat('${userId}')">💬 채팅</button>
+        <button class="small" onclick="removeFriendUser('${userId}')">친구 해제</button>
         <button class="small danger" onclick="blockUserFromUI('${userId}')">차단</button>`
       );
     }).join('')
@@ -2133,7 +2247,7 @@ window.sendFriendRequest=async userId=>{
  if(error)return alert(error.message);
 
  alert('친구 요청을 전송했습니다.');
- await loadFriends();
+ await Promise.all([loadFriends(),loadNotifications()]);
  await searchFriends();
 
  if(currentPublicUserId===userId){
@@ -2149,7 +2263,7 @@ window.respondFriend=async(requestId,accept)=>{
 
  if(error)return alert(error.message);
 
- await loadFriends();
+ await Promise.all([loadFriends(),loadNotifications()]);
 
  if(currentPublicUserId){
   await renderPublicRelationship(currentPublicUserId);
@@ -2242,7 +2356,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.5.6 · 취향 일치도
+// v1.6.0 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2292,7 +2406,7 @@ function tasteMatchHTML(match){
  }
 
  if(!match.enough){
-  return `<b>취향 일치도</b><div class="meta" style="margin-top:4px">공통 평가 ${match.count}개 · 10개 이상부터 일치도를 표시해.</div>`;
+  return `<b>취향 일치도</b><div class="meta" style="margin-top:4px">공통 평가 ${match.count}개 · 10개 이상부터 일치도를 표시합니다.</div>`;
  }
 
  return `<div class="row">
@@ -2306,7 +2420,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.5.6 · 공개 프로필 관계 버튼
+// v1.6.0 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -2357,7 +2471,9 @@ async function renderPublicRelationship(userId,accessOverride=null){
  let friendAction='';
 
  if(relation?.status==='accepted'){
-  friendAction=`<button class="small" onclick="removeFriendUser('${userId}')">친구 해제</button>`;
+  friendAction=
+   `<button class="small primary" onclick="openChat('${userId}')">💬 채팅</button>
+    <button class="small" onclick="removeFriendUser('${userId}')">친구 해제</button>`;
  }else if(relation?.status==='pending' && relation.sender_id===session.user.id){
   friendAction='<span class="meta">친구 요청 보냄</span>';
  }else if(relation?.status==='pending' && relation.receiver_id===session.user.id){
@@ -2382,7 +2498,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.5.6 · 공유 카드
+// v1.6.0 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -2482,7 +2598,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.5.6',72,630);
+ ctx.fillText('aninote · v1.6.0',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -2538,7 +2654,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.5.6 · 크레딧
+// v1.6.0 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -4542,6 +4658,430 @@ function openRequest(type,targetType,targetId,targetLabel){
 window.openRequest=openRequest;
 
 
+
+// ============================================================
+// v1.6.0 · 알림
+// ============================================================
+
+function notificationIcon(type){
+ return {
+  chat:'💬',
+  friend_request:'🤝',
+  friend_accept:'✅',
+  taste_anime:'🎬',
+  moderation:'📬',
+  badge:'🏅',
+  system:'🔔'
+ }[type]||'🔔';
+}
+
+function notificationActorName(id){
+ if(!id)return '';
+ const p=notificationProfileMap[id];
+ return p?.display_name||p?.username||'사용자';
+}
+
+function updateNotificationBadge(){
+ const unread=notificationData.filter(x=>!x.read_at).length;
+ const badge=$('#notificationCount');
+
+ if(!badge)return;
+
+ badge.textContent=unread>99?'99+':String(unread);
+ badge.classList.toggle('hidden',unread===0);
+}
+
+async function loadNotifications(){
+ if(!session)return;
+
+ const {data,error}=await sb.from('notifications')
+  .select('*')
+  .eq('user_id',session.user.id)
+  .order('created_at',{ascending:false})
+  .limit(100);
+
+ if(error){
+  console.warn('알림 불러오기 실패:',error.message);
+  return;
+ }
+
+ notificationData=data||[];
+
+ const actorIds=[...new Set(
+  notificationData.map(x=>x.actor_id).filter(Boolean)
+ )];
+
+ notificationProfileMap={};
+
+ if(actorIds.length){
+  const {data:profiles}=await sb.from('profiles')
+   .select('id,username,display_name')
+   .in('id',actorIds);
+
+  notificationProfileMap=Object.fromEntries(
+   (profiles||[]).map(p=>[p.id,p])
+  );
+ }
+
+ updateNotificationBadge();
+ renderNotifications();
+}
+
+function renderNotifications(){
+ const box=$('#notificationList');
+ if(!box)return;
+
+ if(!notificationData.length){
+  box.innerHTML='<div class="meta">아직 알림이 없습니다.</div>';
+  return;
+ }
+
+ box.innerHTML=notificationData.map(n=>{
+  const actor=notificationActorName(n.actor_id);
+  const when=new Date(n.created_at).toLocaleString('ko-KR');
+  const actorLine=actor?`<div class="meta">${esc(actor)}</div>`:'';
+
+  return `<div class="notification-item ${n.read_at?'':'unread'}" onclick="openNotificationItem('${n.id}')">
+   <div class="notification-top">
+    <div style="display:flex;gap:9px;align-items:flex-start">
+     <div style="font-size:20px">${notificationIcon(n.notification_type)}</div>
+     <div>
+      <div class="notification-title">${esc(n.title)}</div>
+      ${actorLine}
+     </div>
+    </div>
+    ${n.read_at?'':'<span class="notification-dot"></span>'}
+   </div>
+   ${n.body?`<div class="notification-body">${esc(n.body)}</div>`:''}
+   <div class="meta" style="margin-top:6px">${esc(when)}</div>
+  </div>`;
+ }).join('');
+}
+
+window.openNotificationItem=async id=>{
+ const n=notificationData.find(x=>x.id===id);
+ if(!n)return;
+
+ if(!n.read_at){
+  await sb.rpc('mark_notification_read',{notification_id:id});
+  n.read_at=new Date().toISOString();
+  updateNotificationBadge();
+  renderNotifications();
+ }
+
+ if(n.notification_type==='chat' && n.actor_id){
+  $('#notificationDialog').close();
+  await openChat(n.actor_id);
+  return;
+ }
+
+ if(n.notification_type==='friend_request' || n.notification_type==='friend_accept'){
+  $('#notificationDialog').close();
+  [...document.querySelectorAll('.tabs button')]
+   .find(b=>b.dataset.tab==='friends')?.click();
+  return;
+ }
+
+ if(n.notification_type==='taste_anime' && n.anime_id){
+  $('#notificationDialog').close();
+  openAnime(n.anime_id);
+  return;
+ }
+
+ if(n.notification_type==='badge'){
+  $('#notificationDialog').close();
+  [...document.querySelectorAll('.tabs button')]
+   .find(b=>b.dataset.tab==='profile')?.click();
+ }
+};
+
+$('#notificationBtn').onclick=async()=>{
+ await loadNotifications();
+ $('#notificationDialog').showModal();
+};
+
+$('#closeNotificationDialog').onclick=()=>$('#notificationDialog').close();
+
+$('#markAllNotificationsReadBtn').onclick=async()=>{
+ const {error}=await sb.rpc('mark_all_notifications_read');
+ if(error)return alert(error.message);
+ await loadNotifications();
+};
+
+
+// ============================================================
+// v1.6.0 · 친구 1:1 채팅
+// ============================================================
+
+function currentChatPartnerName(){
+ return friendLabel(currentChatUserId);
+}
+
+async function markChatNotificationsRead(userId){
+ const unread=notificationData.filter(n=>
+  n.notification_type==='chat'
+  && n.actor_id===userId
+  && !n.read_at
+ );
+
+ if(!unread.length)return;
+
+ await Promise.all(
+  unread.map(n=>sb.rpc('mark_notification_read',{
+   notification_id:n.id
+  }))
+ );
+
+ for(const n of unread){
+  n.read_at=new Date().toISOString();
+ }
+
+ updateNotificationBadge();
+ renderNotifications();
+}
+
+async function loadChatMessages(){
+ if(!session || !currentChatUserId)return;
+
+ const {data,error}=await sb.rpc('get_chat_messages',{
+  target_user:currentChatUserId,
+  limit_count:100
+ });
+
+ if(error){
+  $('#chatMessages').innerHTML=`<div class="notice">${esc(error.message)}</div>`;
+  return;
+ }
+
+ currentChatMessages=data||[];
+ renderChatMessages();
+}
+
+function renderChatMessages(){
+ const box=$('#chatMessages');
+ if(!box)return;
+
+ if(!currentChatMessages.length){
+  box.innerHTML='<div class="meta">아직 주고받은 메시지가 없습니다. 첫 메시지를 보내보세요.</div>';
+  return;
+ }
+
+ box.innerHTML=currentChatMessages.map(m=>{
+  const mine=m.sender_id===session.user.id;
+  const time=new Date(m.created_at).toLocaleString('ko-KR',{
+   month:'numeric',
+   day:'numeric',
+   hour:'2-digit',
+   minute:'2-digit'
+  });
+
+  const readLabel=mine
+   ?` · ${m.read_at?'읽음':'안 읽음'}`
+   :'';
+
+  return `<div class="chat-message ${mine?'mine':'other'}">
+   <div>${esc(m.body).replace(/\n/g,'<br>')}</div>
+   <div class="chat-meta">${esc(time)}${readLabel}</div>
+  </div>`;
+ }).join('');
+
+ box.scrollTop=box.scrollHeight;
+}
+
+window.openChat=async userId=>{
+ if(!session || !userId)return;
+
+ const relation=relationRowFor(userId);
+
+ if(!relation || relation.status!=='accepted'){
+  alert('친구와만 채팅할 수 있습니다.');
+  return;
+ }
+
+ currentChatUserId=userId;
+
+ if($('#publicProfileDialog')?.open){
+  $('#publicProfileDialog').close();
+ }
+
+ $('#chatDialogTitle').textContent=`${friendLabel(userId)}님과의 채팅`;
+ $('#chatDialogSub').textContent='최근 메시지 100개를 표시합니다.';
+ $('#chatMessageInput').value='';
+ $('#chatMessages').innerHTML='<div class="meta">채팅을 불러오는 중입니다...</div>';
+ $('#chatDialog').showModal();
+
+ await loadChatMessages();
+
+ await sb.rpc('mark_chat_read',{
+  target_user:userId
+ });
+
+ await loadNotifications();
+ await markChatNotificationsRead(userId);
+ await loadChatMessages();
+};
+
+async function sendCurrentChatMessage(){
+ if(!currentChatUserId)return;
+
+ const input=$('#chatMessageInput');
+ const body=input.value.trim();
+
+ if(!body)return;
+
+ const btn=$('#sendChatMessageBtn');
+ btn.disabled=true;
+
+ const {error}=await sb.rpc('send_chat_message',{
+  target_user:currentChatUserId,
+  message_body:body
+ });
+
+ btn.disabled=false;
+
+ if(error){
+  alert(error.message);
+  return;
+ }
+
+ input.value='';
+ await loadChatMessages();
+ input.focus();
+}
+
+$('#sendChatMessageBtn').onclick=sendCurrentChatMessage;
+
+$('#chatMessageInput').addEventListener('keydown',e=>{
+ if(e.key==='Enter' && !e.shiftKey){
+  e.preventDefault();
+  sendCurrentChatMessage();
+ }
+});
+
+$('#closeChatDialog').onclick=()=>{
+ currentChatUserId=null;
+ currentChatMessages=[];
+ $('#chatDialog').close();
+};
+
+
+// ============================================================
+// v1.6.0 · 배지 획득 알림 동기화
+// ============================================================
+
+async function syncBadgeNotifications(defs){
+ if(badgeSyncBusy || !session)return;
+
+ const earned=(defs||[])
+  .filter(x=>x.ok)
+  .map(x=>({
+   key:String(x.name),
+   name:String(x.name)
+  }));
+
+ badgeSyncBusy=true;
+
+ try{
+  const {data,error}=await sb.rpc('sync_my_badges',{
+   p_badges:earned
+  });
+
+  if(error){
+   console.warn('배지 알림 동기화 실패:',error.message);
+   return;
+  }
+
+  if(Number(data)>0){
+   await loadNotifications();
+  }
+ }finally{
+  badgeSyncBusy=false;
+ }
+}
+
+
+// ============================================================
+// v1.6.0 · Supabase Realtime
+// ============================================================
+
+function stopRealtime(){
+ if(realtimeNotificationChannel){
+  sb.removeChannel(realtimeNotificationChannel);
+  realtimeNotificationChannel=null;
+ }
+
+ if(realtimeChatChannel){
+  sb.removeChannel(realtimeChatChannel);
+  realtimeChatChannel=null;
+ }
+}
+
+function setupRealtime(){
+ if(!session)return;
+
+ stopRealtime();
+
+ realtimeNotificationChannel=sb
+  .channel(`aninote-notifications-${session.user.id}`)
+  .on(
+   'postgres_changes',
+   {
+    event:'INSERT',
+    schema:'public',
+    table:'notifications',
+    filter:`user_id=eq.${session.user.id}`
+   },
+   async()=>{
+    await loadNotifications();
+   }
+  )
+  .subscribe();
+
+ realtimeChatChannel=sb
+  .channel(`aninote-chat-${session.user.id}`)
+  .on(
+   'postgres_changes',
+   {
+    event:'*',
+    schema:'public',
+    table:'chat_messages'
+   },
+   async payload=>{
+    const row=payload.new?.id?payload.new:payload.old;
+
+    if(!row)return;
+
+    const involved=
+     row.sender_id===session.user.id
+     || row.receiver_id===session.user.id;
+
+    if(!involved)return;
+
+    if(
+     currentChatUserId
+     && (
+      row.sender_id===currentChatUserId
+      || row.receiver_id===currentChatUserId
+     )
+     && $('#chatDialog').open
+    ){
+     if(row.receiver_id===session.user.id){
+      await sb.rpc('mark_chat_read',{
+       target_user:currentChatUserId
+      });
+
+      await loadNotifications();
+      await markChatNotificationsRead(currentChatUserId);
+     }
+
+     await loadChatMessages();
+    }
+   }
+  )
+  .subscribe();
+}
+
+
 function applySettings(){
  document.body.classList.toggle('light-mode',appSettings.theme==='light');
  document.documentElement.style.setProperty('--font-scale',String(appSettings.font_scale||1));
@@ -4558,12 +5098,43 @@ async function loadSettings(){
  const {data,error}=await sb.from('user_settings').select('*').eq('user_id',session.user.id).maybeSingle();
  if(error){console.warn('설정 불러오기 실패:',error.message);}else if(data){appSettings={...appSettings,...data};}
  else await sb.from('user_settings').upsert({user_id:session.user.id,...appSettings});
- $('#settingTheme').value=appSettings.theme;$('#settingFontScale').value=String(Number(appSettings.font_scale||1));$('#settingShowAdult').value=String(!!appSettings.show_adult);$('#settingFriendMode').value=appSettings.friend_request_mode;$('#settingProfileVisibility').value=appSettings.profile_visibility;$('#settingReviewsVisibility').value=appSettings.reviews_visibility;$('#settingFavoritesVisibility').value=appSettings.favorites_visibility;
+ $('#settingTheme').value=appSettings.theme;
+ $('#settingFontScale').value=String(Number(appSettings.font_scale||1));
+ $('#settingShowAdult').value=String(!!appSettings.show_adult);
+ $('#settingFriendMode').value=appSettings.friend_request_mode;
+ $('#settingProfileVisibility').value=appSettings.profile_visibility;
+ $('#settingReviewsVisibility').value=appSettings.reviews_visibility;
+ $('#settingFavoritesVisibility').value=appSettings.favorites_visibility;
+ $('#settingNotifyChat').value=String(appSettings.notify_chat!==false);
+ $('#settingNotifyFriendRequests').value=String(appSettings.notify_friend_requests!==false);
+ $('#settingNotifyTasteAnime').value=String(appSettings.notify_taste_anime!==false);
+ $('#settingNotifyModeration').value=String(appSettings.notify_moderation!==false);
+ $('#settingNotifyBadges').value=String(appSettings.notify_badges!==false);
  applySettings();await loadBlockedUsers();
 }
 $('#saveSettingsBtn').onclick=async()=>{
- const payload={user_id:session.user.id,theme:$('#settingTheme').value,font_scale:Number($('#settingFontScale').value),show_adult:$('#settingShowAdult').value==='true',friend_request_mode:$('#settingFriendMode').value,profile_visibility:$('#settingProfileVisibility').value,reviews_visibility:$('#settingReviewsVisibility').value,favorites_visibility:$('#settingFavoritesVisibility').value,updated_at:new Date().toISOString()};
- const {error}=await sb.from('user_settings').upsert(payload);if(error){$('#settingsMsg').textContent=error.message;return;}appSettings={...appSettings,...payload};applySettings();$('#settingsMsg').textContent='저장했습니다.';setTimeout(()=>$('#settingsMsg').textContent='',1800);
+ const payload={
+  user_id:session.user.id,
+  theme:$('#settingTheme').value,
+  font_scale:Number($('#settingFontScale').value),
+  show_adult:$('#settingShowAdult').value==='true',
+  friend_request_mode:$('#settingFriendMode').value,
+  profile_visibility:$('#settingProfileVisibility').value,
+  reviews_visibility:$('#settingReviewsVisibility').value,
+  favorites_visibility:$('#settingFavoritesVisibility').value,
+  notify_chat:$('#settingNotifyChat').value==='true',
+  notify_friend_requests:$('#settingNotifyFriendRequests').value==='true',
+  notify_taste_anime:$('#settingNotifyTasteAnime').value==='true',
+  notify_moderation:$('#settingNotifyModeration').value==='true',
+  notify_badges:$('#settingNotifyBadges').value==='true',
+  updated_at:new Date().toISOString()
+ };
+ const {error}=await sb.from('user_settings').upsert(payload);
+ if(error){$('#settingsMsg').textContent=error.message;return;}
+ appSettings={...appSettings,...payload};
+ applySettings();
+ $('#settingsMsg').textContent='저장했습니다.';
+ setTimeout(()=>$('#settingsMsg').textContent='',1800);
 };
 async function loadBlockedUsers(){
  if(!session)return;const {data,error}=await sb.from('user_blocks').select('blocked_id,created_at').eq('blocker_id',session.user.id).order('created_at',{ascending:false});if(error){$('#blockedUserList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;return;}const rows=data||[];if(!rows.length){$('#blockedUserList').innerHTML='<div class="meta">차단한 유저가 없습니다.</div>';return;}const ids=rows.map(x=>x.blocked_id);const {data:profiles}=await sb.from('profiles').select('id,username,display_name').in('id',ids);const map=Object.fromEntries((profiles||[]).map(x=>[x.id,x]));$('#blockedUserList').innerHTML=rows.map(x=>{const p=map[x.blocked_id];return `<div class="block-row"><div><b>${esc(p?.display_name||p?.username||'사용자')}</b><div class="meta">${esc(p?.username||'')}</div></div><button class="small" onclick="unblockUser('${x.blocked_id}')">차단 해제</button></div>`;}).join('');
@@ -5124,7 +5695,7 @@ window.openPublicProfile=async(userId)=>{
  $('#publicProfileFeatured').innerHTML=
   access.favorites_visible||userId===session.user.id
    ?featuredCardsHTML(favorites)
-   :'<div class="meta">즐겨찾기가 비공개야.</div>';
+   :'<div class="meta">즐겨찾기가 비공개입니다.</div>';
 
  $('#publicProfileBadges').innerHTML=
   access.reviews_visible||access.favorites_visible||userId===session.user.id
@@ -5151,7 +5722,7 @@ window.openPublicProfile=async(userId)=>{
    favBox('⭐ 캐릭터',favGroups.character);
  }else{
   $('#publicProfileFavorites').innerHTML=
-   '<div class="meta">즐겨찾기가 비공개야.</div>';
+   '<div class="meta">즐겨찾기가 비공개입니다.</div>';
  }
 
  if(access.reviews_visible||userId===session.user.id){
@@ -5176,7 +5747,7 @@ window.openPublicProfile=async(userId)=>{
    :'<div class="meta">공개된 감상이 없습니다.</div>';
  }else{
   $('#publicProfileReviews').innerHTML=
-   '<div class="meta">감상이 비공개야.</div>';
+   '<div class="meta">감상이 비공개입니다.</div>';
  }
 
  $('#publicProfileDialog').showModal();
@@ -5607,6 +6178,9 @@ $('#backupDbBtn').onclick=async()=>{
   'user_blocks',
   'user_settings',
   'site_credits',
+  'notifications',
+  'chat_messages',
+  'user_badge_unlocks',
   'moderation_requests',
   'audit_logs',
   'banned_users'
@@ -5617,7 +6191,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.5.6',
+   version:'1.6.0',
    exported_at:new Date().toISOString(),
    tables:{}
   };
