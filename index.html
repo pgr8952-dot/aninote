@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.8.2 ===== */
+/* ===== v1.8.3 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.8.2 1차 · 설정/운영 ===== */
+/* ===== v1.8.3 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.8.2 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.8.3 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.8.2 · 알림 / 채팅 ===== */
+/* ===== v1.8.3 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -450,7 +450,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 }
 
 
-/* ===== v1.8.2 ===== */
+/* ===== v1.8.3 ===== */
 .notification-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .notification-delete{padding:4px 7px;font-size:11px;line-height:1}
 .unread-chat-pill{
@@ -473,7 +473,7 @@ body.light-mode .friend-rating-row,
 body.light-mode .trend-row{border-color:#d6dde8}
 
 
-/* ===== v1.8.2 ===== */
+/* ===== v1.8.3 ===== */
 .genre-edit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#11151d}
 .genre-edit-details summary{cursor:pointer;font-weight:800;color:#c4b5fd}
 .genre-edit-details .genre-picker{margin-top:10px}
@@ -491,13 +491,20 @@ body.light-mode .review-limit-message{background:#fff1f2;border-color:#fecdd3;co
 body.light-mode .review-editing-note{color:#6d28d9}
 
 
-/* ===== v1.8.2 ===== */
+/* ===== v1.8.3 ===== */
 .admin-overview-grid{
  display:grid;
  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
  gap:14px;
  align-items:start;
 }
+.admin-overview-column{
+ display:flex;
+ flex-direction:column;
+ gap:14px;
+ min-width:0;
+}
+
 .server-status-head{
  display:flex;
  justify-content:space-between;
@@ -621,7 +628,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.8.2</div>
+    <div class="app-version">v1.8.3</div>
     
    </div>
    <div class="global-search-wrap">
@@ -847,13 +854,46 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
 
  <section id="admin" class="section">
   <div class="admin-overview-grid">
-   <div class="panel">
-    <h3 style="margin-top:0">DB 백업</h3>
-    <div class="meta" style="margin-bottom:10px">공용 DB와 감상, 즐겨찾기, 신고, 활동 로그를 JSON 파일로 내려받아 보관할 수 있습니다.</div>
-    <div class="backup-actions">
-     <button id="backupDbBtn" class="good">전체 JSON 백업</button>
+   <div class="admin-overview-column">
+    <div class="panel">
+     <h3 style="margin-top:0">DB 백업</h3>
+     <div class="meta" style="margin-bottom:10px">공용 DB와 감상, 즐겨찾기, 신고, 활동 로그를 JSON 파일로 내려받아 보관할 수 있습니다.</div>
+     <div class="backup-actions">
+      <button id="backupDbBtn" class="good">전체 JSON 백업</button>
+     </div>
+     <div id="backupStatus" class="meta" style="margin-top:8px"></div>
     </div>
-    <div id="backupStatus" class="meta" style="margin-top:8px"></div>
+
+    <div class="panel">
+     <div class="row">
+      <h3 style="margin:0">유저 관리</h3>
+      <div class="panel-head-actions">
+       <button id="toggleUsersBtn" class="small">더보기</button>
+       <button id="refreshUsersBtn" class="small">새로고침</button>
+      </div>
+     </div>
+     <div class="meta" style="margin:7px 0 10px">총괄관리자와 관리자는 동일한 운영 기능을 사용할 수 있습니다. 관리자 지정·해제는 총괄관리자만 가능하며, 총괄관리자 계정은 이용 제한할 수 없습니다.</div>
+
+     <div class="admin-user-controls">
+      <input id="adminUserSearch" placeholder="닉네임 / 아이디 / 이메일 검색...">
+      <select id="adminUserSort">
+       <option value="joined_desc">가입 최신순</option>
+       <option value="joined_asc">가입 오래된순</option>
+       <option value="reviews_desc">감상 많은순</option>
+       <option value="reviews_asc">감상 적은순</option>
+       <option value="name">닉네임 가나다순</option>
+      </select>
+      <select id="adminUserBanFilter">
+       <option value="">전체 유저</option>
+       <option value="normal">정상 유저</option>
+       <option value="banned">밴 유저</option>
+      </select>
+     </div>
+
+     <div id="adminUserCount" class="meta" style="margin:8px 0"></div>
+     <div id="adminUserList"></div>
+     <div id="adminUserPager" class="admin-pager"></div>
+    </div>
    </div>
 
    <div class="panel">
@@ -945,28 +985,6 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
   </div>
 
   <div class="panel" style="margin-top:14px">
-   <div class="row"><h3 style="margin:0">유저 관리</h3><div class="panel-head-actions"><button id="toggleUsersBtn" class="small">더보기</button><button id="refreshUsersBtn" class="small">새로고침</button></div></div>
-   <div class="meta" style="margin:7px 0 10px">총괄관리자와 관리자는 동일한 운영 기능을 사용할 수 있습니다. 관리자 지정·해제는 총괄관리자만 가능하며, 총괄관리자 계정은 이용 제한할 수 없습니다.</div>
-   <div class="admin-user-controls">
-    <input id="adminUserSearch" placeholder="닉네임 / 아이디 / 이메일 검색...">
-    <select id="adminUserSort">
-     <option value="joined_desc">가입 최신순</option>
-     <option value="joined_asc">가입 오래된순</option>
-     <option value="reviews_desc">감상 많은순</option>
-     <option value="reviews_asc">감상 적은순</option>
-     <option value="name">닉네임 가나다순</option>
-    </select>
-    <select id="adminUserBanFilter">
-     <option value="">전체 유저</option>
-     <option value="normal">정상 유저</option>
-     <option value="banned">밴 유저</option>
-    </select>
-   </div>
-   <div id="adminUserCount" class="meta" style="margin:8px 0"></div>
-   <div id="adminUserList"></div>
-   <div id="adminUserPager" class="admin-pager"></div>
-  </div>
-  <div class="panel" style="margin-top:14px">
    <div class="row"><h3 style="margin:0">수정 요청 / 신고</h3><button id="toggleRequestsBtn" class="small">더보기</button></div>
    <div id="requestList"></div>
    <div id="requestPager" class="admin-pager"></div>
@@ -1005,7 +1023,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.8.2</span>
+  <span>애니노트 v1.8.3</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1466,7 +1484,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.8.2</div>
+   <div class="meta">시행일: 2026년 9월 16일 · 애니노트 v1.8.3</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -2168,7 +2186,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.8.2 · 대표 최애 / 프로필 / 배지
+// v1.8.3 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2470,7 +2488,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.8.2 · 친구
+// v1.8.3 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2864,7 +2882,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.8.2 · 취향 일치도
+// v1.8.3 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -2928,7 +2946,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.8.2 · 공개 프로필 관계 버튼
+// v1.8.3 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -3006,7 +3024,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.8.2 · 공유 카드
+// v1.8.3 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -3106,7 +3124,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.8.2',72,630);
+ ctx.fillText('aninote · v1.8.3',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -3162,7 +3180,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.8.2 · 크레딧
+// v1.8.3 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -5470,7 +5488,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.8.2 · 알림
+// v1.8.3 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -5641,7 +5659,7 @@ $('#deleteAllNotificationsBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.8.2 · 친구 1:1 채팅
+// v1.8.3 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -5808,7 +5826,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.8.2 · 배지 획득 알림 동기화
+// v1.8.3 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -5843,7 +5861,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.8.2 · Supabase Realtime
+// v1.8.3 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -7377,7 +7395,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.8.2',
+   version:'1.8.3',
    exported_at:new Date().toISOString(),
    tables:{}
   };
@@ -7726,7 +7744,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.8.2',72,635);
+ ctx.fillText('aninote · v1.8.3',72,635);
 }
 
 function annualWrapBlob(){
