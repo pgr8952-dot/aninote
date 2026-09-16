@@ -185,7 +185,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.2.0 ===== */
+/* ===== v1.2.1 ===== */
 .app-version{font-size:11px;color:#7f8999;margin-top:-5px;letter-spacing:.04em}
 .panel-head-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .report-request{border:1px solid #d85a67!important;background:#211318!important;box-shadow:0 0 0 1px #d85a6722 inset}
@@ -226,7 +226,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.2.0</div>
+    <div class="app-version">v1.2.1</div>
     
    </div>
    <div class="global-search-wrap">
@@ -404,7 +404,7 @@ textarea{min-height:110px;resize:vertical}
   </div>
  </section>
 </main>
-<div class="meta" style="text-align:center;padding:30px 0 40px">애니노트 v1.2.0</div>
+<div class="meta" style="text-align:center;padding:30px 0 40px">애니노트 v1.2.1</div>
 </div>
 
 
@@ -779,6 +779,7 @@ let requestData=[];
 let adminUsersExpanded=false;
 let requestsExpanded=false;
 let auditExpanded=false;
+let requestProfileMap={};
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -2465,7 +2466,59 @@ window.openInfoEditRequest=async(type,id)=>{
 };
 function closeInfoEditRequest(){pendingInfoEdit=null;if($('#infoEditRequestDialog').open)$('#infoEditRequestDialog').close();}
 $('#closeInfoEditRequestDialog').onclick=closeInfoEditRequest;$('#cancelInfoEditRequestBtn').onclick=closeInfoEditRequest;
-$('#sendInfoEditRequestBtn').onclick=async()=>{if(!pendingInfoEdit)return;let proposedData,label;if(pendingInfoEdit.type==='voice_actor'){const v=voiceData.find(x=>x.id===pendingInfoEdit.id);label=v?.name||'성우';proposedData={name:$('#infoRequestName').value.trim(),profile:$('#infoRequestVoiceProfile').value.trim()};}else{label=currentCharacterData?.name||'캐릭터';proposedData={name:$('#infoRequestName').value.trim(),gender:$('#infoRequestGender').value.trim(),age:$('#infoRequestAge').value.trim(),memo:$('#infoRequestCharacterMemo').value.trim()};}if(!proposedData.name)return alert('이름은 비워둘 수 없어.');const message=$('#infoRequestMessage').value.trim()||'정보 수정 제안';const {error}=await sb.from('moderation_requests').insert({request_type:'수정 요청',target_type:pendingInfoEdit.type,target_id:pendingInfoEdit.id,target_label:label,message,proposed_data:proposedData});if(error)return alert(error.message);closeInfoEditRequest();alert('수정 요청을 보냈어. 관리자가 승인하면 자동으로 반영돼.');if(isAdmin)await loadRequests();};
+$('#sendInfoEditRequestBtn').onclick=async()=>{
+ if(!pendingInfoEdit)return;
+
+ const btn=$('#sendInfoEditRequestBtn');
+ const originalText=btn.textContent;
+ btn.disabled=true;
+ btn.textContent='전송 중...';
+
+ try{
+  let proposedData;
+
+  if(pendingInfoEdit.type==='voice_actor'){
+   proposedData={
+    name:$('#infoRequestName').value.trim(),
+    profile:$('#infoRequestVoiceProfile').value.trim()
+   };
+  }else{
+   proposedData={
+    name:$('#infoRequestName').value.trim(),
+    gender:$('#infoRequestGender').value.trim(),
+    age:$('#infoRequestAge').value.trim(),
+    memo:$('#infoRequestCharacterMemo').value.trim()
+   };
+  }
+
+  if(!proposedData.name){
+   alert('이름은 비워둘 수 없어.');
+   return;
+  }
+
+  const message=$('#infoRequestMessage').value.trim()||'정보 수정 제안';
+
+  const {data,error}=await sb.rpc('submit_info_edit_request',{
+   p_target_type:pendingInfoEdit.type,
+   p_target_id:pendingInfoEdit.id,
+   p_message:message,
+   p_proposed_data:proposedData
+  });
+
+  if(error)throw error;
+
+  closeInfoEditRequest();
+  alert('수정 요청을 보냈어. 관리자가 승인하면 실제 정보에 반영돼.');
+
+  if(isAdmin)await loadRequests();
+
+ }catch(e){
+  alert(`수정 요청 전송 실패\n${e.message}`);
+ }finally{
+  btn.disabled=false;
+  btn.textContent=originalText;
+ }
+};
 
 function openRequest(type,targetType,targetId,targetLabel){
  pendingRequest={type,targetType,targetId,targetLabel};
@@ -2504,16 +2557,160 @@ $('#sendRequestBtn').onclick=async()=>{
 };
 
 async function loadRequests(){
- if(!isAdmin)return;const {data,error}=await sb.from('moderation_requests').select('*').order('created_at',{ascending:false});if(error){$('#requestList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;return;}requestData=data||[];renderRequests();
+ if(!isAdmin)return;
+
+ const {data,error}=await sb.from('moderation_requests')
+  .select('*')
+  .order('created_at',{ascending:false});
+
+ if(error){
+  $('#requestList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;
+  return;
+ }
+
+ requestData=data||[];
+ requestProfileMap={};
+
+ const ids=[...new Set(requestData.map(r=>r.created_by).filter(Boolean))];
+
+ if(ids.length){
+  const {data:profiles,error:profileError}=await sb.from('profiles')
+   .select('id,username,display_name')
+   .in('id',ids);
+
+  if(!profileError){
+   for(const p of (profiles||[])){
+    requestProfileMap[p.id]=p;
+   }
+  }
+ }
+
+ renderRequests();
 }
-function proposalHTML(r){if(!r.proposed_data)return '';const labels={name:'이름',profile:'프로필',gender:'성별',age:'나이',memo:'메모'};return `<div class="request-proposal"><b>제안된 변경</b>${Object.entries(r.proposed_data).map(([k,v])=>`<div style="margin-top:4px"><span class="meta">${esc(labels[k]||k)}</span> · ${esc(v??'')}</div>`).join('')}</div>`;}
+function proposalHTML(r){
+ if(!r.proposed_data)return '';
+
+ const labels={
+  name:'이름',
+  profile:'프로필',
+  gender:'성별',
+  age:'나이',
+  memo:'메모'
+ };
+
+ return `<div class="request-proposal">
+  <b>제안된 변경 내용</b>
+  ${Object.entries(r.proposed_data).map(([k,v])=>`
+   <div style="margin-top:5px">
+    <span class="meta">${esc(labels[k]||k)}</span>
+    <div style="white-space:pre-wrap">${esc(v??'')}</div>
+   </div>`).join('')}
+ </div>`;
+}
 function renderRequests(){
- const rows=requestData,visible=requestsExpanded?rows:rows.slice(0,5);
- $('#requestList').innerHTML=visible.length?visible.map(r=>`<div class="req ${r.request_type==='신고'?'report-request':''}"><div class="row"><b>${esc(r.request_type)} · ${esc(r.target_label||r.target_type)}</b>${r.status?`<span class="badge">${esc(r.status)}</span>`:''}</div><div style="margin-top:8px;white-space:pre-wrap">${esc(r.message)}</div>${proposalHTML(r)}<div class="meta" style="margin-top:7px">${new Date(r.created_at).toLocaleString('ko-KR')}</div>${r.status==='대기'?`<div class="admin-tools">${r.request_type==='수정 요청'&&r.proposed_data&&['voice_actor','character'].includes(r.target_type)?`<button class="small good" onclick="approveInfoRequest('${r.id}')">승인 · 반영</button>`:`<button class="small good" onclick="setRequestStatus('${r.id}','처리됨')">처리됨</button>`}<button class="small danger" onclick="setRequestStatus('${r.id}','반려')">반려</button></div>`:''}</div>`).join(''):'<div class="meta">요청이 없어.</div>';
- $('#toggleRequestsBtn').textContent=requestsExpanded?'간략히':`더보기${rows.length>5?` (${rows.length})`:''}`;$('#toggleRequestsBtn').classList.toggle('hidden',rows.length<=5);
+ const rows=requestData;
+ const visible=requestsExpanded?rows:rows.slice(0,5);
+
+ $('#requestList').innerHTML=visible.length?visible.map(r=>{
+  const p=requestProfileMap[r.created_by];
+  const requester=p?.display_name||p?.username||'사용자';
+
+  const approvalReady=
+   r.request_type==='수정 요청'
+   && r.proposed_data
+   && ['voice_actor','character'].includes(r.target_type);
+
+  return `<div class="req ${r.request_type==='신고'?'report-request':''}">
+   <div class="row">
+    <b>${esc(r.request_type)} · ${esc(r.target_label||r.target_type)}</b>
+    ${r.status?`<span class="badge">${esc(r.status)}</span>`:''}
+   </div>
+
+   <div class="meta" style="margin-top:5px">
+    요청자 ·
+    ${r.created_by?`<span class="profile-link" onclick="openPublicProfile('${r.created_by}')">${esc(requester)}</span>`:esc(requester)}
+    · ${new Date(r.created_at).toLocaleString('ko-KR')}
+   </div>
+
+   <div style="margin-top:8px;white-space:pre-wrap">${esc(r.message)}</div>
+
+   ${proposalHTML(r)}
+
+   ${r.status!=='대기'&&r.admin_note
+    ?`<div class="meta" style="margin-top:7px">처리 메모 · ${esc(r.admin_note)}</div>`
+    :''}
+
+   ${r.status==='대기'?`<div class="admin-tools">
+     ${approvalReady
+      ?`<button class="small good" onclick="approveInfoRequest('${r.id}')">승인 · 실제 반영</button>`
+      :`<button class="small good" onclick="setRequestStatus('${r.id}','처리됨')">처리됨</button>`}
+     <button class="small danger" onclick="setRequestStatus('${r.id}','반려')">반려</button>
+    </div>`:''}
+  </div>`;
+ }).join(''):'<div class="meta">요청이 없어.</div>';
+
+ $('#toggleRequestsBtn').textContent=requestsExpanded
+  ?'간략히'
+  :`더보기${rows.length>5?` (${rows.length})`:''}`;
+
+ $('#toggleRequestsBtn').classList.toggle('hidden',rows.length<=5);
 }
-window.approveInfoRequest=async(id)=>{if(!isAdmin||!confirm('이 수정 요청을 승인하고 실제 정보에 반영할까?'))return;const {error}=await sb.rpc('admin_apply_moderation_request',{request_id:id});if(error)return alert(error.message);await Promise.all([loadRequests(),loadVoices(),currentAnimeId?loadCast(currentAnimeId):Promise.resolve()]);if(currentCharacterId&&$('#characterDialog').open)await openCharacter(currentCharacterId);alert('승인했고 정보에 반영했어.');};
-window.setRequestStatus=async(id,status)=>{if(!isAdmin)return;const {error}=await sb.from('moderation_requests').update({status}).eq('id',id);if(error)return alert(error.message);await loadRequests();};
+window.approveInfoRequest=async(id)=>{
+ if(!isAdmin)return;
+ if(!confirm('이 수정 요청을 승인하고 실제 성우/캐릭터 정보에 반영할까?'))return;
+
+ try{
+  const {data,error}=await sb.rpc('admin_apply_moderation_request',{
+   request_id:id
+  });
+
+  if(error)throw error;
+
+  await Promise.all([
+   loadRequests(),
+   loadVoices(),
+   loadAnime(),
+   currentAnimeId?loadCast(currentAnimeId):Promise.resolve()
+  ]);
+
+  if(currentCharacterId&&$('#characterDialog').open){
+   const targetId=currentCharacterId;
+   $('#characterDialog').close();
+   await openCharacter(targetId);
+  }
+
+  if(currentVoiceId&&$('#voiceProfileDialog').open){
+   const targetId=currentVoiceId;
+   $('#voiceProfileDialog').close();
+   await openVoiceProfile(targetId);
+  }
+
+  alert(`승인 완료 · 실제 정보에 반영했어${data?.target_label?`\n${data.target_label}`:''}`);
+
+ }catch(e){
+  alert(`승인/반영 실패\n${e.message}`);
+ }
+};
+window.setRequestStatus=async(id,status)=>{
+ if(!isAdmin)return;
+
+ const label=status==='반려'?'반려':'처리 완료';
+ if(!confirm(`이 요청을 ${label}로 바꿀까?`))return;
+
+ try{
+  const {error}=await sb.rpc('admin_set_moderation_status',{
+   request_id:id,
+   new_status:status,
+   note:status==='반려'?'관리자 반려':'관리자 처리 완료'
+  });
+
+  if(error)throw error;
+  await loadRequests();
+
+ }catch(e){
+  alert(`요청 처리 실패\n${e.message}`);
+ }
+};
 $('#toggleRequestsBtn').onclick=()=>{requestsExpanded=!requestsExpanded;renderRequests();};
 
 
@@ -3122,7 +3319,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.1.0',
+   version:'1.2.1',
    exported_at:new Date().toISOString(),
    tables:{}
   };
