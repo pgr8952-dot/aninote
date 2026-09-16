@@ -186,7 +186,7 @@ textarea{min-height:110px;resize:vertical}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
 
-/* ===== v1.8.4 ===== */
+/* ===== v1.9.0 ===== */
 .app-version{font-size:11px;color:#7f8999;letter-spacing:.04em}
 .bug-report-btn{padding:3px 8px;border-radius:999px;border:1px solid #e35c68;background:#7d2029;color:#fff;font-size:11px;font-weight:800;line-height:1.2}
 .bug-report-btn:hover{background:#a52c38;border-color:#ff7884}
@@ -217,7 +217,7 @@ textarea{min-height:110px;resize:vertical}
 .delete-account-btn{border-color:#b94b58!important;color:#ffb3bd!important}
 
 
-/* ===== v1.8.4 1차 · 설정/운영 ===== */
+/* ===== v1.9.0 1차 · 설정/운영 ===== */
 :root{--font-scale:1}
 html{font-size:calc(16px * var(--font-scale))}
 body.light-mode{
@@ -344,7 +344,7 @@ body.light-mode .banned-badge{background:#fff1f2;border-color:#e4a2aa;color:#a61
 .block-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #28303d}.block-row:first-child{border-top:0}
 @media(max-width:760px){.settings-grid{grid-template-columns:1fr}.setting-line{grid-template-columns:1fr}}
 
-/* ===== v1.8.4 2차 · 프로필/친구/공유/크레딧 ===== */
+/* ===== v1.9.0 2차 · 프로필/친구/공유/크레딧 ===== */
 .profile-hero{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
 .profile-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
 .pick-card{border:1px solid #30394a;border-radius:12px;padding:10px;background:#111720;min-height:72px}
@@ -413,7 +413,7 @@ body.light-mode .auth-guide{background:#f8fafc;border-color:#d6dde8}
 body.light-mode .auth-tip{color:#92400e}
 body.light-mode .auth-msg-box{background:#fff;border-color:#cbd5e1;color:#334155}
 
-/* ===== v1.8.4 · 알림 / 채팅 ===== */
+/* ===== v1.9.0 · 알림 / 채팅 ===== */
 .notification-button{position:relative;min-width:42px}
 .notification-count{
  position:absolute;right:-5px;top:-7px;min-width:19px;height:19px;padding:0 5px;
@@ -450,7 +450,7 @@ body.light-mode .chat-message.mine{background:#7252d9;color:#fff}
 }
 
 
-/* ===== v1.8.4 ===== */
+/* ===== v1.9.0 ===== */
 .notification-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 .notification-delete{padding:4px 7px;font-size:11px;line-height:1}
 .unread-chat-pill{
@@ -473,7 +473,7 @@ body.light-mode .friend-rating-row,
 body.light-mode .trend-row{border-color:#d6dde8}
 
 
-/* ===== v1.8.4 ===== */
+/* ===== v1.9.0 ===== */
 .genre-edit-details{margin-top:8px;border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#11151d}
 .genre-edit-details summary{cursor:pointer;font-weight:800;color:#c4b5fd}
 .genre-edit-details .genre-picker{margin-top:10px}
@@ -491,7 +491,7 @@ body.light-mode .review-limit-message{background:#fff1f2;border-color:#fecdd3;co
 body.light-mode .review-editing-note{color:#6d28d9}
 
 
-/* ===== v1.8.4 ===== */
+/* ===== v1.9.0 ===== */
 .admin-overview-grid{
  display:grid;
  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
@@ -589,6 +589,125 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
  .server-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+
+/* ===== v1.9.0 · 몬스터 러시 ===== */
+.monster-rush-modal{max-width:760px}
+.monster-rush-intro{
+ display:flex;
+ justify-content:space-between;
+ gap:12px;
+ align-items:flex-start;
+ flex-wrap:wrap;
+ margin-bottom:12px;
+}
+.monster-rush-score-grid{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:8px;
+ margin-bottom:12px;
+}
+.monster-rush-stat{
+ border:1px solid var(--line);
+ border-radius:12px;
+ background:#11151d;
+ padding:10px;
+ text-align:center;
+}
+.monster-rush-stat strong{
+ display:block;
+ font-size:23px;
+ margin-top:3px;
+}
+.monster-rush-arena{
+ position:relative;
+ min-height:280px;
+ border:1px solid var(--line);
+ border-radius:16px;
+ background:
+  radial-gradient(circle at 50% 25%,rgba(139,92,246,.14),transparent 34%),
+  linear-gradient(180deg,#10141d,#0d1016);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:22px;
+ overflow:hidden;
+}
+.monster-rush-monster{text-align:center;user-select:none}
+.monster-rush-emoji{
+ font-size:96px;
+ line-height:1;
+ filter:drop-shadow(0 10px 18px #0008);
+ margin-bottom:12px;
+}
+.monster-rush-name{font-size:24px;font-weight:900}
+.monster-rush-clue{margin-top:7px;color:var(--muted);font-size:14px}
+.monster-rush-result{
+ position:absolute;
+ inset:0;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:rgba(10,13,18,.92);
+ padding:20px;
+ text-align:center;
+ z-index:3;
+}
+.monster-rush-result-card{max-width:470px;width:100%}
+.monster-rush-final-score{font-size:46px;font-weight:1000;margin:6px 0}
+.monster-rush-grade{font-size:34px;font-weight:1000;color:#ffd166}
+.monster-rush-cards{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:10px;
+ margin-top:12px;
+}
+.monster-card-btn{
+ min-height:92px;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:5px;
+ font-weight:900;
+ border-width:2px;
+}
+.monster-card-btn span:first-child{font-size:29px}
+.monster-card-btn small{color:var(--muted);font-weight:600}
+.monster-card-btn.correct-flash{border-color:var(--good);background:#12351f}
+.monster-card-btn.wrong-flash{border-color:var(--danger);background:#351719}
+.monster-rush-feedback{
+ min-height:24px;
+ margin-top:10px;
+ text-align:center;
+ font-weight:900;
+}
+.monster-rush-feedback.good{color:#86efac}
+.monster-rush-feedback.bad{color:#fca5a5}
+.monster-rush-help{
+ margin-top:12px;
+ padding:11px 12px;
+ border:1px dashed var(--line);
+ border-radius:12px;
+ color:var(--muted);
+ font-size:13px;
+ line-height:1.6;
+}
+body.light-mode .monster-rush-stat{background:#fff;border-color:#d6dde8}
+body.light-mode .monster-rush-arena{
+ background:
+  radial-gradient(circle at 50% 25%,rgba(139,92,246,.10),transparent 34%),
+  linear-gradient(180deg,#f7f8fb,#eef2f7);
+}
+body.light-mode .monster-rush-result{background:rgba(245,247,250,.94)}
+
+@media(max-width:620px){
+ .monster-rush-score-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .monster-rush-cards{grid-template-columns:1fr}
+ .monster-card-btn{min-height:68px;flex-direction:row}
+ .monster-rush-emoji{font-size:76px}
+ .monster-rush-arena{min-height:240px}
+}
+
 </style>
 </head>
 <body>
@@ -628,7 +747,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.8.4</div>
+    <div class="app-version">v1.9.0</div>
     
    </div>
    <div class="global-search-wrap">
@@ -1023,7 +1142,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.8.4</span>
+  <span>애니노트 v1.9.0</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -1476,6 +1595,89 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
  </div>
 </dialog>
 
+
+<dialog id="monsterRushDialog">
+ <div class="modal monster-rush-modal">
+  <div class="modal-title-row">
+   <div>
+    <h2>🎴 몬스터 러시</h2>
+    <div class="meta">60초 동안 몬스터에 맞는 대응 카드를 골라 최고 점수를 노려보세요.</div>
+   </div>
+   <button id="closeMonsterRushDialog" class="icon-close" aria-label="닫기">×</button>
+  </div>
+
+  <div class="monster-rush-intro">
+   <div>
+    <b>최고 기록 · <span id="monsterRushBestScore">0</span>점</b>
+    <div class="meta" style="margin-top:4px">최고 기록은 이 브라우저에만 저장됩니다.</div>
+   </div>
+   <button id="monsterRushStartBtn" class="primary">게임 시작</button>
+  </div>
+
+  <div class="monster-rush-score-grid">
+   <div class="monster-rush-stat">
+    <div class="meta">남은 시간</div>
+    <strong id="monsterRushTime">60.0</strong>
+   </div>
+   <div class="monster-rush-stat">
+    <div class="meta">점수</div>
+    <strong id="monsterRushScore">0</strong>
+   </div>
+   <div class="monster-rush-stat">
+    <div class="meta">콤보</div>
+    <strong id="monsterRushCombo">0</strong>
+   </div>
+   <div class="monster-rush-stat">
+    <div class="meta">정답률</div>
+    <strong id="monsterRushAccuracy">-</strong>
+   </div>
+  </div>
+
+  <div class="monster-rush-arena">
+   <div id="monsterRushMonster" class="monster-rush-monster">
+    <div class="monster-rush-emoji">👾</div>
+    <div class="monster-rush-name">몬스터 러시</div>
+    <div class="monster-rush-clue">게임 시작을 누르면 몬스터가 등장합니다.</div>
+   </div>
+
+   <div id="monsterRushResult" class="monster-rush-result hidden">
+    <div class="monster-rush-result-card">
+     <div id="monsterRushGrade" class="monster-rush-grade">A</div>
+     <div class="meta">최종 점수</div>
+     <div id="monsterRushFinalScore" class="monster-rush-final-score">0</div>
+     <div id="monsterRushResultStats" class="meta"></div>
+     <div class="modal-actions" style="justify-content:center">
+      <button id="monsterRushRetryBtn" class="primary">다시 도전</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <div id="monsterRushFeedback" class="monster-rush-feedback"></div>
+
+  <div class="monster-rush-cards">
+   <button type="button" class="monster-card-btn" data-monster-action="attack" disabled>
+    <span>⚔️ 공격</span>
+    <small>마법사를 끊어냅니다. · 1키</small>
+   </button>
+   <button type="button" class="monster-card-btn" data-monster-action="guard" disabled>
+    <span>🛡️ 방어</span>
+    <small>돌진을 막아냅니다. · 2키</small>
+   </button>
+   <button type="button" class="monster-card-btn" data-monster-action="magic" disabled>
+    <span>✨ 마법</span>
+    <small>중갑을 관통합니다. · 3키</small>
+   </button>
+  </div>
+
+  <div class="monster-rush-help">
+   <b>대응법</b><br>
+   🧙 마법형 → <b>공격</b> · 👹 돌진형 → <b>방어</b> · 🗿 중갑형 → <b>마법</b><br>
+   빠르게 맞힐수록 반응속도 보너스를 받고, 연속 정답으로 콤보 배수가 올라갑니다. 오답은 50점이 감소하고 콤보가 초기화됩니다.
+  </div>
+ </div>
+</dialog>
+
 <dialog id="privacyDialog">
  <div class="modal">
   <div class="modal-title-row">
@@ -1484,7 +1686,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.8.4</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.9.0</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -2278,7 +2480,7 @@ async function renderMyFavorites(){
 
 
 // ============================================================
-// v1.8.4 · 대표 최애 / 프로필 / 배지
+// v1.9.0 · 대표 최애 / 프로필 / 배지
 // ============================================================
 
 function featuredLimit(type){
@@ -2578,7 +2780,7 @@ function renderProfileExtras(){
 
 
 // ============================================================
-// v1.8.4 · 친구
+// v1.9.0 · 친구
 // ============================================================
 
 function relationRowFor(userId){
@@ -2972,7 +3174,7 @@ $('#refreshFriendsBtn').onclick=loadFriends;
 
 
 // ============================================================
-// v1.8.4 · 취향 일치도
+// v1.9.0 · 취향 일치도
 // ============================================================
 
 function calculateTasteMatch(myRows,otherRows){
@@ -3036,7 +3238,7 @@ function tasteMatchHTML(match){
 
 
 // ============================================================
-// v1.8.4 · 공개 프로필 관계 버튼
+// v1.9.0 · 공개 프로필 관계 버튼
 // ============================================================
 
 async function profileAccess(userId){
@@ -3114,7 +3316,7 @@ window.unblockFromPublicProfile=async userId=>{
 
 
 // ============================================================
-// v1.8.4 · 공유 카드
+// v1.9.0 · 공유 카드
 // ============================================================
 
 async function drawProfileShareCard(){
@@ -3214,7 +3416,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.8.4',72,630);
+ ctx.fillText('aninote · v1.9.0',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -3270,7 +3472,7 @@ $('#nativeShareCardBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.8.4 · 크레딧
+// v1.9.0 · 크레딧
 // ============================================================
 
 const officialCredits=[
@@ -5594,7 +5796,7 @@ window.openRequest=openRequest;
 
 
 // ============================================================
-// v1.8.4 · 알림
+// v1.9.0 · 알림
 // ============================================================
 
 function notificationIcon(type){
@@ -5765,7 +5967,7 @@ $('#deleteAllNotificationsBtn').onclick=async()=>{
 
 
 // ============================================================
-// v1.8.4 · 친구 1:1 채팅
+// v1.9.0 · 친구 1:1 채팅
 // ============================================================
 
 function currentChatPartnerName(){
@@ -5932,7 +6134,7 @@ $('#closeChatDialog').onclick=()=>{
 
 
 // ============================================================
-// v1.8.4 · 배지 획득 알림 동기화
+// v1.9.0 · 배지 획득 알림 동기화
 // ============================================================
 
 async function syncBadgeNotifications(defs){
@@ -5967,7 +6169,7 @@ async function syncBadgeNotifications(defs){
 
 
 // ============================================================
-// v1.8.4 · Supabase Realtime
+// v1.9.0 · Supabase Realtime
 // ============================================================
 
 function stopRealtime(){
@@ -6657,6 +6859,323 @@ $('#adminUserSearch').addEventListener('input',()=>{adminUsersPage=1;renderAdmin
 $('#adminUserSort').addEventListener('change',()=>{adminUsersPage=1;renderAdminUsers();});
 $('#adminUserBanFilter').addEventListener('change',()=>{adminUsersPage=1;renderAdminUsers();});
 
+
+// ============================================================
+// v1.9.0 이스터에그 · 몬스터 러시
+// 평소에는 타이머/애니메이션을 실행하지 않고,
+// 게임 창을 열고 시작했을 때만 동작합니다.
+// ============================================================
+const MONSTER_RUSH_DURATION=60000;
+
+const MONSTER_RUSH_MONSTERS=[
+ {name:'어둠 마도사',emoji:'🧙',clue:'강력한 주문을 준비합니다!',answer:'attack'},
+ {name:'광폭 고블린',emoji:'👹',clue:'정면으로 돌진해옵니다!',answer:'guard'},
+ {name:'철갑 골렘',emoji:'🗿',clue:'두꺼운 갑옷으로 공격을 버팁니다!',answer:'magic'},
+ {name:'저주술사',emoji:'🧙‍♂️',clue:'저주 주문을 외우기 시작합니다!',answer:'attack'},
+ {name:'뿔 달린 마수',emoji:'🐗',clue:'뿔을 낮추고 돌진 자세를 취합니다!',answer:'guard'},
+ {name:'중장갑 기사',emoji:'🛡️',clue:'무거운 갑옷으로 몸을 완전히 감쌉니다!',answer:'magic'}
+];
+
+let monsterRushRunning=false;
+let monsterRushScore=0;
+let monsterRushCombo=0;
+let monsterRushBestCombo=0;
+let monsterRushCorrect=0;
+let monsterRushWrong=0;
+let monsterRushReactionTotal=0;
+let monsterRushSpawnAt=0;
+let monsterRushEndsAt=0;
+let monsterRushCurrent=null;
+let monsterRushTimer=null;
+let monsterRushLocked=false;
+
+function monsterRushBestScore(){
+ try{
+  return Number(localStorage.getItem('aninote_monster_rush_best')||0);
+ }catch{
+  return 0;
+ }
+}
+
+function setMonsterRushBestScore(score){
+ try{
+  localStorage.setItem('aninote_monster_rush_best',String(score));
+ }catch{}
+}
+
+function updateMonsterRushBestLabel(){
+ $('#monsterRushBestScore').textContent=
+  monsterRushBestScore().toLocaleString('ko-KR');
+}
+
+function setMonsterRushCardsEnabled(enabled){
+ document.querySelectorAll('[data-monster-action]').forEach(btn=>{
+  btn.disabled=!enabled;
+ });
+}
+
+function updateMonsterRushHud(){
+ $('#monsterRushScore').textContent=
+  Math.max(0,Math.round(monsterRushScore)).toLocaleString('ko-KR');
+
+ $('#monsterRushCombo').textContent=monsterRushCombo;
+
+ const total=monsterRushCorrect+monsterRushWrong;
+ $('#monsterRushAccuracy').textContent=
+  total
+   ?`${Math.round(monsterRushCorrect/total*100)}%`
+   :'-';
+}
+
+function randomMonsterRushMonster(){
+ let next;
+
+ do{
+  next=MONSTER_RUSH_MONSTERS[
+   Math.floor(Math.random()*MONSTER_RUSH_MONSTERS.length)
+  ];
+ }while(
+  MONSTER_RUSH_MONSTERS.length>1
+  && monsterRushCurrent
+  && next.name===monsterRushCurrent.name
+ );
+
+ return next;
+}
+
+function spawnMonsterRushMonster(){
+ if(!monsterRushRunning)return;
+
+ monsterRushCurrent=randomMonsterRushMonster();
+ monsterRushSpawnAt=performance.now();
+ monsterRushLocked=false;
+
+ $('#monsterRushMonster').innerHTML=`
+  <div class="monster-rush-emoji">${monsterRushCurrent.emoji}</div>
+  <div class="monster-rush-name">${esc(monsterRushCurrent.name)}</div>
+  <div class="monster-rush-clue">${esc(monsterRushCurrent.clue)}</div>
+ `;
+
+ $('#monsterRushFeedback').textContent='';
+ $('#monsterRushFeedback').className='monster-rush-feedback';
+ setMonsterRushCardsEnabled(true);
+}
+
+function monsterRushMultiplier(){
+ return Math.min(3,1+Math.floor(monsterRushCombo/5)*0.25);
+}
+
+function flashMonsterRushCard(action,good){
+ const btn=document.querySelector(`[data-monster-action="${action}"]`);
+ if(!btn)return;
+
+ const cls=good?'correct-flash':'wrong-flash';
+ btn.classList.add(cls);
+
+ setTimeout(()=>btn.classList.remove(cls),180);
+}
+
+function playMonsterRushAction(action){
+ if(!monsterRushRunning || monsterRushLocked || !monsterRushCurrent)return;
+
+ monsterRushLocked=true;
+ setMonsterRushCardsEnabled(false);
+
+ const reaction=Math.max(0,performance.now()-monsterRushSpawnAt);
+ const correct=action===monsterRushCurrent.answer;
+
+ if(correct){
+  monsterRushCorrect++;
+  monsterRushCombo++;
+  monsterRushBestCombo=Math.max(monsterRushBestCombo,monsterRushCombo);
+  monsterRushReactionTotal+=reaction;
+
+  const speedBonus=Math.max(
+   0,
+   Math.round(200*(1-Math.min(reaction,1800)/1800))
+  );
+
+  const gained=Math.round(
+   (100+speedBonus)*monsterRushMultiplier()
+  );
+
+  monsterRushScore+=gained;
+
+  $('#monsterRushFeedback').textContent=
+   `정답! +${gained}점 · ${Math.round(reaction)}ms · ×${monsterRushMultiplier().toFixed(2)}`;
+  $('#monsterRushFeedback').className='monster-rush-feedback good';
+
+  flashMonsterRushCard(action,true);
+
+ }else{
+  monsterRushWrong++;
+  monsterRushCombo=0;
+  monsterRushScore=Math.max(0,monsterRushScore-50);
+
+  $('#monsterRushFeedback').textContent=
+   '오답! -50점 · 콤보가 초기화되었습니다.';
+  $('#monsterRushFeedback').className='monster-rush-feedback bad';
+
+  flashMonsterRushCard(action,false);
+ }
+
+ updateMonsterRushHud();
+
+ setTimeout(()=>{
+  if(monsterRushRunning)spawnMonsterRushMonster();
+ },220);
+}
+
+function monsterRushGrade(score){
+ if(score>=15000)return 'S+';
+ if(score>=12000)return 'S';
+ if(score>=9000)return 'A';
+ if(score>=6500)return 'B';
+ if(score>=4000)return 'C';
+ return 'D';
+}
+
+function stopMonsterRush(showResult=true){
+ if(monsterRushTimer){
+  cancelAnimationFrame(monsterRushTimer);
+  monsterRushTimer=null;
+ }
+
+ if(!monsterRushRunning && !showResult)return;
+
+ monsterRushRunning=false;
+ monsterRushLocked=true;
+ setMonsterRushCardsEnabled(false);
+
+ if(!showResult)return;
+
+ const finalScore=Math.max(0,Math.round(monsterRushScore));
+ const oldBest=monsterRushBestScore();
+ const isNewBest=finalScore>oldBest;
+
+ if(isNewBest){
+  setMonsterRushBestScore(finalScore);
+ }
+
+ updateMonsterRushBestLabel();
+
+ const avgReaction=monsterRushCorrect
+  ?Math.round(monsterRushReactionTotal/monsterRushCorrect)
+  :0;
+
+ $('#monsterRushGrade').textContent=monsterRushGrade(finalScore);
+ $('#monsterRushFinalScore').textContent=
+  `${finalScore.toLocaleString('ko-KR')}점`;
+
+ $('#monsterRushResultStats').innerHTML=
+  `정답 ${monsterRushCorrect}회 · 오답 ${monsterRushWrong}회 · 최고 콤보 ${monsterRushBestCombo}<br>`+
+  `평균 반응 ${avgReaction?`${avgReaction}ms`:'-'}${isNewBest?' · 🏆 새로운 최고 기록!':''}`;
+
+ $('#monsterRushResult').classList.remove('hidden');
+ $('#monsterRushStartBtn').textContent='게임 시작';
+ $('#monsterRushTime').textContent='0.0';
+}
+
+function monsterRushLoop(){
+ if(!monsterRushRunning)return;
+
+ const left=Math.max(0,monsterRushEndsAt-performance.now());
+ $('#monsterRushTime').textContent=(left/1000).toFixed(1);
+
+ if(left<=0){
+  stopMonsterRush(true);
+  return;
+ }
+
+ monsterRushTimer=requestAnimationFrame(monsterRushLoop);
+}
+
+function startMonsterRush(){
+ if(monsterRushTimer){
+  cancelAnimationFrame(monsterRushTimer);
+  monsterRushTimer=null;
+ }
+
+ monsterRushRunning=true;
+ monsterRushScore=0;
+ monsterRushCombo=0;
+ monsterRushBestCombo=0;
+ monsterRushCorrect=0;
+ monsterRushWrong=0;
+ monsterRushReactionTotal=0;
+ monsterRushCurrent=null;
+ monsterRushLocked=false;
+ monsterRushEndsAt=performance.now()+MONSTER_RUSH_DURATION;
+
+ $('#monsterRushResult').classList.add('hidden');
+ $('#monsterRushStartBtn').textContent='진행 중';
+ $('#monsterRushTime').textContent='60.0';
+ $('#monsterRushFeedback').textContent='';
+ $('#monsterRushFeedback').className='monster-rush-feedback';
+
+ updateMonsterRushHud();
+ spawnMonsterRushMonster();
+ monsterRushLoop();
+}
+
+window.openMonsterRush=()=>{
+ updateMonsterRushBestLabel();
+
+ if(!monsterRushRunning){
+  $('#monsterRushTime').textContent='60.0';
+  $('#monsterRushScore').textContent='0';
+  $('#monsterRushCombo').textContent='0';
+  $('#monsterRushAccuracy').textContent='-';
+  $('#monsterRushFeedback').textContent='';
+  $('#monsterRushResult').classList.add('hidden');
+
+  $('#monsterRushMonster').innerHTML=`
+   <div class="monster-rush-emoji">👾</div>
+   <div class="monster-rush-name">몬스터 러시</div>
+   <div class="monster-rush-clue">게임 시작을 누르면 몬스터가 등장합니다.</div>
+  `;
+
+  setMonsterRushCardsEnabled(false);
+ }
+
+ $('#globalSearchResults').classList.add('hidden');
+ $('#monsterRushDialog').showModal();
+};
+
+$('#monsterRushStartBtn').onclick=startMonsterRush;
+$('#monsterRushRetryBtn').onclick=startMonsterRush;
+
+$('#closeMonsterRushDialog').onclick=()=>{
+ stopMonsterRush(false);
+ $('#monsterRushDialog').close();
+};
+
+$('#monsterRushDialog').addEventListener('cancel',()=>{
+ stopMonsterRush(false);
+});
+
+document.querySelectorAll('[data-monster-action]').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  playMonsterRushAction(btn.dataset.monsterAction);
+ });
+});
+
+$('#monsterRushDialog').addEventListener('keydown',e=>{
+ if(!monsterRushRunning)return;
+
+ if(e.key==='1'){
+  e.preventDefault();
+  playMonsterRushAction('attack');
+ }else if(e.key==='2'){
+  e.preventDefault();
+  playMonsterRushAction('guard');
+ }else if(e.key==='3'){
+  e.preventDefault();
+  playMonsterRushAction('magic');
+ }
+});
+
+
 // ============================================================
 // 통합 검색
 // ============================================================
@@ -6666,6 +7185,21 @@ $('#globalSearch').addEventListener('input',()=>{
  if(!q){box.classList.add('hidden');box.innerHTML='';return;}
 
  const results=[];
+
+ const easterEggQuery=q.replace(/\s+/g,'');
+ if(
+  easterEggQuery==='몬스터러시'
+  || easterEggQuery==='monsterrush'
+  || easterEggQuery==='미니게임'
+ ){
+  results.push({
+   kind:'이스터에그',
+   label:'🎴 몬스터 러시',
+   sub:'60초 점수 어택 미니게임',
+   action:'openMonsterRush()'
+  });
+ }
+
  for(const a of animeData){
   if(!canShowAnime(a))continue;
   if(a.title.toLowerCase().includes(q))results.push({kind:'애니',label:a.title,sub:String(a.year||''),action:`openAnime('${a.id}')`});
@@ -7501,7 +8035,7 @@ $('#backupDbBtn').onclick=async()=>{
 
   const backup={
    app:'애니노트',
-   version:'1.8.4',
+   version:'1.9.0',
    exported_at:new Date().toISOString(),
    tables:{}
   };
@@ -7850,7 +8384,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.8.4',72,635);
+ ctx.fillText('aninote · v1.9.0',72,635);
 }
 
 function annualWrapBlob(){
