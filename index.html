@@ -184,6 +184,26 @@ textarea{min-height:110px;resize:vertical}
 .duplicate-score{font-size:11px;color:#ffd166}
 .backup-actions{display:flex;gap:8px;flex-wrap:wrap}
 
+
+/* ===== v1.2.0 ===== */
+.app-version{font-size:11px;color:#7f8999;margin-top:-5px;letter-spacing:.04em}
+.panel-head-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.report-request{border:1px solid #d85a67!important;background:#211318!important;box-shadow:0 0 0 1px #d85a6722 inset}
+.related-anime-list{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px}
+.related-anime-card{min-width:150px;max-width:190px;padding:10px;border:1px solid #30394a;border-radius:11px;background:#111720;cursor:pointer}
+.related-anime-card:hover{border-color:#7c5ce0;background:#161c28}.related-anime-card.current{opacity:.65;cursor:default;border-color:#4c5668}
+.related-anime-title{font-size:12px;font-weight:800;line-height:1.35}
+.rating-pair{display:grid;grid-template-columns:90px minmax(130px,1fr);gap:9px;align-items:center}.rating-pair input[type="range"]{width:100%;accent-color:#8b5cf6}
+.character-info-grid{display:grid;grid-template-columns:minmax(180px,240px) 1fr;gap:14px;align-items:start}
+.character-poster{width:100%;max-width:230px;aspect-ratio:3/4;object-fit:cover;border-radius:12px;background:#202633}
+.character-poster-placeholder{width:100%;max-width:230px;aspect-ratio:3/4;border-radius:12px;background:#202633;display:grid;place-items:center;font-size:42px}
+.character-meta-card{padding:10px;border:1px solid #2c3544;border-radius:10px;background:#111720}
+.character-stats{display:grid;grid-template-columns:repeat(2,minmax(100px,1fr));gap:8px;margin:10px 0}
+.guestbook-item{padding:10px 0;border-bottom:1px solid #27303d}.guestbook-item:last-child{border-bottom:0}
+.request-proposal{margin-top:8px;padding:9px;border-radius:9px;background:#151b24;border:1px solid #303b4d;font-size:12px}
+.info-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.info-request-grid .full{grid-column:1/-1}
+@media(max-width:700px){.character-info-grid{grid-template-columns:1fr}.character-poster,.character-poster-placeholder{max-width:180px;margin:auto}.rating-pair{grid-template-columns:80px 1fr}.info-request-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -206,6 +226,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
+    <div class="app-version">v1.2.0</div>
     
    </div>
    <div class="global-search-wrap">
@@ -214,7 +235,7 @@ textarea{min-height:110px;resize:vertical}
    </div>
    <div class="row">
     <span id="adminBadge" class="badge admin-badge hidden">관리자</span>
-    <span id="whoami" class="meta"></span><span class="auto-sync-badge">자동 동기화 1분</span>
+    <span id="whoami" class="meta"></span>
     <button id="logoutBtn" class="small">로그아웃</button>
    </div>
   </div>
@@ -330,13 +351,13 @@ textarea{min-height:110px;resize:vertical}
    <div id="backupStatus" class="meta" style="margin-top:8px"></div>
   </div>
   <div class="panel" style="margin-top:14px">
-   <div class="row"><h3 style="margin:0">유저 관리</h3><button id="refreshUsersBtn" class="small">새로고침</button></div>
+   <div class="row"><h3 style="margin:0">유저 관리</h3><div class="panel-head-actions"><button id="toggleUsersBtn" class="small">더보기</button><button id="refreshUsersBtn" class="small">새로고침</button></div></div>
    <div class="meta" style="margin:7px 0 10px">닉네임을 누르면 공개 프로필을 볼 수 있어. 밴된 유저는 DB 접근이 차단돼.</div>
    <div class="admin-user-controls">
     <input id="adminUserSearch" placeholder="닉네임 / 아이디 / 이메일 검색...">
     <select id="adminUserSort">
-     <option value="joined_asc">가입 오래된순</option>
      <option value="joined_desc">가입 최신순</option>
+     <option value="joined_asc">가입 오래된순</option>
      <option value="reviews_desc">감상 많은순</option>
      <option value="reviews_asc">감상 적은순</option>
      <option value="name">닉네임 가나다순</option>
@@ -350,11 +371,11 @@ textarea{min-height:110px;resize:vertical}
    <div id="adminUserList"></div>
   </div>
   <div class="panel" style="margin-top:14px">
-   <h3 style="margin-top:0">수정 요청 / 신고</h3>
+   <div class="row"><h3 style="margin:0">수정 요청 / 신고</h3><button id="toggleRequestsBtn" class="small">더보기</button></div>
    <div id="requestList"></div>
   </div>
   <div class="panel" style="margin-top:14px">
-   <div class="row"><h3 style="margin:0">활동 로그</h3><button id="refreshAuditBtn" class="small">새로고침</button></div>
+   <div class="row"><h3 style="margin:0">활동 로그</h3><div class="panel-head-actions"><button id="toggleAuditBtn" class="small">더보기</button><button id="refreshAuditBtn" class="small">새로고침</button></div></div>
    <div class="meta" style="margin:7px 0 10px">관리자뿐 아니라 일반 유저의 작품·성우·캐릭터 추가, 감상 작성/수정, 프로필 변경, 신고/수정요청도 기록돼.</div>
    <div class="admin-user-controls">
     <input id="auditSearch" placeholder="유저 이름 / 아이디 / 대상 검색...">
@@ -373,6 +394,9 @@ textarea{min-height:110px;resize:vertical}
      <option value="user_anime">감상</option>
      <option value="profiles">프로필</option>
      <option value="moderation_requests">신고/수정요청</option>
+     <option value="user_favorites">즐겨찾기</option>
+     <option value="user_character_ratings">캐릭터 평점</option>
+     <option value="character_guestbook">캐릭터 방명록</option>
      <option value="user_ban">밴</option>
     </select>
    </div>
@@ -380,7 +404,7 @@ textarea{min-height:110px;resize:vertical}
   </div>
  </section>
 </main>
-<div class="meta" style="text-align:center;padding:30px 0 40px">애니노트 v1.1.0</div>
+<div class="meta" style="text-align:center;padding:30px 0 40px">애니노트 v1.2.0</div>
 </div>
 
 
@@ -415,7 +439,7 @@ textarea{min-height:110px;resize:vertical}
     <div class="field"><label>상태</label>
      <select id="addAnimeStatus"><option value="">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
     </div>
-    <div class="field"><label>평점 (0~5)</label><input id="addAnimeRating" type="number" min="0" max="5" step="0.1"></div>
+    <div class="field"><label>평점 (0~5)</label><div class="rating-pair"><input id="addAnimeRating" type="number" min="0" max="5" step="0.1"><input id="addAnimeRatingRange" type="range" min="0" max="5" step="0.1" value="0"></div></div>
     <div class="field full"><label>메모 / 감상</label><textarea id="addAnimeMemo" placeholder="추가하면서 바로 감상을 적어둘 수 있어"></textarea></div>
     <div class="field full spoiler-toggle"><input id="addAnimeSpoiler" type="checkbox"><label for="addAnimeSpoiler">⚠️ 스포일러 포함</label></div>
    </div>
@@ -449,7 +473,6 @@ textarea{min-height:110px;resize:vertical}
     <div class="field full"><label>장르</label><input id="animeGenres" placeholder="액션, 판타지, 코미디"></div>
     <div id="seriesKeyField" class="field"><label>시리즈 키 (관리자용)</label><input id="animeSeriesKey" placeholder="자동 생성됨"></div>
     <div class="field full"><a id="laftelOpenLink" class="laftel-link hidden" href="#" target="_blank" rel="noopener">라프텔에서 보기 ↗</a></div>
-    <div id="seriesSiblings" class="field full meta"></div>
      </div>
      <div id="animeImageTools" class="image-tools hidden">
       <input id="animeImageFile" type="file" accept="image/*">
@@ -469,13 +492,18 @@ textarea{min-height:110px;resize:vertical}
    </div>
   </div>
 
+  <div id="relatedAnimePanel" class="panel hidden" style="margin-bottom:14px">
+   <h3 style="margin-top:0">관련 애니</h3>
+   <div id="relatedAnimeList" class="related-anime-list"></div>
+  </div>
+
   <div class="panel">
    <h3 style="margin-top:0">내 감상</h3>
    <div class="formgrid">
     <div class="field"><label>상태</label>
       <select id="myStatus"><option value="">상태 없음</option><option>시청 완료</option><option>시청 중</option><option>시청 예정</option><option>하차</option></select>
     </div>
-    <div class="field"><label>평점 (0~5)</label><input id="myRating" type="number" min="0" max="5" step="0.1"></div>
+    <div class="field"><label>평점 (0~5)</label><div class="rating-pair"><input id="myRating" type="number" min="0" max="5" step="0.1"><input id="myRatingRange" type="range" min="0" max="5" step="0.1" value="0"></div></div>
     <div class="field full">
      <label>새 메모 / 감상</label>
      <textarea id="myMemo" placeholder="새 감상을 쓰면 기존 감상을 대체해"></textarea>
@@ -523,6 +551,47 @@ textarea{min-height:110px;resize:vertical}
 
  <button class="dialog-top-button" onclick="scrollDialogTop(this)" title="창 맨 위로">↑</button>
 </div>
+</dialog>
+
+
+<dialog id="characterDialog">
+ <div class="modal">
+  <div class="modal-title-row">
+   <h2 id="characterDialogTitle">캐릭터</h2>
+   <div class="row"><button id="characterFavoriteBtn" class="small favorite-btn">♡ 즐겨찾기</button><button id="closeCharacterDialog" class="icon-close" aria-label="닫기">×</button></div>
+  </div>
+  <div class="panel">
+   <div class="character-info-grid">
+    <div>
+     <img id="characterImagePreview" class="character-poster hidden" alt="캐릭터 이미지">
+     <div id="characterImagePlaceholder" class="character-poster-placeholder">⭐</div>
+     <div id="characterImageTools" class="image-tools hidden" style="margin-top:9px">
+      <input id="characterImageFile" type="file" accept="image/*"><button id="uploadCharacterImageBtn" class="small">이미지 업로드</button><button id="removeCharacterImageBtn" class="small danger">이미지 제거</button><div id="characterImageStatus" class="meta image-status"></div>
+     </div>
+    </div>
+    <div>
+     <div class="formgrid">
+      <div class="field full"><label>이름</label><input id="characterDetailName"></div>
+      <div class="field"><label>성별</label><input id="characterGender" placeholder="예: 여성 / 남성 / 불명"></div>
+      <div class="field"><label>나이</label><input id="characterAge" placeholder="예: 17세 / 불명"></div>
+      <div class="field full"><label>메모</label><textarea id="characterMemo" placeholder="캐릭터 소개나 메모"></textarea></div>
+     </div>
+     <div class="character-meta-card"><b>출연작</b><div id="characterAppearances" style="margin-top:7px"></div></div>
+     <div class="character-meta-card" style="margin-top:8px"><b>성우</b><div id="characterVoices" style="margin-top:7px"></div></div>
+     <div id="characterAdminTools" class="admin-tools hidden"><button id="saveCharacterInfoBtn" class="good small">캐릭터 정보 저장</button><button id="deleteCharacterDetailBtn" class="danger small">캐릭터 삭제</button></div>
+     <div id="characterUserTools" class="admin-tools"><button id="requestEditCharacterBtn" class="warn small">정보 수정 요청</button><button id="reportCharacterBtn" class="small">신고</button></div>
+    </div>
+   </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+   <h3 style="margin-top:0">캐릭터 평점</h3>
+   <div class="character-stats"><div class="stat-box"><div class="meta">평균 평점</div><div id="characterRatingAvg" class="stat-value">-</div></div><div class="stat-box"><div class="meta">평가 인원</div><div id="characterRatingCount" class="stat-value">0</div></div></div>
+   <div class="field"><label>내 평점</label><div class="rating-pair"><input id="characterRatingNumber" type="number" min="0" max="5" step="0.1"><input id="characterRatingRange" type="range" min="0" max="5" step="0.1" value="0"></div></div>
+   <div class="admin-tools"><button id="saveCharacterRatingBtn" class="primary small">평점 저장</button><button id="clearCharacterRatingBtn" class="small">평점 지우기</button></div>
+  </div>
+  <div class="panel" style="margin-top:14px"><h3 style="margin-top:0">방명록</h3><div class="field"><textarea id="characterGuestbookMessage" maxlength="1000" placeholder="이 캐릭터에 한마디 남겨줘"></textarea></div><button id="writeCharacterGuestbookBtn" class="primary small">남기기</button><div id="characterGuestbookList" style="margin-top:10px"></div></div>
+  <button class="dialog-top-button" onclick="scrollDialogTop(this)" title="창 맨 위로">↑</button>
+ </div>
 </dialog>
 
 <dialog id="voiceDialog">
@@ -644,6 +713,20 @@ textarea{min-height:110px;resize:vertical}
  </div>
 </dialog>
 
+
+<dialog id="infoEditRequestDialog">
+ <div class="modal">
+  <div class="modal-title-row"><h2 id="infoEditRequestTitle">정보 수정 요청</h2><button id="closeInfoEditRequestDialog" class="icon-close" aria-label="닫기">×</button></div>
+  <div class="panel"><div class="info-request-grid">
+   <div class="field full"><label>이름</label><input id="infoRequestName"></div>
+   <div id="infoRequestVoiceProfileField" class="field full"><label>프로필</label><textarea id="infoRequestVoiceProfile"></textarea></div>
+   <div id="infoRequestCharacterFields" class="full info-request-grid"><div class="field"><label>성별</label><input id="infoRequestGender"></div><div class="field"><label>나이</label><input id="infoRequestAge"></div><div class="field full"><label>메모</label><textarea id="infoRequestCharacterMemo"></textarea></div></div>
+   <div class="field full"><label>추가 설명</label><textarea id="infoRequestMessage" placeholder="왜 수정이 필요한지 적어줘. 이미지 관련 수정이 필요하면 여기에 설명해줘."></textarea></div>
+  </div></div>
+  <div class="modal-actions"><button id="cancelInfoEditRequestBtn">취소</button><button id="sendInfoEditRequestBtn" class="primary">수정 요청 보내기</button></div>
+ </div>
+</dialog>
+
 <dialog id="requestDialog">
  <div class="modal">
   <h2 id="requestDialogTitle">요청</h2>
@@ -689,9 +772,28 @@ let refreshBusy=false;
 let selectedAddGenres=new Set();
 let favoriteData=[];
 let duplicateResolver=null;
+let currentCharacterId=null;
+let currentCharacterData=null;
+let pendingInfoEdit=null;
+let requestData=[];
+let adminUsersExpanded=false;
+let requestsExpanded=false;
+let auditExpanded=false;
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+
+
+function bindRatingPair(numberSelector,rangeSelector){
+ const number=$(numberSelector),range=$(rangeSelector);if(!number||!range)return;
+ number.addEventListener('input',()=>{if(number.value==='')return;let v=Math.max(0,Math.min(5,Number(number.value)));if(Number.isNaN(v))return;v=Math.round(v*10)/10;range.value=String(v);});
+ range.addEventListener('input',()=>{number.value=Number(range.value).toFixed(1);});
+}
+function setRatingPair(numberSelector,rangeSelector,value){
+ const number=$(numberSelector),range=$(rangeSelector);if(!number||!range)return;
+ if(value===null||value===undefined||value===''){number.value='';range.value='0';return;}
+ const v=Math.max(0,Math.min(5,Number(value)));number.value=Number(v).toFixed(1);range.value=String(v);
+}
 
 async function boot(){
  const {data}=await sb.auth.getSession();
@@ -777,6 +879,9 @@ async function refreshLiveData(){
     loadReviews(currentAnimeId),
     current?renderAnimeRegistrant(current):Promise.resolve()
    ]);
+  }
+  if($('#characterDialog').open && currentCharacterId){
+   await Promise.all([loadCharacterRatings(currentCharacterId),loadCharacterGuestbook(currentCharacterId)]);
   }
  }catch(e){
   console.warn('자동 동기화 실패:',e);
@@ -996,7 +1101,7 @@ function favoriteDisplayItem(f){
  return c?{
   label:c.name,
   sub:c.anime?.title||'캐릭터',
-  action:`openAnime('${c.anime_id}')`
+  action:`openCharacter('${c.id}')`
  }:null;
 }
 
@@ -1456,7 +1561,7 @@ $('#openAddAnime').onclick=()=>{
  $('#addAnimeGenreCustom').value='';
  renderAddGenrePicker();
  $('#addAnimeStatus').value='';
- $('#addAnimeRating').value='';
+ setRatingPair('#addAnimeRating','#addAnimeRatingRange',null);
  $('#addAnimeMemo').value='';
  $('#addAnimeSpoiler').checked=false;
  $('#addAnimeImageFile').value='';
@@ -1569,11 +1674,10 @@ window.openAnime=async(id)=>{
  $('#animeSeriesKey').disabled=!isAdmin;
  $('#seriesKeyField').classList.toggle('hidden',!isAdmin);
 
- const siblings=animeData.filter(x=>x.series_key&&a.series_key&&x.series_key===a.series_key&&x.id!==a.id)
-   .sort((x,y)=>(x.year||0)-(y.year||0));
- $('#seriesSiblings').innerHTML=siblings.length
-   ? `같은 시리즈: ${siblings.map(x=>`<span class="link" onclick="openAnime('${x.id}')">${esc(x.title)}</span>`).join(' · ')}`
-   : '';
+ const related=animeData.filter(x=>x.series_key&&a.series_key&&x.series_key===a.series_key)
+   .sort((x,y)=>(x.year||0)-(y.year||0)||x.title.localeCompare(y.title,'ko'));
+ $('#relatedAnimePanel').classList.toggle('hidden',related.length<=1);
+ $('#relatedAnimeList').innerHTML=related.length>1?related.map(x=>`<div class="related-anime-card ${x.id===a.id?'current':''}" ${x.id===a.id?'':`onclick="openAnime('${x.id}')"`}><div class="related-anime-title">${esc(x.title)}</div><div class="meta" style="margin-top:5px">${x.year||'연도 미상'}${x.id===a.id?' · 현재 작품':''}</div></div>`).join(''):'';
  $('#publicAdminTools').classList.toggle('hidden',!isAdmin);
  $('#publicUserTools').classList.toggle('hidden',isAdmin);
  $('#addCastRowBtn').classList.remove('hidden');
@@ -1581,7 +1685,7 @@ window.openAnime=async(id)=>{
 
  myRecord=(a.user_anime||[]).find(x=>x.user_id===session.user.id)||null;
  $('#myStatus').value=myRecord?.status??'';
- $('#myRating').value=myRecord?.rating??'';
+ setRatingPair('#myRating','#myRatingRange',myRecord?.rating??null);
 
  const existingMemo=myRecord?.memo?.trim()||'';
  $('#myMemo').value='';
@@ -1651,7 +1755,7 @@ $('#deleteMyReviewBtn').onclick=async()=>{
  const {error}=await sb.from('user_anime').delete().eq('id',myRecord.id);
  if(error){alert(error.message);return;}
  await loadAnime();await loadMyReviews();await loadReviews(currentAnimeId);
- $('#myRating').value='';
+ setRatingPair('#myRating','#myRatingRange',null);
  $('#myMemo').value='';
  $('#currentMyMemoText').textContent='';
  $('#currentMyMemoBox').classList.add('hidden');
@@ -1793,7 +1897,7 @@ window.adminDeleteReview=async(id)=>{
 
 async function loadCast(animeId){
  const {data,error}=await sb.from('characters').select(`
-   id,name,
+   id,name,image_url,gender,age,memo,
    character_cast(
      id,
      voice_actor_id,
@@ -1806,7 +1910,7 @@ async function loadCast(animeId){
  $('#castList').innerHTML=(data||[]).length?data.map(c=>{
    const links=c.character_cast||[];
    return `<div class="listrow">
-    <b>${esc(c.name)}</b>
+    <b class="link" onclick="openCharacter('${c.id}')">${esc(c.name)}</b>
     <div class="meta">${links.length?links.map(l=>esc(l.voice_actors?.name||'')).join(', '):'성우 미등록'}</div>
     <div class="admin-tools">
      <button class="small favorite-btn ${isFavorite('character',c.id)?'active':''}" onclick="toggleFavorite('character','${c.id}')">${isFavorite('character',c.id)?'♥ 즐겨찾기':'♡ 즐겨찾기'}</button>
@@ -1819,6 +1923,45 @@ async function loadCast(animeId){
    </div>`;
  }).join(''):'<div class="meta">아직 캐릭터/성우 정보가 없어.</div>';
 }
+
+
+// ============================================================
+// 캐릭터 상세
+// ============================================================
+window.openCharacter=async(id)=>{
+ currentCharacterId=id;
+ const {data:c,error}=await sb.from('characters').select(`id,name,anime_id,image_url,gender,age,memo,anime(id,title,year,series_key),character_cast(id,voice_actor_id,voice_actors(id,name,image_url))`).eq('id',id).maybeSingle();
+ if(error||!c){alert(error?.message||'캐릭터 정보를 찾지 못했어.');return;}
+ currentCharacterData=c;
+ $('#characterDialogTitle').textContent=c.name;$('#characterDetailName').value=c.name||'';$('#characterGender').value=c.gender||'';$('#characterAge').value=c.age||'';$('#characterMemo').value=c.memo||'';$('#characterImageStatus').textContent='';
+ $('#characterImagePreview').src=c.image_url||'';$('#characterImagePreview').classList.toggle('hidden',!c.image_url);$('#characterImagePlaceholder').classList.toggle('hidden',!!c.image_url);
+ $('#characterDetailName').disabled=!isAdmin;$('#characterGender').disabled=!isAdmin;$('#characterAge').disabled=!isAdmin;$('#characterMemo').disabled=!isAdmin;$('#characterImageTools').classList.toggle('hidden',!isAdmin);$('#characterAdminTools').classList.toggle('hidden',!isAdmin);$('#characterUserTools').classList.toggle('hidden',isAdmin);$('#characterImageFile').value='';
+ setFavoriteButton($('#characterFavoriteBtn'),'character',id);
+ const appMap=new Map();if(c.anime)appMap.set(c.anime.id,c.anime);
+ for(const v of voiceData){for(const link of (v.character_cast||[])){const x=link.characters;if(!x||x.name!==c.name)continue;if(c.anime?.series_key&&x.anime?.series_key===c.anime.series_key&&x.anime)appMap.set(x.anime.id,x.anime);}}
+ const appearances=[...appMap.values()].sort((a,b)=>(a.year||0)-(b.year||0));
+ $('#characterAppearances').innerHTML=appearances.length?appearances.map(a=>`<div class="listrow"><span class="link" onclick="openAnime('${a.id}')">${esc(a.title)}</span><span class="meta">${a.year||''}</span></div>`).join(''):'<div class="meta">출연작 정보 없음</div>';
+ const voices=(c.character_cast||[]).map(x=>x.voice_actors).filter(Boolean);
+ $('#characterVoices').innerHTML=voices.length?voices.map(v=>`<div class="listrow"><span class="link" onclick="openVoiceProfile('${v.id}')">${esc(v.name)}</span></div>`).join(''):'<div class="meta">성우 미등록</div>';
+ await Promise.all([loadCharacterRatings(id),loadCharacterGuestbook(id)]);$('#characterDialog').showModal();
+};
+async function loadCharacterRatings(characterId){
+ const {data,error}=await sb.from('user_character_ratings').select('id,user_id,rating').eq('character_id',characterId);if(error){$('#characterRatingAvg').textContent='-';$('#characterRatingCount').textContent='0';return;}
+ const rows=data||[];const avg=rows.length?rows.reduce((sum,x)=>sum+Number(x.rating),0)/rows.length:null;$('#characterRatingAvg').textContent=avg===null?'-':avg.toFixed(2);$('#characterRatingCount').textContent=String(rows.length);const mine=rows.find(x=>x.user_id===session.user.id);setRatingPair('#characterRatingNumber','#characterRatingRange',mine?.rating??null);$('#clearCharacterRatingBtn').classList.toggle('hidden',!mine);
+}
+async function loadCharacterGuestbook(characterId){
+ const {data,error}=await sb.from('character_guestbook').select('id,user_id,message,created_at').eq('character_id',characterId).order('created_at',{ascending:false}).limit(100);if(error){$('#characterGuestbookList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;return;}
+ const rows=data||[],ids=[...new Set(rows.map(x=>x.user_id))];let pmap={};if(ids.length){const {data:profiles}=await sb.from('profiles').select('id,username,display_name').in('id',ids);for(const p of (profiles||[]))pmap[p.id]=p;}
+ $('#characterGuestbookList').innerHTML=rows.length?rows.map(x=>{const p=pmap[x.user_id],label=p?.display_name||p?.username||'사용자',canDelete=isAdmin||x.user_id===session.user.id;return `<div class="guestbook-item"><div class="row"><b class="profile-link" onclick="openPublicProfile('${x.user_id}')">${esc(label)}</b><span class="meta">${new Date(x.created_at).toLocaleString('ko-KR')}</span></div><div style="margin-top:6px;white-space:pre-wrap">${esc(x.message)}</div>${canDelete?`<div class="admin-tools"><button class="small danger" onclick="deleteCharacterGuestbook('${x.id}')">삭제</button></div>`:''}</div>`;}).join(''):'<div class="meta">아직 방명록이 없어.</div>';
+}
+$('#characterFavoriteBtn').onclick=()=>currentCharacterId&&toggleFavorite('character',currentCharacterId);$('#closeCharacterDialog').onclick=()=>$('#characterDialog').close();
+$('#saveCharacterInfoBtn').onclick=async()=>{if(!isAdmin||!currentCharacterId)return;const name=$('#characterDetailName').value.trim();if(!name)return alert('캐릭터 이름을 입력해줘.');const {error}=await sb.from('characters').update({name,gender:$('#characterGender').value.trim()||null,age:$('#characterAge').value.trim()||null,memo:$('#characterMemo').value.trim()}).eq('id',currentCharacterId);if(error)return alert(error.message);await Promise.all([loadVoices(),currentAnimeId?loadCast(currentAnimeId):Promise.resolve()]);$('#characterDialogTitle').textContent=name;alert('캐릭터 정보를 수정했어.');};
+$('#deleteCharacterDetailBtn').onclick=async()=>{if(!isAdmin||!currentCharacterId||!confirm(`"${currentCharacterData?.name||'캐릭터'}" 캐릭터를 삭제할까?`))return;const {error}=await sb.from('characters').delete().eq('id',currentCharacterId);if(error)return alert(error.message);$('#characterDialog').close();await Promise.all([loadVoices(),currentAnimeId?loadCast(currentAnimeId):Promise.resolve()]);};
+$('#saveCharacterRatingBtn').onclick=async()=>{if(!currentCharacterId)return;const raw=$('#characterRatingNumber').value;if(raw==='')return alert('평점을 입력하거나 슬라이더를 움직여줘.');const rating=Math.round(Math.max(0,Math.min(5,Number(raw)))*10)/10;if(Number.isNaN(rating))return alert('평점을 확인해줘.');const {error}=await sb.from('user_character_ratings').upsert({user_id:session.user.id,character_id:currentCharacterId,rating},{onConflict:'user_id,character_id'});if(error)return alert(error.message);await loadCharacterRatings(currentCharacterId);};
+$('#clearCharacterRatingBtn').onclick=async()=>{if(!currentCharacterId)return;const {error}=await sb.from('user_character_ratings').delete().eq('user_id',session.user.id).eq('character_id',currentCharacterId);if(error)return alert(error.message);await loadCharacterRatings(currentCharacterId);};
+$('#writeCharacterGuestbookBtn').onclick=async()=>{if(!currentCharacterId)return;const message=$('#characterGuestbookMessage').value.trim();if(!message)return alert('방명록 내용을 적어줘.');const {error}=await sb.from('character_guestbook').insert({character_id:currentCharacterId,user_id:session.user.id,message});if(error)return alert(error.message);$('#characterGuestbookMessage').value='';await loadCharacterGuestbook(currentCharacterId);};
+window.deleteCharacterGuestbook=async(id)=>{if(!confirm('이 방명록을 삭제할까?'))return;const {error}=await sb.from('character_guestbook').delete().eq('id',id);if(error)return alert(error.message);await loadCharacterGuestbook(currentCharacterId);};
+$('#requestEditCharacterBtn').onclick=()=>openInfoEditRequest('character',currentCharacterId);$('#reportCharacterBtn').onclick=()=>openRequest('신고','character',currentCharacterId,currentCharacterData?.name||'캐릭터');
 
 $('#addCastRowBtn').onclick=()=>$('#castAdder').classList.toggle('hidden');
 
@@ -1915,7 +2058,7 @@ async function loadVoices(){
    id,name,profile,image_url,
    character_cast(
      id,
-     characters(id,name,anime_id,anime(title,year,series_key))
+     characters(id,name,anime_id,image_url,gender,age,memo,anime(id,title,year,series_key))
    )
  `).order('name');
 
@@ -1968,9 +2111,9 @@ window.openVoiceProfile=async(id)=>{
  $('#voiceProfileImage').classList.toggle('hidden',!v.image_url);
  $('#voiceImageTools').classList.toggle('hidden',!isAdmin);
  $('#voiceImageFile').value='';
- $('#voiceProfileName').disabled=false;
- $('#voiceProfileText').disabled=false;
- $('#voiceProfileAdminTools').classList.remove('hidden');
+ $('#voiceProfileName').disabled=!isAdmin;
+ $('#voiceProfileText').disabled=!isAdmin;
+ $('#voiceProfileAdminTools').classList.toggle('hidden',!isAdmin);
  $('#deleteVoiceProfileBtn').classList.toggle('hidden',!isAdmin);
  $('#voiceProfileUserTools').classList.toggle('hidden',isAdmin);
  setFavoriteButton($('#voiceFavoriteBtn'),'voice_actor',id);
@@ -1979,7 +2122,7 @@ window.openVoiceProfile=async(id)=>{
  $('#voiceProfileAppearances').innerHTML=apps.length?apps
   .sort((a,b)=>(b.anime?.year||0)-(a.anime?.year||0)||a.anime?.title?.localeCompare(b.anime?.title||'','ko'))
   .map(c=>`<div class="listrow">
-    <b>${esc(c.name)}</b>
+    <b class="link" onclick="openCharacter('${c.id}')">${esc(c.name)}</b>
     <div class="meta">${esc(c.anime?.title||'')} ${c.anime?.year?`(${c.anime.year})`:''}</div>
    </div>`).join('')
   :'<div class="meta">등록된 출연작이 없어.</div>';
@@ -1991,7 +2134,7 @@ $('#voiceFavoriteBtn').onclick=()=>currentVoiceId&&toggleFavorite('voice_actor',
 $('#closeVoiceProfileDialog').onclick=()=>$('#voiceProfileDialog').close();
 
 $('#saveVoiceProfileBtn').onclick=async()=>{
- if(!currentVoiceId)return;
+ if(!isAdmin||!currentVoiceId)return;
  const name=$('#voiceProfileName').value.trim();
  if(!name){alert('성우 이름을 입력해줘.');return;}
  const {error}=await sb.from('voice_actors').update({
@@ -2013,10 +2156,7 @@ $('#deleteVoiceProfileBtn').onclick=async()=>{
  if(currentAnimeId)await loadCast(currentAnimeId);
 };
 
-$('#requestEditVoiceBtn').onclick=()=>{
- const v=voiceData.find(x=>x.id===currentVoiceId);
- openRequest('수정 요청','voice_actor',currentVoiceId,v?.name||'성우');
-};
+$('#requestEditVoiceBtn').onclick=()=>openInfoEditRequest('voice_actor',currentVoiceId);
 
 $('#reportVoiceBtn').onclick=()=>{
  const v=voiceData.find(x=>x.id===currentVoiceId);
@@ -2310,6 +2450,23 @@ function renderMyReviews(){
 
 ['myStatusFilter','myRatingFilter','myYearFilter','myReviewSort'].forEach(id=>$('#'+id).addEventListener('change',renderMyReviews));
 
+
+// ============================================================
+// 성우 / 캐릭터 정보 수정 요청
+// ============================================================
+window.openInfoEditRequest=async(type,id)=>{
+ pendingInfoEdit={type,id};
+ if(type==='voice_actor'){
+  const v=voiceData.find(x=>x.id===id);if(!v)return;$('#infoEditRequestTitle').textContent=`정보 수정 요청 · ${v.name}`;$('#infoRequestName').value=v.name||'';$('#infoRequestVoiceProfile').value=v.profile||'';$('#infoRequestVoiceProfileField').classList.remove('hidden');$('#infoRequestCharacterFields').classList.add('hidden');
+ }else{
+  let c=currentCharacterData;if(!c||c.id!==id){const {data}=await sb.from('characters').select('id,name,gender,age,memo').eq('id',id).maybeSingle();c=data;}if(!c)return;$('#infoEditRequestTitle').textContent=`정보 수정 요청 · ${c.name}`;$('#infoRequestName').value=c.name||'';$('#infoRequestGender').value=c.gender||'';$('#infoRequestAge').value=c.age||'';$('#infoRequestCharacterMemo').value=c.memo||'';$('#infoRequestVoiceProfileField').classList.add('hidden');$('#infoRequestCharacterFields').classList.remove('hidden');
+ }
+ $('#infoRequestMessage').value='';$('#infoEditRequestDialog').showModal();
+};
+function closeInfoEditRequest(){pendingInfoEdit=null;if($('#infoEditRequestDialog').open)$('#infoEditRequestDialog').close();}
+$('#closeInfoEditRequestDialog').onclick=closeInfoEditRequest;$('#cancelInfoEditRequestBtn').onclick=closeInfoEditRequest;
+$('#sendInfoEditRequestBtn').onclick=async()=>{if(!pendingInfoEdit)return;let proposedData,label;if(pendingInfoEdit.type==='voice_actor'){const v=voiceData.find(x=>x.id===pendingInfoEdit.id);label=v?.name||'성우';proposedData={name:$('#infoRequestName').value.trim(),profile:$('#infoRequestVoiceProfile').value.trim()};}else{label=currentCharacterData?.name||'캐릭터';proposedData={name:$('#infoRequestName').value.trim(),gender:$('#infoRequestGender').value.trim(),age:$('#infoRequestAge').value.trim(),memo:$('#infoRequestCharacterMemo').value.trim()};}if(!proposedData.name)return alert('이름은 비워둘 수 없어.');const message=$('#infoRequestMessage').value.trim()||'정보 수정 제안';const {error}=await sb.from('moderation_requests').insert({request_type:'수정 요청',target_type:pendingInfoEdit.type,target_id:pendingInfoEdit.id,target_label:label,message,proposed_data:proposedData});if(error)return alert(error.message);closeInfoEditRequest();alert('수정 요청을 보냈어. 관리자가 승인하면 자동으로 반영돼.');if(isAdmin)await loadRequests();};
+
 function openRequest(type,targetType,targetId,targetLabel){
  pendingRequest={type,targetType,targetId,targetLabel};
  $('#requestDialogTitle').textContent=`${type} · ${targetLabel}`;
@@ -2347,30 +2504,17 @@ $('#sendRequestBtn').onclick=async()=>{
 };
 
 async function loadRequests(){
- if(!isAdmin)return;
- const {data,error}=await sb.from('moderation_requests').select('*').order('created_at',{ascending:false});
- if(error){$('#requestList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;return;}
- const rows=data||[];
- $('#requestList').innerHTML=rows.length?rows.map(r=>`
-  <div class="req">
-   <div class="row">
-    <b>${esc(r.request_type)} · ${esc(r.target_label||r.target_type)}</b>
-    ${r.status?`<span class="badge">${esc(r.status)}</span>`:''}
-   </div>
-   <div style="margin-top:8px">${esc(r.message)}</div>
-   <div class="meta" style="margin-top:7px">${new Date(r.created_at).toLocaleString()}</div>
-   ${r.status==='대기'?`<div class="admin-tools">
-     <button class="small good" onclick="setRequestStatus('${r.id}','처리됨')">처리됨</button>
-     <button class="small danger" onclick="setRequestStatus('${r.id}','반려')">반려</button>
-    </div>`:''}
-  </div>`).join(''):'<div class="meta">대기 중인 요청이 없어.</div>';
+ if(!isAdmin)return;const {data,error}=await sb.from('moderation_requests').select('*').order('created_at',{ascending:false});if(error){$('#requestList').innerHTML=`<div class="notice">${esc(error.message)}</div>`;return;}requestData=data||[];renderRequests();
 }
-
-window.setRequestStatus=async(id,status)=>{
- if(!isAdmin)return;
- const {error}=await sb.from('moderation_requests').update({status}).eq('id',id);
- if(error){alert(error.message);return;}await loadRequests();
-};
+function proposalHTML(r){if(!r.proposed_data)return '';const labels={name:'이름',profile:'프로필',gender:'성별',age:'나이',memo:'메모'};return `<div class="request-proposal"><b>제안된 변경</b>${Object.entries(r.proposed_data).map(([k,v])=>`<div style="margin-top:4px"><span class="meta">${esc(labels[k]||k)}</span> · ${esc(v??'')}</div>`).join('')}</div>`;}
+function renderRequests(){
+ const rows=requestData,visible=requestsExpanded?rows:rows.slice(0,5);
+ $('#requestList').innerHTML=visible.length?visible.map(r=>`<div class="req ${r.request_type==='신고'?'report-request':''}"><div class="row"><b>${esc(r.request_type)} · ${esc(r.target_label||r.target_type)}</b>${r.status?`<span class="badge">${esc(r.status)}</span>`:''}</div><div style="margin-top:8px;white-space:pre-wrap">${esc(r.message)}</div>${proposalHTML(r)}<div class="meta" style="margin-top:7px">${new Date(r.created_at).toLocaleString('ko-KR')}</div>${r.status==='대기'?`<div class="admin-tools">${r.request_type==='수정 요청'&&r.proposed_data&&['voice_actor','character'].includes(r.target_type)?`<button class="small good" onclick="approveInfoRequest('${r.id}')">승인 · 반영</button>`:`<button class="small good" onclick="setRequestStatus('${r.id}','처리됨')">처리됨</button>`}<button class="small danger" onclick="setRequestStatus('${r.id}','반려')">반려</button></div>`:''}</div>`).join(''):'<div class="meta">요청이 없어.</div>';
+ $('#toggleRequestsBtn').textContent=requestsExpanded?'간략히':`더보기${rows.length>5?` (${rows.length})`:''}`;$('#toggleRequestsBtn').classList.toggle('hidden',rows.length<=5);
+}
+window.approveInfoRequest=async(id)=>{if(!isAdmin||!confirm('이 수정 요청을 승인하고 실제 정보에 반영할까?'))return;const {error}=await sb.rpc('admin_apply_moderation_request',{request_id:id});if(error)return alert(error.message);await Promise.all([loadRequests(),loadVoices(),currentAnimeId?loadCast(currentAnimeId):Promise.resolve()]);if(currentCharacterId&&$('#characterDialog').open)await openCharacter(currentCharacterId);alert('승인했고 정보에 반영했어.');};
+window.setRequestStatus=async(id,status)=>{if(!isAdmin)return;const {error}=await sb.from('moderation_requests').update({status}).eq('id',id);if(error)return alert(error.message);await loadRequests();};
+$('#toggleRequestsBtn').onclick=()=>{requestsExpanded=!requestsExpanded;renderRequests();};
 
 
 // ============================================================
@@ -2419,7 +2563,9 @@ function renderAdminUsers(){
   return new Date(a.joined_at)-new Date(b.joined_at);
  });
 
- $('#adminUserList').innerHTML=rows.length?rows.map(u=>{
+ const visibleRows=adminUsersExpanded?rows:rows.slice(0,5);
+
+ $('#adminUserList').innerHTML=visibleRows.length?visibleRows.map(u=>{
   const label=u.display_name||u.username||u.email||'사용자';
   const self=u.user_id===session.user.id;
 
@@ -2440,7 +2586,9 @@ function renderAdminUsers(){
     </div>
   </div>`;
  }).join(''):'<div class="meta">조건에 맞는 유저가 없어.</div>';
+ $('#toggleUsersBtn').textContent=adminUsersExpanded?'간략히':`더보기${rows.length>5?` (${rows.length})`:''}`;$('#toggleUsersBtn').classList.toggle('hidden',rows.length<=5);
 }
+$('#toggleUsersBtn').onclick=()=>{adminUsersExpanded=!adminUsersExpanded;renderAdminUsers();};
 
 window.setUserBan=async(userId,shouldBan,label)=>{
  if(!isAdmin)return;
@@ -2490,7 +2638,7 @@ $('#globalSearch').addEventListener('input',()=>{
   if(v.name.toLowerCase().includes(q))results.push({kind:'성우',label:v.name,sub:'성우',action:`openVoiceProfile('${v.id}')`});
   for(const link of (v.character_cast||[])){
    const c=link.characters;if(!c)continue;
-   if((c.name||'').toLowerCase().includes(q))results.push({kind:'캐릭터',label:c.name,sub:`${c.anime?.title||''} · ${v.name}`,action:`openAnime('${c.anime_id}')`});
+   if((c.name||'').toLowerCase().includes(q))results.push({kind:'캐릭터',label:c.name,sub:`${c.anime?.title||''} · ${v.name}`,action:`openCharacter('${c.id}')`});
   }
  }
  const uniq=[];const seen=new Set();
@@ -2733,6 +2881,10 @@ $('#removeAnimeImageBtn').onclick=async()=>{
  await loadAnime();
 };
 
+
+$('#uploadCharacterImageBtn').onclick=async()=>{if(!isAdmin||!currentCharacterId)return;const file=$('#characterImageFile').files[0];if(!file)return alert('이미지 파일을 골라줘.');const status=$('#characterImageStatus'),preview=$('#characterImagePreview');try{const url=await replaceStoredImage({kind:'character',id:currentCharacterId,file,oldUrl:currentCharacterData?.image_url,table:'characters',statusEl:status,previewEl:preview});$('#characterImagePlaceholder').classList.add('hidden');$('#characterImageFile').value='';currentCharacterData.image_url=url;await loadVoices();}catch(e){status.textContent=`실패: ${e.message}`;alert(`이미지 업로드 실패\n${e.message}`);}};
+$('#removeCharacterImageBtn').onclick=async()=>{if(!isAdmin||!currentCharacterId)return;const status=$('#characterImageStatus'),oldPath=storagePathFromPublicUrl(currentCharacterData?.image_url);status.textContent='이미지 제거 중...';const {error}=await sb.from('characters').update({image_url:null}).eq('id',currentCharacterId);if(error){status.textContent=`실패: ${error.message}`;return alert(error.message);}if(oldPath)await sb.storage.from('aninote-images').remove([oldPath]);$('#characterImagePreview').src='';$('#characterImagePreview').classList.add('hidden');$('#characterImagePlaceholder').classList.remove('hidden');$('#characterImageFile').value='';status.textContent='이미지를 제거했어.';if(currentCharacterData)currentCharacterData.image_url=null;await loadVoices();};
+
 $('#uploadVoiceImageBtn').onclick=async()=>{
  const file=$('#voiceImageFile').files[0];
  if(!file)return alert('이미지 파일을 골라줘.');
@@ -2859,6 +3011,9 @@ function auditTargetLabel(type){
   user_anime:'감상',
   profiles:'프로필',
   moderation_requests:'신고/수정요청',
+  user_character_ratings:'캐릭터 평점',
+  character_guestbook:'캐릭터 방명록',
+  user_favorites:'즐겨찾기',
   user_ban:'밴'
  };
  return labels[type]||type;
@@ -2889,7 +3044,9 @@ function renderAuditLogs(){
   return true;
  });
 
- $('#auditList').innerHTML=rows.length?rows.map(x=>{
+ const visibleRows=auditExpanded?rows:rows.slice(0,5);
+
+ $('#auditList').innerHTML=visibleRows.length?visibleRows.map(x=>{
   const p=auditProfileMap[x.actor_id];
   const actorName=p?.display_name||p?.username||'사용자';
   const canOpen=!!x.actor_id;
@@ -2908,7 +3065,9 @@ function renderAuditLogs(){
     </div>
   </div>`;
  }).join(''):'<div class="meta">조건에 맞는 활동 기록이 없어.</div>';
+ $('#toggleAuditBtn').textContent=auditExpanded?'간략히':`더보기${rows.length>5?` (${rows.length})`:''}`;$('#toggleAuditBtn').classList.toggle('hidden',rows.length<=5);
 }
+$('#toggleAuditBtn').onclick=()=>{auditExpanded=!auditExpanded;renderAuditLogs();};
 
 $('#refreshAuditBtn').onclick=loadAuditLogs;
 $('#auditSearch').addEventListener('input',renderAuditLogs);
@@ -2951,6 +3110,8 @@ $('#backupDbBtn').onclick=async()=>{
   'profiles',
   'user_anime',
   'user_favorites',
+  'user_character_ratings',
+  'character_guestbook',
   'moderation_requests',
   'audit_logs',
   'banned_users'
@@ -3123,6 +3284,9 @@ window.addEventListener('scroll',()=>{
 
 function startAninote(){
  enhanceSearchInputs();
+ bindRatingPair('#addAnimeRating','#addAnimeRatingRange');
+ bindRatingPair('#myRating','#myRatingRange');
+ bindRatingPair('#characterRatingNumber','#characterRatingRange');
  boot();
 }
 
