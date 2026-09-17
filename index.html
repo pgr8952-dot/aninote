@@ -1111,7 +1111,7 @@ body.light-mode .sniper-rush-help{color:#475569}
 .achievement.locked{opacity:.52;filter:none}
 body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[data-rarity="legendary"],body.light-mode .achievement[data-rarity="rare"]{background:#fff}
 
-/* ===== v1.10.13 · 몬스터 러시 HARD / 보안 강화 ===== */
+/* ===== v1.10.14 · 몬스터 러시 HARD / 보안 강화 ===== */
 .monster-rush-mode-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:9px}
 .monster-rush-mode-btn{padding:7px 12px;font-size:12px;font-weight:900}
 .monster-rush-mode-btn.active{background:#6d4bd8;border-color:#8b5cf6;color:#fff}
@@ -1151,7 +1151,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 
 
 /* ============================================================
-   애니노트 v1.10.13 · 모바일 대응 1차
+   애니노트 v1.10.14 · 모바일 대응 1차
    - 기존 PC 레이아웃은 유지
    - 760px 이하: 모바일
    - 480px 이하: 소형 모바일
@@ -1631,7 +1631,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 }
 
 /* ============================================================
-   v1.10.13 · 모바일 미니게임 UI 2차
+   v1.10.14 · 모바일 미니게임 UI 2차
    - 몬스터 러시: 모바일 전용 HUD/게임창/대형 액션 버튼
    - 사격장 러시: 모바일 홈에서 숨김
    ============================================================ */
@@ -1923,7 +1923,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.10.13</div>
+    <div class="app-version">v1.10.14</div>
     
    </div>
    <div class="global-search-wrap">
@@ -2348,7 +2348,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.10.13</span>
+  <span>애니노트 v1.10.14</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -2981,7 +2981,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.13</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.14</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -4763,7 +4763,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.13',72,630);
+ ctx.fillText('aninote · v1.10.14',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -7531,6 +7531,129 @@ async function syncBadgeNotifications(defs){
 // v1.10.4 · Supabase Realtime
 // ============================================================
 
+// ============================================================
+// v1.10.14 · 공용 효과음 (Web Audio · 외부 파일/DB 사용 없음)
+// ============================================================
+let appAudioCtx=null;
+let appAudioMaster=null;
+let appAudioUnlocked=false;
+
+function ensureAppAudio(){
+ try{
+  if(!appAudioCtx){
+   const AudioCtx=window.AudioContext||window.webkitAudioContext;
+   if(!AudioCtx)return null;
+   appAudioCtx=new AudioCtx();
+   appAudioMaster=appAudioCtx.createGain();
+   appAudioMaster.gain.value=.34;
+   appAudioMaster.connect(appAudioCtx.destination);
+  }
+  return appAudioCtx;
+ }catch(e){
+  console.warn('오디오 초기화 실패:',e);
+  return null;
+ }
+}
+
+function unlockAppAudio(){
+ const ctx=ensureAppAudio();
+ if(!ctx)return;
+ if(ctx.state==='suspended'){
+  ctx.resume().then(()=>{appAudioUnlocked=true;}).catch(()=>{});
+ }else{
+  appAudioUnlocked=true;
+ }
+}
+
+document.addEventListener('pointerdown',unlockAppAudio,{passive:true});
+document.addEventListener('keydown',unlockAppAudio,{passive:true});
+
+function appTone({freq=880,endFreq=null,duration=.12,delay=0,type='sine',gain=.08,attack=.004,release=.05}={}){
+ const ctx=ensureAppAudio();
+ if(!ctx || !appAudioMaster || ctx.state!=='running')return;
+ const now=ctx.currentTime+Math.max(0,delay);
+ const osc=ctx.createOscillator();
+ const amp=ctx.createGain();
+ osc.type=type;
+ osc.frequency.setValueAtTime(Math.max(20,freq),now);
+ if(endFreq && endFreq!==freq){
+  osc.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),now+Math.max(.01,duration));
+ }
+ amp.gain.setValueAtTime(.0001,now);
+ amp.gain.exponentialRampToValueAtTime(Math.max(.0002,gain),now+Math.max(.002,attack));
+ amp.gain.setValueAtTime(Math.max(.0002,gain),Math.max(now+attack,now+duration-release));
+ amp.gain.exponentialRampToValueAtTime(.0001,now+duration);
+ osc.connect(amp);
+ amp.connect(appAudioMaster);
+ osc.start(now);
+ osc.stop(now+duration+.03);
+}
+
+function appNoise({duration=.12,delay=0,gain=.08,filterType='highpass',filterFreq=1200}={}){
+ const ctx=ensureAppAudio();
+ if(!ctx || !appAudioMaster || ctx.state!=='running')return;
+ const frames=Math.max(1,Math.floor(ctx.sampleRate*duration));
+ const buffer=ctx.createBuffer(1,frames,ctx.sampleRate);
+ const data=buffer.getChannelData(0);
+ for(let i=0;i<frames;i++)data[i]=(Math.random()*2-1)*(1-i/frames);
+ const src=ctx.createBufferSource();
+ src.buffer=buffer;
+ const filter=ctx.createBiquadFilter();
+ filter.type=filterType;
+ filter.frequency.value=filterFreq;
+ const amp=ctx.createGain();
+ const now=ctx.currentTime+Math.max(0,delay);
+ amp.gain.setValueAtTime(Math.max(.0002,gain),now);
+ amp.gain.exponentialRampToValueAtTime(.0001,now+duration);
+ src.connect(filter);
+ filter.connect(amp);
+ amp.connect(appAudioMaster);
+ src.start(now);
+}
+
+function playNotificationSound(){
+ appTone({freq:880,duration:.12,gain:.07,type:'sine'});
+ appTone({freq:1320,duration:.18,delay:.105,gain:.065,type:'sine'});
+}
+
+function playSniperStartSound(){
+ appTone({freq:660,endFreq:990,duration:.22,gain:.09,type:'triangle'});
+ appTone({freq:1320,duration:.32,delay:.035,gain:.035,type:'sine'});
+}
+
+function playSniperGunshotSound(){
+ appNoise({duration:.085,gain:.19,filterType:'bandpass',filterFreq:850});
+ appTone({freq:165,endFreq:58,duration:.13,gain:.16,type:'triangle'});
+ appNoise({duration:.18,delay:.015,gain:.07,filterType:'lowpass',filterFreq:1450});
+}
+
+function playSniperKillSound(){
+ appTone({freq:1046.5,duration:.075,gain:.065,type:'sine'});
+ appTone({freq:1568,duration:.16,delay:.07,gain:.06,type:'sine'});
+}
+
+function playSniperGlassSound(){
+ appNoise({duration:.27,gain:.12,filterType:'highpass',filterFreq:2500});
+ appTone({freq:2400,endFreq:1050,duration:.16,gain:.028,type:'triangle'});
+ appTone({freq:3100,endFreq:1450,duration:.12,delay:.035,gain:.022,type:'triangle'});
+ appTone({freq:1850,endFreq:900,duration:.18,delay:.075,gain:.02,type:'sine'});
+}
+
+function playSniperDamageSound(){
+ for(let i=0;i<3;i++){
+  appTone({freq:i===1?820:720,duration:.07,delay:i*.105,gain:.075,type:'square',release:.02});
+ }
+}
+
+function playSniperDryFireSound(){
+ const click=(delay)=>{
+  appNoise({duration:.025,delay,gain:.075,filterType:'highpass',filterFreq:1800});
+  appTone({freq:185,endFreq:115,duration:.045,delay,gain:.055,type:'triangle',release:.015});
+ };
+ click(0);
+ click(.11);
+}
+
 function stopRealtime(){
  if(realtimeNotificationChannel){
   sb.removeChannel(realtimeNotificationChannel);
@@ -7559,6 +7682,7 @@ function setupRealtime(){
     filter:`user_id=eq.${session.user.id}`
    },
    async()=>{
+    playNotificationSound();
     await loadNotifications();
    }
   )
@@ -9029,6 +9153,7 @@ function renderSniperRushWorld(now){
 
 
 function createSniperRushCrack(now=performance.now()){
+ playSniperGlassSound();
  const W=sniperRushCanvas.width;
  const H=sniperRushCanvas.height;
  const edge=Math.floor(Math.random()*4);
@@ -9248,6 +9373,7 @@ function sniperRushRemoveEntity(id){
 function sniperRushLoseLife(reason){
  if(!sniperRushRunning)return;
 
+ playSniperDamageSound();
  sniperRushLives=Math.max(0,sniperRushLives-1);
  sniperRushCombo=0;
 
@@ -9321,6 +9447,7 @@ function checkSniperRushHit(x,y,now){
 
    sniperRushScore+=gained;
    sniperRushRemoveEntity(e.id);
+   playSniperKillSound();
    sniperRushSetMessage(
     `${headshot?'헤드샷 · ':''}+${gained.toLocaleString('ko-KR')}점 · ${Math.round(reaction)}ms · ×${sniperRushComboMultiplier().toFixed(1)}`,
     'good'
@@ -9340,6 +9467,8 @@ function fireSniperRush(){
  if(now-sniperRushLastShotAt<SNIPER_RUSH_FIRE_COOLDOWN)return;
 
  if(sniperRushAmmo<=0){
+  sniperRushLastShotAt=now;
+  playSniperDryFireSound();
   sniperRushSetMessage('탄창이 비었습니다. R키로 재장전해주세요.','bad');
   return;
  }
@@ -9348,6 +9477,7 @@ function fireSniperRush(){
  sniperRushAmmo--;
  sniperRushShots++;
  sniperRushRecoil=1;
+ playSniperGunshotSound();
 
  let x=sniperRushMouse.x;
  let y=sniperRushMouse.y;
@@ -9734,6 +9864,7 @@ async function startSniperRush(){
  sniperRushLastFrame=0;
  sniperRushEndsAt=performance.now()+SNIPER_RUSH_DURATION;
  sniperRushLastSpawn=performance.now()-700;
+ playSniperStartSound();
 
  $('#sniperRushResult').classList.add('hidden');
  $('#sniperRushStartBtn').textContent='진행 중';
@@ -11122,7 +11253,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.13',72,635);
+ ctx.fillText('aninote · v1.10.14',72,635);
 }
 
 function annualWrapBlob(){
