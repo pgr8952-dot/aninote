@@ -7645,6 +7645,33 @@ function playSniperDamageSound(){
  }
 }
 
+// 적의 총탄에 플레이어가 실제로 맞았을 때 나는 충격음.
+// 목숨 감소 경고음(삐비빅)과 분리해서 피격 순간을 더 확실하게 느끼게 합니다.
+function playSniperPlayerHitSound(){
+ appNoise({duration:.075,gain:.16,filterType:'lowpass',filterFreq:900});
+ appTone({freq:118,endFreq:52,duration:.18,gain:.14,type:'triangle',release:.045});
+ appNoise({duration:.13,delay:.025,gain:.055,filterType:'bandpass',filterFreq:520});
+}
+
+// 0.7초 재장전 시간에 맞춘 탄창 교체 소리.
+function playSniperReloadStartSound(){
+ // 탄창 분리
+ appNoise({duration:.026,gain:.07,filterType:'highpass',filterFreq:1900});
+ appTone({freq:235,endFreq:145,duration:.055,gain:.045,type:'triangle',release:.018});
+ // 탄창 삽입
+ appNoise({duration:.035,delay:.31,gain:.09,filterType:'highpass',filterFreq:1500});
+ appTone({freq:180,endFreq:105,duration:.07,delay:.31,gain:.06,type:'triangle',release:.02});
+ // 잠금되는 금속성 클릭
+ appNoise({duration:.022,delay:.51,gain:.065,filterType:'highpass',filterFreq:2400});
+ appTone({freq:420,endFreq:260,duration:.04,delay:.51,gain:.035,type:'square',release:.012});
+}
+
+function playSniperReloadCompleteSound(){
+ // 노리쇠/장전 완료의 짧고 단단한 '탁'
+ appNoise({duration:.032,gain:.09,filterType:'highpass',filterFreq:1700});
+ appTone({freq:310,endFreq:165,duration:.065,gain:.055,type:'triangle',release:.018});
+}
+
 function playSniperDryFireSound(){
  const click=(delay)=>{
   appNoise({duration:.025,delay,gain:.075,filterType:'highpass',filterFreq:1800});
@@ -9373,6 +9400,9 @@ function sniperRushRemoveEntity(id){
 function sniperRushLoseLife(reason){
  if(!sniperRushRunning)return;
 
+ // 적에게 실제로 맞았을 때만 충격음을 추가합니다.
+ // 민간인 오사는 목숨 경고음만 재생합니다.
+ if(reason==='enemy')playSniperPlayerHitSound();
  playSniperDamageSound();
  sniperRushLives=Math.max(0,sniperRushLives-1);
  sniperRushCombo=0;
@@ -9521,6 +9551,7 @@ function startSniperRushReload(){
  sniperRushScoped=false;
  sniperRushReloading=true;
  sniperRushReloadEnd=performance.now()+SNIPER_RUSH_RELOAD_MS;
+ playSniperReloadStartSound();
  sniperRushSetMessage('재장전 중... 조준경이 해제되었습니다.','');
  updateSniperRushHud();
  renderSniperRush();
@@ -9529,6 +9560,7 @@ function startSniperRushReload(){
 function finishSniperRushReload(){
  sniperRushReloading=false;
  sniperRushAmmo=SNIPER_RUSH_MAG_SIZE;
+ playSniperReloadCompleteSound();
  sniperRushSetMessage('재장전 완료','good');
  updateSniperRushHud();
 }
