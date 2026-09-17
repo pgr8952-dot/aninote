@@ -636,7 +636,7 @@ body.light-mode .server-status-badge.danger{background:#fff1f2;border-color:#fda
 }
 .monster-rush-monster{text-align:center;user-select:none}
 .monster-rush-emoji{
- font-size:96px;
+ font-size:106px;
  line-height:1;
  filter:drop-shadow(0 10px 18px #0008);
  margin-bottom:12px;
@@ -1111,7 +1111,7 @@ body.light-mode .sniper-rush-help{color:#475569}
 .achievement.locked{opacity:.52;filter:none}
 body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[data-rarity="legendary"],body.light-mode .achievement[data-rarity="rare"]{background:#fff}
 
-/* ===== v1.10.9 · 몬스터 러시 HARD / 보안 강화 ===== */
+/* ===== v1.10.10 · 몬스터 러시 HARD / 보안 강화 ===== */
 .monster-rush-mode-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:9px}
 .monster-rush-mode-btn{padding:7px 12px;font-size:12px;font-weight:900}
 .monster-rush-mode-btn.active{background:#6d4bd8;border-color:#8b5cf6;color:#fff}
@@ -1123,21 +1123,21 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 .monster-rush-cards.hard-mode .monster-card-btn.hard-only{display:flex}
 .monster-rush-scene{position:relative;width:min(430px,96%);min-height:185px;margin:auto;display:flex;align-items:center;justify-content:center}
 .monster-rush-enemy{position:relative;z-index:2;text-align:center;transition:transform .16s ease,filter .16s ease,opacity .16s ease}
-.monster-rush-enemy-icon{font-size:88px;line-height:1;filter:drop-shadow(0 10px 18px #0009)}
+.monster-rush-enemy-icon{font-size:97px;line-height:1;filter:drop-shadow(0 10px 18px #0009)}
 .monster-rush-enemy-name{font-size:22px;font-weight:1000;margin-top:8px}
 .monster-rush-state-label{margin-top:5px;font-size:13px;font-weight:850;color:#d9dff0}
-.monster-rush-projectile{position:absolute;z-index:4;left:54%;top:44%;font-size:43px;filter:drop-shadow(0 0 12px #8b5cf6);animation:hardProjectile .72s ease-in-out infinite alternate}
+.monster-rush-projectile{position:absolute;z-index:4;left:54%;top:44%;font-size:47px;filter:drop-shadow(0 0 12px #8b5cf6);animation:hardProjectile .72s ease-in-out infinite alternate}
 .monster-rush-projectile.missed{left:83%;top:24%;opacity:.35;transform:rotate(-18deg);animation:none}
-.monster-rush-shield{position:absolute;z-index:3;left:51%;top:42%;font-size:55px;filter:drop-shadow(0 0 9px #60a5fa)}
+.monster-rush-shield{position:absolute;z-index:3;left:51%;top:42%;font-size:61px;filter:drop-shadow(0 0 9px #60a5fa)}
 .monster-rush-shield.broken{opacity:.23;transform:rotate(18deg) scale(.8);filter:grayscale(1)}
-.monster-rush-break{position:absolute;z-index:5;left:54%;top:42%;font-size:46px;animation:hardBreak .45s ease-out both}
-.monster-rush-slash{position:absolute;z-index:5;font-size:69px;filter:drop-shadow(0 0 10px #fff6);animation:hardSlash .5s ease-in-out infinite alternate}
+.monster-rush-break{position:absolute;z-index:5;left:54%;top:42%;font-size:51px;animation:hardBreak .45s ease-out both}
+.monster-rush-slash{position:absolute;z-index:5;font-size:76px;filter:drop-shadow(0 0 10px #fff6);animation:hardSlash .5s ease-in-out infinite alternate}
 .monster-rush-dash{transform:translateX(-22px) rotate(-6deg);animation:hardDash .48s ease-in-out infinite alternate}
 .monster-rush-vulnerable{transform:translateX(15px) rotate(7deg);filter:saturate(.65);}
 .monster-rush-armor-broken{filter:saturate(.45) brightness(.86)}
 .monster-rush-cover{position:absolute;inset:-5px;z-index:8;border-radius:15px;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .monster-rush-cover.fog{background:radial-gradient(circle,#cbd5e144 0,#aeb7c566 34%,#6b7280d9 78%);backdrop-filter:blur(7px)}
-.monster-rush-cover.bush{background:linear-gradient(0deg,#173b21ee 0 58%,#214e2cbb 72%,#173b2155 100%);font-size:82px;letter-spacing:-18px}
+.monster-rush-cover.bush{background:linear-gradient(0deg,#173b21ee 0 58%,#214e2cbb 72%,#173b2155 100%);font-size:90px;letter-spacing:-18px}
 .monster-rush-concealed-label{position:absolute;z-index:10;bottom:17px;padding:6px 10px;border-radius:999px;background:#0b1019dd;border:1px solid #657083;color:#fff;font-size:12px;font-weight:900}
 .monster-rush-step-dots{display:flex;justify-content:center;gap:5px;margin-top:7px}
 .monster-rush-step-dot{width:7px;height:7px;border-radius:50%;background:#3a4352}
@@ -1146,12 +1146,12 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 @keyframes hardBreak{from{transform:scale(.5);opacity:.1}to{transform:scale(1.25);opacity:1}}
 @keyframes hardSlash{from{transform:rotate(-18deg) translateY(-5px)}to{transform:rotate(16deg) translateY(10px)}}
 @keyframes hardDash{from{transform:translateX(-42px) rotate(-8deg)}to{transform:translateX(15px) rotate(2deg)}}
-@media(max-width:760px){.monster-rush-cards.hard-mode{grid-template-columns:repeat(2,minmax(0,1fr))}.monster-rush-cards.hard-mode .monster-card-btn:last-child{grid-column:1/-1}.monster-rush-enemy-icon{font-size:72px}}
+@media(max-width:760px){.monster-rush-cards.hard-mode{grid-template-columns:repeat(2,minmax(0,1fr))}.monster-rush-cards.hard-mode .monster-card-btn:last-child{grid-column:1/-1}.monster-rush-enemy-icon{font-size:79px}}
 
 
 
 /* ============================================================
-   애니노트 v1.10.9 · 모바일 대응 1차
+   애니노트 v1.10.10 · 모바일 대응 1차
    - 기존 PC 레이아웃은 유지
    - 760px 이하: 모바일
    - 480px 이하: 소형 모바일
@@ -1579,7 +1579,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   }
 
   .monster-rush-enemy-icon{
-    font-size:62px;
+    font-size:68px;
   }
 
   .monster-rush-cards,
@@ -1631,12 +1631,13 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 }
 
 /* ============================================================
-   v1.10.9 · 모바일 미니게임 UI 2차
+   v1.10.10 · 모바일 미니게임 UI 2차
    - 몬스터 러시: 모바일 전용 HUD/게임창/대형 액션 버튼
    - 사격장 러시: 모바일 홈에서 숨김
    ============================================================ */
 
-#monsterRushQuickRestartBtn{display:none}
+#monsterRushQuickRestartBtn{display:block}
+#monsterRushGiveUpBtn{display:none}
 
 @media (max-width:760px){
   /* 사격장 러시는 마우스/키보드가 필요한 PC 전용 */
@@ -1754,7 +1755,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 
   .monster-rush-enemy-icon,
   .monster-rush-emoji{
-    font-size:clamp(76px,23vw,112px);
+    font-size:clamp(84px,23vw,123px);
   }
 
   .monster-rush-enemy-name,
@@ -1922,7 +1923,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.10.9</div>
+    <div class="app-version">v1.10.10</div>
     
    </div>
    <div class="global-search-wrap">
@@ -2347,7 +2348,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.10.9</span>
+  <span>애니노트 v1.10.10</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -2980,7 +2981,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.9</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.10</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -4747,7 +4748,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.9',72,630);
+ ctx.fillText('aninote · v1.10.10',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -8342,7 +8343,7 @@ function renderMonsterRushCurrent(){
  if(!monsterRushCurrent)return;
  const inspectOffset=monsterRushCurrentConcealed?1:0;
  const baseStep=Math.max(0,monsterRushCurrentStep-inspectOffset);
- let visual=monsterRushMode==='hard'?hardEnemyVisualMarkup(monsterRushCurrent,baseStep):`<div class="monster-rush-emoji">${monsterRushCurrent.emoji}</div><div class="monster-rush-name">${esc(monsterRushCurrent.name)}</div><div class="monster-rush-clue">${esc(monsterRushCurrent.clue)}</div>`;
+ let visual=monsterRushMode==='hard'?hardEnemyVisualMarkup(monsterRushCurrent,baseStep):`<div class="monster-rush-emoji">${monsterRushCurrent.emoji}</div><div class="monster-rush-name">${esc(monsterRushCurrent.name)}</div>`;
 
  if(monsterRushCurrentConcealed&&monsterRushCurrentStep===0){
   visual=`<div class="monster-rush-scene"><div class="monster-rush-enemy" style="filter:brightness(.18) blur(2px)"><div class="monster-rush-enemy-icon">${monsterRushCurrent.emoji}</div><div class="monster-rush-enemy-name">???</div></div><div class="monster-rush-cover ${monsterRushConcealType}">${monsterRushConcealType==='bush'?'🌿🌿🌿':''}</div><div class="monster-rush-concealed-label">정체를 알 수 없습니다 · 간파 필요</div></div>`;
@@ -11045,7 +11046,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.9',72,635);
+ ctx.fillText('aninote · v1.10.10',72,635);
 }
 
 function annualWrapBlob(){
