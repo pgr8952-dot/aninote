@@ -8567,40 +8567,17 @@ function spawnMonsterRushMonster(){
 
 function monsterRushMultiplier(){return Math.min(3,1+Math.floor(monsterRushCombo/5)*0.25);}
 
-let monsterRushAudioContext=null;
+// 몬스터 러시 정답: 짧은 삑음 대신 맑게 잔향이 남는 '띵~'
 function playMonsterRushBeep(correct){
- try{
-  const AudioCtx=window.AudioContext||window.webkitAudioContext;
-  if(!AudioCtx)return;
-
-  if(!monsterRushAudioContext){
-   monsterRushAudioContext=new AudioCtx();
-  }
-
-  if(monsterRushAudioContext.state==='suspended'){
-   monsterRushAudioContext.resume().catch(()=>{});
-  }
-
-  const ctx=monsterRushAudioContext;
-  const now=ctx.currentTime;
-  const osc=ctx.createOscillator();
-  const gain=ctx.createGain();
-
-  osc.type='sine';
-  osc.frequency.setValueAtTime(correct?880:220,now);
-
-  gain.gain.setValueAtTime(0.0001,now);
-  gain.gain.exponentialRampToValueAtTime(0.045,now+0.006);
-  gain.gain.exponentialRampToValueAtTime(0.0001,now+(correct?0.075:0.11));
-
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-
-  osc.start(now);
-  osc.stop(now+(correct?0.08:0.12));
- }catch(e){
-  console.warn('몬스터 러시 효과음을 재생하지 못했습니다.',e);
+ if(correct){
+  // 기본음 + 아주 약한 고조파를 겹쳐서 깨끗한 벨 느낌
+  appTone({freq:1046.5,endFreq:987.77,duration:.24,gain:.06,type:'sine',attack:.003,release:.17});
+  appTone({freq:2093,endFreq:1975.53,duration:.18,delay:.006,gain:.018,type:'sine',attack:.002,release:.13});
+  return;
  }
+
+ // 혹시 다른 로직에서 오답음을 호출할 경우의 안전한 낮은 톤
+ appTone({freq:220,endFreq:180,duration:.12,gain:.045,type:'sine',release:.06});
 }
 
 function flashMonsterRushCard(action,good){const btn=document.querySelector(`[data-monster-action="${action}"]`);if(!btn)return;const cls=good?'correct-flash':'wrong-flash';btn.classList.add(cls);setTimeout(()=>btn.classList.remove(cls),180);}
