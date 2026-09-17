@@ -1629,6 +1629,260 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
     font-size:58px;
   }
 }
+
+/* ============================================================
+   v1.10.8 · 모바일 미니게임 UI 2차
+   - 몬스터 러시: 모바일 전용 HUD/게임창/대형 액션 버튼
+   - 사격장 러시: 모바일 홈에서 숨김
+   ============================================================ */
+
+#monsterRushQuickRestartBtn{display:none}
+
+@media (max-width:760px){
+  /* 사격장 러시는 마우스/키보드가 필요한 PC 전용 */
+  #sniperRushHomeCard{
+    display:none !important;
+  }
+
+  .mini-game-home-stack{
+    grid-template-columns:1fr !important;
+  }
+
+  /* 몬스터 러시: 상단 조작부 */
+  .monster-rush-modal{
+    width:100%;
+    max-width:none;
+  }
+
+  .monster-rush-intro{
+    display:block;
+    margin-bottom:8px;
+  }
+
+  .monster-rush-intro > div:first-child{
+    display:none;
+  }
+
+  .monster-rush-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    width:100%;
+  }
+
+  .monster-rush-actions button{
+    width:100%;
+    min-height:48px;
+    font-size:15px;
+    font-weight:900;
+  }
+
+  #monsterRushQuickRestartBtn{
+    display:block;
+  }
+
+  /* 모바일에서는 빠른 재시작으로 대체 */
+  #monsterRushGiveUpBtn{
+    display:none;
+  }
+
+  /* 시간 / 점수 / 콤보
+     목숨(2칸) / 정답률 */
+  .monster-rush-score-grid{
+    display:grid;
+    grid-template-columns:.92fr 1.28fr 1fr;
+    grid-template-areas:
+      "time score combo"
+      "lives lives accuracy";
+    gap:8px;
+    margin-bottom:9px;
+  }
+
+  .monster-rush-score-grid .monster-rush-stat:nth-child(1){grid-area:time}
+  .monster-rush-score-grid .monster-rush-stat:nth-child(2){grid-area:score}
+  .monster-rush-score-grid .monster-rush-stat:nth-child(3){grid-area:lives}
+  .monster-rush-score-grid .monster-rush-stat:nth-child(4){grid-area:combo}
+  .monster-rush-score-grid .monster-rush-stat:nth-child(5){grid-area:accuracy}
+
+  .monster-rush-stat{
+    min-width:0;
+    padding:8px 9px;
+    text-align:left;
+    border-radius:10px;
+  }
+
+  .monster-rush-stat .meta{
+    font-size:11px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .monster-rush-stat strong{
+    margin-top:2px;
+    font-size:clamp(20px,6vw,27px);
+    line-height:1.15;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .monster-rush-lives{
+    font-size:clamp(22px,7vw,31px) !important;
+    letter-spacing:1px;
+    overflow:visible !important;
+    text-overflow:clip !important;
+  }
+
+  /* 게임창: 폰 화면 폭을 거의 전부 사용 */
+  .monster-rush-arena{
+    width:100%;
+    min-height:0;
+    aspect-ratio:4 / 3;
+    padding:12px;
+    border-radius:12px;
+  }
+
+  .monster-rush-scene{
+    width:100%;
+    min-height:0;
+    height:100%;
+  }
+
+  .monster-rush-monster{
+    width:100%;
+  }
+
+  .monster-rush-enemy-icon,
+  .monster-rush-emoji{
+    font-size:clamp(76px,23vw,112px);
+  }
+
+  .monster-rush-enemy-name,
+  .monster-rush-name{
+    font-size:clamp(19px,5.5vw,25px);
+  }
+
+  .monster-rush-clue,
+  .monster-rush-state-label{
+    font-size:12px;
+  }
+
+  .monster-rush-attack-wrap{
+    width:min(92%,390px);
+  }
+
+  .monster-rush-feedback{
+    min-height:21px;
+    margin-top:6px;
+    font-size:13px;
+  }
+
+  /* NORMAL: 공격 / 방어 / 마법 한 줄 */
+  .monster-rush-cards{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:8px;
+    margin-top:7px;
+
+    /* 랭킹을 내려보더라도 게임 중 조작부는 접근하기 쉽게 */
+    position:sticky;
+    bottom:0;
+    z-index:35;
+    padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+    background:linear-gradient(
+      180deg,
+      rgba(13,15,20,0),
+      var(--panel) 18%,
+      var(--panel) 100%
+    );
+  }
+
+  .monster-card-btn{
+    min-width:0;
+    min-height:100px;
+    padding:10px 5px;
+    border-radius:10px;
+    font-size:clamp(17px,5vw,22px);
+    line-height:1.15;
+    touch-action:manipulation;
+  }
+
+  .monster-card-btn span:first-child{
+    font-size:inherit;
+    white-space:normal;
+  }
+
+  /* 모바일 게임 화면에서는 키 설명을 제거해서 버튼을 크게 */
+  .monster-card-btn small{
+    display:none;
+  }
+
+  /* HARD:
+     공격/방어/마법 3칸
+     회피/간파 2칸 */
+  .monster-rush-cards.hard-mode{
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  }
+
+  .monster-rush-cards.hard-mode .monster-card-btn:nth-child(1),
+  .monster-rush-cards.hard-mode .monster-card-btn:nth-child(2),
+  .monster-rush-cards.hard-mode .monster-card-btn:nth-child(3){
+    grid-column:span 2;
+  }
+
+  .monster-rush-cards.hard-mode .monster-card-btn:nth-child(4),
+  .monster-rush-cards.hard-mode .monster-card-btn:nth-child(5){
+    grid-column:span 3;
+  }
+
+  .monster-rush-cards.hard-mode .monster-card-btn:last-child{
+    grid-column:span 3;
+  }
+
+  .monster-rush-help{
+    margin-top:8px;
+    font-size:12px;
+  }
+
+  .monster-rush-ranking{
+    margin-top:10px;
+  }
+}
+
+@media (max-width:430px){
+  .monster-rush-actions{
+    gap:7px;
+  }
+
+  .monster-rush-actions button{
+    min-height:45px;
+    padding:8px 6px;
+    font-size:13px;
+  }
+
+  .monster-rush-score-grid{
+    gap:6px;
+  }
+
+  .monster-rush-stat{
+    padding:7px;
+  }
+
+  .monster-rush-stat strong{
+    font-size:clamp(18px,6vw,24px);
+  }
+
+  .monster-rush-arena{
+    aspect-ratio:1.2 / 1;
+    padding:9px;
+  }
+
+  .monster-card-btn{
+    min-height:92px;
+    padding-inline:3px;
+    font-size:clamp(16px,5vw,20px);
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2569,6 +2823,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
    </div>
    <div class="monster-rush-actions">
     <button id="monsterRushStartBtn" class="primary">게임 시작</button>
+    <button id="monsterRushQuickRestartBtn" type="button">빠른 재시작</button>
     <button id="monsterRushGiveUpBtn" class="danger" disabled>포기</button>
    </div>
   </div>
@@ -8249,7 +8504,23 @@ window.openMonsterRush=async()=>{
 
 $('#monsterRushNormalModeBtn').onclick=()=>setMonsterRushMode('normal');
 $('#monsterRushHardModeBtn').onclick=()=>setMonsterRushMode('hard');
-$('#monsterRushStartBtn').onclick=startMonsterRush;$('#monsterRushRetryBtn').onclick=startMonsterRush;$('#refreshMonsterRushRankingBtn').onclick=loadMonsterRushLeaderboard;
+async function quickRestartMonsterRush(){
+ const btn=$('#monsterRushQuickRestartBtn');
+ if(btn)btn.disabled=true;
+ try{
+  if(monsterRushRunning||monsterRushRunId){
+   await abandonMonsterRushRun(false);
+  }
+  await startMonsterRush();
+ }finally{
+  if(btn)btn.disabled=false;
+ }
+}
+
+$('#monsterRushStartBtn').onclick=startMonsterRush;
+$('#monsterRushQuickRestartBtn').onclick=quickRestartMonsterRush;
+$('#monsterRushRetryBtn').onclick=startMonsterRush;
+$('#refreshMonsterRushRankingBtn').onclick=loadMonsterRushLeaderboard;
 $('#openMonsterRushHomeBtn').onclick=e=>{e.stopPropagation();openMonsterRush();};
 $('#monsterRushHomeCard').addEventListener('click',e=>{if(e.target.closest('button'))return;openMonsterRush();});
 $('#monsterRushHomeCard').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openMonsterRush();}});
@@ -9405,7 +9676,16 @@ async function startSniperRush(){
  sniperRushTimer=requestAnimationFrame(sniperRushLoop);
 }
 
+function sniperRushMobileBlocked(){
+ return window.matchMedia('(max-width: 760px)').matches;
+}
+
 window.openSniperRush=async()=>{
+ if(sniperRushMobileBlocked()){
+  alert('사격장 러시는 마우스와 키보드가 필요한 PC 전용 게임입니다.');
+  return;
+ }
+
  $('#globalSearchResults').classList.add('hidden');
 
  if(!sniperRushRunning){
