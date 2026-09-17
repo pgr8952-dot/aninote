@@ -7681,6 +7681,19 @@ function playSniperDryFireSound(){
  click(.11);
 }
 
+// 몬스터 러시 시작: 짧고 선명한 '띵!' 스타트 큐
+function playMonsterRushStartSound(){
+ appTone({freq:523.25,duration:.09,gain:.055,type:'triangle'});
+ appTone({freq:783.99,duration:.13,delay:.07,gain:.07,type:'sine'});
+ appTone({freq:1046.5,duration:.22,delay:.145,gain:.055,type:'sine'});
+}
+
+// 몬스터 러시 피격: 오답/시간초과로 실제 목숨이 깎였을 때 길게 울리는 '띵~'
+function playMonsterRushHitSound(){
+ appTone({freq:659.25,endFreq:493.88,duration:.34,gain:.085,type:'sine',release:.12});
+ appTone({freq:987.77,endFreq:739.99,duration:.28,delay:.025,gain:.035,type:'triangle',release:.1});
+}
+
 function stopRealtime(){
  if(realtimeNotificationChannel){
   sb.removeChannel(realtimeNotificationChannel);
@@ -8596,7 +8609,7 @@ function scheduleNextMonsterRushMonster(){if(monsterRushTransitionTimer)clearTim
 function monsterRushLoseLife(kind,action=null){
  if(!monsterRushRunning||monsterRushLocked)return;
  monsterRushLocked=true;setMonsterRushCardsEnabled(false);
- playMonsterRushBeep(false);
+ playMonsterRushHitSound();
  monsterRushLives=Math.max(0,monsterRushLives-1);monsterRushCombo=0;monsterRushScore=Math.max(0,monsterRushScore-50);
  if(kind==='timeout'){monsterRushTimeouts++;$('#monsterRushFeedback').textContent='늦었습니다! 적의 공격을 받았습니다. ♥ -1 · -50점';}
  else{monsterRushWrong++;$('#monsterRushFeedback').textContent='오답! 적의 공격을 받았습니다. ♥ -1 · -50점';if(action)flashMonsterRushCard(action,false);}
@@ -8700,6 +8713,7 @@ async function startMonsterRush(){
  const rpc=monsterRushMode==='hard'?'start_monster_rush_hard_run':'start_monster_rush_run';const {data,error}=await sb.rpc(rpc);$('#monsterRushStartBtn').disabled=false;$('#monsterRushRetryBtn').disabled=false;
  if(error){$('#monsterRushFeedback').textContent=`게임을 시작하지 못했습니다. ${error.message}`;$('#monsterRushFeedback').className='monster-rush-feedback bad';return;}
  monsterRushRunId=data;if(monsterRushTimer){cancelAnimationFrame(monsterRushTimer);monsterRushTimer=null;}if(monsterRushTransitionTimer){clearTimeout(monsterRushTransitionTimer);monsterRushTransitionTimer=null;}
+ playMonsterRushStartSound();
  monsterRushRunning=true;monsterRushScore=0;monsterRushCombo=0;monsterRushBestCombo=0;monsterRushCorrect=0;monsterRushWrong=0;monsterRushTimeouts=0;monsterRushLives=monsterRushMaxLives();monsterRushReactionTotal=0;monsterRushCurrent=null;monsterRushLocked=false;monsterRushEndsAt=performance.now()+MONSTER_RUSH_DURATION;
  $('#monsterRushResult').classList.add('hidden');$('#monsterRushStartBtn').textContent='진행 중';$('#monsterRushStartBtn').disabled=true;$('#monsterRushGiveUpBtn').disabled=false;$('#monsterRushTime').textContent='60.0';$('#monsterRushFeedback').textContent='';$('#monsterRushFeedback').className='monster-rush-feedback';updateMonsterRushModeUI();updateMonsterRushHud();spawnMonsterRushMonster();monsterRushLoop();
 }
