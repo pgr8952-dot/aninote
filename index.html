@@ -1111,7 +1111,7 @@ body.light-mode .sniper-rush-help{color:#475569}
 .achievement.locked{opacity:.52;filter:none}
 body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[data-rarity="legendary"],body.light-mode .achievement[data-rarity="rare"]{background:#fff}
 
-/* ===== v1.10.14 · 몬스터 러시 HARD / 보안 강화 ===== */
+/* ===== v1.10.15 · 몬스터 러시 HARD / 보안 강화 ===== */
 .monster-rush-mode-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:9px}
 .monster-rush-mode-btn{padding:7px 12px;font-size:12px;font-weight:900}
 .monster-rush-mode-btn.active{background:#6d4bd8;border-color:#8b5cf6;color:#fff}
@@ -1151,7 +1151,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 
 
 /* ============================================================
-   애니노트 v1.10.14 · 모바일 대응 1차
+   애니노트 v1.10.15 · 모바일 대응 1차
    - 기존 PC 레이아웃은 유지
    - 760px 이하: 모바일
    - 480px 이하: 소형 모바일
@@ -1631,7 +1631,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 }
 
 /* ============================================================
-   v1.10.14 · 모바일 미니게임 UI 2차
+   v1.10.15 · 모바일 미니게임 UI 2차
    - 몬스터 러시: 모바일 전용 HUD/게임창/대형 액션 버튼
    - 사격장 러시: 모바일 홈에서 숨김
    ============================================================ */
@@ -1923,7 +1923,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.10.14</div>
+    <div class="app-version">v1.10.15</div>
     
    </div>
    <div class="global-search-wrap">
@@ -2348,7 +2348,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.10.14</span>
+  <span>애니노트 v1.10.15</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -2981,7 +2981,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.14</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.15</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -4763,7 +4763,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.14',72,630);
+ ctx.fillText('aninote · v1.10.15',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -7532,7 +7532,7 @@ async function syncBadgeNotifications(defs){
 // ============================================================
 
 // ============================================================
-// v1.10.14 · 공용 효과음 (Web Audio · 외부 파일/DB 사용 없음)
+// v1.10.15 · 공용 효과음 (Web Audio · 외부 파일/DB 사용 없음)
 // ============================================================
 let appAudioCtx=null;
 let appAudioMaster=null;
@@ -8567,15 +8567,41 @@ function spawnMonsterRushMonster(){
 
 function monsterRushMultiplier(){return Math.min(3,1+Math.floor(monsterRushCombo/5)*0.25);}
 
-// 몬스터 러시 정답: '띵↗' 하고 음정이 위로 올라가는 성공음
+// 몬스터 러시 정답: 타격감 없이 '잉↗~~~' 하고 부드럽게 계속 올라가는 종소리
 function playMonsterRushBeep(correct){
  if(correct){
-  // 첫 음에서 위쪽 음으로 자연스럽게 올라가는 짧은 글리산도
-  appTone({freq:880,endFreq:1318.51,duration:.26,gain:.065,type:'sine',attack:.002,release:.16});
-  // 얇은 고조파를 같이 올려서 맑은 금속성 '띵↗' 느낌
-  appTone({freq:1760,endFreq:2637.02,duration:.20,delay:.004,gain:.018,type:'sine',attack:.002,release:.13});
-  // 마지막 도착음을 아주 짧게 남겨 성공감을 강조
-  appTone({freq:1318.51,duration:.12,delay:.16,gain:.018,type:'triangle',attack:.002,release:.10});
+  const ctx=ensureAppAudio();
+  if(!ctx || !appAudioMaster || ctx.state!=='running')return;
+
+  const now=ctx.currentTime;
+
+  const makeRisingPartial=(startFreq,endFreq,gain,ratio=1)=>{
+   const osc=ctx.createOscillator();
+   const amp=ctx.createGain();
+   osc.type='sine';
+
+   // 처음부터 툭 치지 않고 천천히 생기면서, 끝까지 한 방향으로 계속 상승합니다.
+   osc.frequency.setValueAtTime(startFreq*ratio,now);
+   osc.frequency.exponentialRampToValueAtTime(720*ratio,now+.16);
+   osc.frequency.exponentialRampToValueAtTime(1040*ratio,now+.38);
+   osc.frequency.exponentialRampToValueAtTime(endFreq*ratio,now+.68);
+
+   amp.gain.setValueAtTime(.0001,now);
+   amp.gain.exponentialRampToValueAtTime(gain,now+.055);
+   amp.gain.setValueAtTime(gain*.92,now+.30);
+   amp.gain.exponentialRampToValueAtTime(gain*.52,now+.56);
+   amp.gain.exponentialRampToValueAtTime(.0001,now+.82);
+
+   osc.connect(amp);
+   amp.connect(appAudioMaster);
+   osc.start(now);
+   osc.stop(now+.86);
+  };
+
+  // 기본음 + 아주 약한 배음만 겹쳐서 종처럼 맑게. 별도 '딱' 어택음은 넣지 않습니다.
+  makeRisingPartial(520,1480,.070,1);
+  makeRisingPartial(520,1480,.012,2.01);
+  makeRisingPartial(520,1480,.0045,3.02);
   return;
  }
 
@@ -11279,7 +11305,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.14',72,635);
+ ctx.fillText('aninote · v1.10.15',72,635);
 }
 
 function annualWrapBlob(){
