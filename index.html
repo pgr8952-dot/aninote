@@ -8567,41 +8567,10 @@ function spawnMonsterRushMonster(){
 
 function monsterRushMultiplier(){return Math.min(3,1+Math.floor(monsterRushCombo/5)*0.25);}
 
-// 몬스터 러시 정답: 타격감 없이 '잉↗~~~' 하고 부드럽게 계속 올라가는 종소리
+// 몬스터 러시 정답: 짧고 선명한 높은 비프음
 function playMonsterRushBeep(correct){
  if(correct){
-  const ctx=ensureAppAudio();
-  if(!ctx || !appAudioMaster || ctx.state!=='running')return;
-
-  const now=ctx.currentTime;
-
-  const makeRisingPartial=(startFreq,endFreq,gain,ratio=1)=>{
-   const osc=ctx.createOscillator();
-   const amp=ctx.createGain();
-   osc.type='sine';
-
-   // 처음부터 툭 치지 않고 천천히 생기면서, 끝까지 한 방향으로 계속 상승합니다.
-   osc.frequency.setValueAtTime(startFreq*ratio,now);
-   osc.frequency.exponentialRampToValueAtTime(720*ratio,now+.16);
-   osc.frequency.exponentialRampToValueAtTime(1040*ratio,now+.38);
-   osc.frequency.exponentialRampToValueAtTime(endFreq*ratio,now+.68);
-
-   amp.gain.setValueAtTime(.0001,now);
-   amp.gain.exponentialRampToValueAtTime(gain,now+.055);
-   amp.gain.setValueAtTime(gain*.92,now+.30);
-   amp.gain.exponentialRampToValueAtTime(gain*.52,now+.56);
-   amp.gain.exponentialRampToValueAtTime(.0001,now+.82);
-
-   osc.connect(amp);
-   amp.connect(appAudioMaster);
-   osc.start(now);
-   osc.stop(now+.86);
-  };
-
-  // 기본음 + 아주 약한 배음만 겹쳐서 종처럼 맑게. 별도 '딱' 어택음은 넣지 않습니다.
-  makeRisingPartial(520,1480,.070,1);
-  makeRisingPartial(520,1480,.012,2.01);
-  makeRisingPartial(520,1480,.0045,3.02);
+  appTone({freq:1450,duration:.095,gain:.075,type:'sine',attack:.003,release:.025});
   return;
  }
 
