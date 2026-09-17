@@ -1111,7 +1111,7 @@ body.light-mode .sniper-rush-help{color:#475569}
 .achievement.locked{opacity:.52;filter:none}
 body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[data-rarity="legendary"],body.light-mode .achievement[data-rarity="rare"]{background:#fff}
 
-/* ===== v1.10.10 · 몬스터 러시 HARD / 보안 강화 ===== */
+/* ===== v1.10.11 · 몬스터 러시 HARD / 보안 강화 ===== */
 .monster-rush-mode-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:9px}
 .monster-rush-mode-btn{padding:7px 12px;font-size:12px;font-weight:900}
 .monster-rush-mode-btn.active{background:#6d4bd8;border-color:#8b5cf6;color:#fff}
@@ -1151,7 +1151,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 
 
 /* ============================================================
-   애니노트 v1.10.10 · 모바일 대응 1차
+   애니노트 v1.10.11 · 모바일 대응 1차
    - 기존 PC 레이아웃은 유지
    - 760px 이하: 모바일
    - 480px 이하: 소형 모바일
@@ -1631,7 +1631,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 }
 
 /* ============================================================
-   v1.10.10 · 모바일 미니게임 UI 2차
+   v1.10.11 · 모바일 미니게임 UI 2차
    - 몬스터 러시: 모바일 전용 HUD/게임창/대형 액션 버튼
    - 사격장 러시: 모바일 홈에서 숨김
    ============================================================ */
@@ -1923,7 +1923,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.10.10</div>
+    <div class="app-version">v1.10.11</div>
     
    </div>
    <div class="global-search-wrap">
@@ -2348,7 +2348,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.10.10</span>
+  <span>애니노트 v1.10.11</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -2981,7 +2981,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.10</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.11</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -4748,7 +4748,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.10',72,630);
+ ctx.fillText('aninote · v1.10.11',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -7263,6 +7263,18 @@ window.openNotificationItem=async id=>{
   $('#notificationDialog').close();
   [...document.querySelectorAll('.tabs button')]
    .find(b=>b.dataset.tab==='profile')?.click();
+  return;
+ }
+
+ if(
+  n.notification_type==='moderation'
+  && isAdmin
+  && /^새 (신고|수정 요청|문의)$/.test(String(n.title||''))
+ ){
+  $('#notificationDialog').close();
+  [...document.querySelectorAll('.tabs button')]
+   .find(b=>b.dataset.tab==='admin')?.click();
+  return;
  }
 };
 
@@ -8210,7 +8222,7 @@ const MONSTER_RUSH_MONSTERS=[
  {id:'goblin',name:'광폭 고블린',emoji:'👹',clue:'정면으로 돌진해옵니다!',sequence:['guard']},
  {id:'golem',name:'철갑 골렘',emoji:'🗿',clue:'두꺼운 갑옷으로 공격을 버팁니다!',sequence:['magic']},
  {id:'curse_mage',name:'저주술사',emoji:'🧙‍♂️',clue:'저주 주문을 외우기 시작합니다!',sequence:['attack']},
- {id:'boar',name:'뿔 달린 마수',emoji:'🐗',clue:'뿔을 낮추고 돌진 자세를 취합니다!',sequence:['guard']},
+ {id:'boar',name:'엄니큰 마수',emoji:'🐗',clue:'뿔을 낮추고 돌진 자세를 취합니다!',sequence:['guard']},
  {id:'heavy_guard',name:'중장갑 기사',emoji:'🛡️',clue:'무거운 갑옷으로 몸을 완전히 감쌉니다!',sequence:['magic']}
 ];
 
@@ -8370,12 +8382,50 @@ function spawnMonsterRushMonster(){
 }
 
 function monsterRushMultiplier(){return Math.min(3,1+Math.floor(monsterRushCombo/5)*0.25);}
+
+let monsterRushAudioContext=null;
+function playMonsterRushBeep(correct){
+ try{
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  if(!AudioCtx)return;
+
+  if(!monsterRushAudioContext){
+   monsterRushAudioContext=new AudioCtx();
+  }
+
+  if(monsterRushAudioContext.state==='suspended'){
+   monsterRushAudioContext.resume().catch(()=>{});
+  }
+
+  const ctx=monsterRushAudioContext;
+  const now=ctx.currentTime;
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+
+  osc.type='sine';
+  osc.frequency.setValueAtTime(correct?880:220,now);
+
+  gain.gain.setValueAtTime(0.0001,now);
+  gain.gain.exponentialRampToValueAtTime(0.045,now+0.006);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+(correct?0.075:0.11));
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(now);
+  osc.stop(now+(correct?0.08:0.12));
+ }catch(e){
+  console.warn('몬스터 러시 효과음을 재생하지 못했습니다.',e);
+ }
+}
+
 function flashMonsterRushCard(action,good){const btn=document.querySelector(`[data-monster-action="${action}"]`);if(!btn)return;const cls=good?'correct-flash':'wrong-flash';btn.classList.add(cls);setTimeout(()=>btn.classList.remove(cls),180);}
 function scheduleNextMonsterRushMonster(){if(monsterRushTransitionTimer)clearTimeout(monsterRushTransitionTimer);monsterRushTransitionTimer=setTimeout(()=>{monsterRushTransitionTimer=null;if(monsterRushRunning)spawnMonsterRushMonster();},220);}
 
 function monsterRushLoseLife(kind,action=null){
  if(!monsterRushRunning||monsterRushLocked)return;
  monsterRushLocked=true;setMonsterRushCardsEnabled(false);
+ playMonsterRushBeep(false);
  monsterRushLives=Math.max(0,monsterRushLives-1);monsterRushCombo=0;monsterRushScore=Math.max(0,monsterRushScore-50);
  if(kind==='timeout'){monsterRushTimeouts++;$('#monsterRushFeedback').textContent='늦었습니다! 적의 공격을 받았습니다. ♥ -1 · -50점';}
  else{monsterRushWrong++;$('#monsterRushFeedback').textContent='오답! 적의 공격을 받았습니다. ♥ -1 · -50점';if(action)flashMonsterRushCard(action,false);}
@@ -8390,6 +8440,7 @@ function playMonsterRushAction(action){
  if(action!==expected){monsterRushLoseLife('wrong',action);return;}
 
  monsterRushCorrect++;monsterRushReactionTotal+=reaction;
+ playMonsterRushBeep(true);
  const speedBonus=Math.max(0,Math.round(200*(1-Math.min(reaction,MONSTER_RUSH_RESPONSE_LIMIT)/MONSTER_RUSH_RESPONSE_LIMIT)));
  const gained=Math.round((100+speedBonus)*monsterRushMultiplier());
  monsterRushScore+=gained;flashMonsterRushCard(action,true);
@@ -10682,6 +10733,8 @@ async function downloadAdminBackup(){
    throw new Error('백업 데이터 형식이 올바르지 않습니다.');
   }
 
+  backup.version='1.10.11';
+
   const json=JSON.stringify(backup,null,2);
   const blob=new Blob([json],{type:'application/json;charset=utf-8'});
   const url=URL.createObjectURL(blob);
@@ -11046,7 +11099,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.10',72,635);
+ ctx.fillText('aninote · v1.10.11',72,635);
 }
 
 function annualWrapBlob(){
