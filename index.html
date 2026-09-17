@@ -1111,7 +1111,7 @@ body.light-mode .sniper-rush-help{color:#475569}
 .achievement.locked{opacity:.52;filter:none}
 body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[data-rarity="legendary"],body.light-mode .achievement[data-rarity="rare"]{background:#fff}
 
-/* ===== v1.10.7 · 몬스터 러시 HARD / 보안 강화 ===== */
+/* ===== v1.10.8 · 몬스터 러시 HARD / 보안 강화 ===== */
 .monster-rush-mode-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:9px}
 .monster-rush-mode-btn{padding:7px 12px;font-size:12px;font-weight:900}
 .monster-rush-mode-btn.active{background:#6d4bd8;border-color:#8b5cf6;color:#fff}
@@ -1148,6 +1148,487 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 @keyframes hardDash{from{transform:translateX(-42px) rotate(-8deg)}to{transform:translateX(15px) rotate(2deg)}}
 @media(max-width:760px){.monster-rush-cards.hard-mode{grid-template-columns:repeat(2,minmax(0,1fr))}.monster-rush-cards.hard-mode .monster-card-btn:last-child{grid-column:1/-1}.monster-rush-enemy-icon{font-size:72px}}
 
+
+
+/* ============================================================
+   애니노트 v1.10.8 · 모바일 대응 1차
+   - 기존 PC 레이아웃은 유지
+   - 760px 이하: 모바일
+   - 480px 이하: 소형 모바일
+   이 블록을 기존 <style>의 가장 마지막에 추가
+   ============================================================ */
+
+@media (max-width: 760px){
+  html{
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+  }
+
+  body{
+    overflow-x:hidden;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+
+  .wrap{
+    width:100%;
+    max-width:none;
+    padding:12px;
+  }
+
+  header .wrap{
+    padding-top:10px;
+    padding-bottom:10px;
+  }
+
+  .headrow{
+    width:100%;
+    align-items:stretch;
+    gap:10px;
+  }
+
+  h1{
+    font-size:22px;
+    line-height:1.2;
+  }
+
+  .sub{
+    font-size:12px;
+    margin-top:3px;
+  }
+
+  .global-search-wrap{
+    width:100%;
+    min-width:0;
+  }
+
+  .global-results{
+    max-height:min(55dvh,420px);
+  }
+
+  /* 상단 탭: 여러 줄 대신 앱처럼 좌우 스크롤 */
+  .tabs{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    gap:7px;
+    margin:10px -12px 14px;
+    padding:0 12px 7px;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
+  }
+
+  .tabs::-webkit-scrollbar{
+    display:none;
+  }
+
+  .tabs button{
+    flex:0 0 auto;
+    white-space:nowrap;
+    min-height:42px;
+    padding:9px 12px;
+  }
+
+  /* 기본 터치 영역 */
+  button,
+  input,
+  select{
+    min-height:44px;
+  }
+
+  textarea{
+    min-height:96px;
+  }
+
+  .small{
+    min-height:38px;
+    padding:8px 10px;
+  }
+
+  .icon-close{
+    min-width:42px;
+    width:42px;
+    height:42px;
+  }
+
+  /* 콘텐츠 */
+  .toolbar,
+  .formgrid,
+  .settings-grid,
+  .friend-grid,
+  .info-request-grid,
+  .admin-user-controls,
+  .voice-add-appearance-row,
+  .user-admin-row,
+  .cast-row{
+    grid-template-columns:1fr !important;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .panel,
+  .card{
+    padding:13px;
+    border-radius:14px;
+  }
+
+  .panel + .panel{
+    margin-top:10px;
+  }
+
+  .media-card{
+    gap:10px;
+  }
+
+  .poster{
+    width:72px;
+  }
+
+  .poster-lg{
+    width:105px;
+  }
+
+  .voice-photo{
+    width:64px;
+    height:64px;
+  }
+
+  .voice-photo-lg{
+    width:100px;
+    height:100px;
+  }
+
+  .profile-hero,
+  .character-info-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .character-poster,
+  .character-poster-placeholder{
+    max-width:180px;
+    margin-inline:auto;
+  }
+
+  .favorite-groups,
+  .official-credits{
+    grid-template-columns:1fr;
+  }
+
+  .profile-picks{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .stat-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+
+  .stat-box{
+    padding:12px;
+  }
+
+  .stat-value{
+    font-size:23px;
+  }
+
+  .bar-row{
+    grid-template-columns:minmax(82px,.8fr) minmax(90px,1.5fr) auto;
+    gap:7px;
+    font-size:12px;
+  }
+
+  .filter-row{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+
+  .filter-row > *{
+    min-width:0;
+    width:100%;
+  }
+
+  .rating-pair{
+    grid-template-columns:78px 1fr;
+  }
+
+  .related-anime-list{
+    margin-inline:-4px;
+    padding-inline:4px;
+    scroll-snap-type:x proximity;
+  }
+
+  .related-anime-card{
+    min-width:132px;
+    scroll-snap-align:start;
+  }
+
+  /* 채팅 */
+  .chat-messages{
+    height:min(55dvh,480px);
+    padding:10px;
+  }
+
+  .chat-message{
+    max-width:88%;
+  }
+
+  .chat-compose{
+    grid-template-columns:1fr;
+  }
+
+  .chat-compose button{
+    width:100%;
+  }
+
+  /* 모달은 모바일에서 거의 전체화면 */
+  dialog{
+    width:100vw;
+    max-width:100vw;
+    height:100dvh;
+    max-height:100dvh;
+    margin:0;
+    overflow:auto;
+  }
+
+  dialog::backdrop{
+    background:#000d;
+  }
+
+  .modal{
+    width:100%;
+    min-height:100dvh;
+    border-radius:0;
+    border-left:0;
+    border-right:0;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      12px
+      calc(18px + env(safe-area-inset-bottom));
+  }
+
+  .modal-title-row{
+    position:sticky;
+    top:0;
+    z-index:25;
+    margin:-4px -4px 12px;
+    padding:6px 4px 8px;
+    background:var(--panel);
+  }
+
+  .modal-title-row h2{
+    font-size:20px;
+  }
+
+  .modal-actions{
+    gap:7px;
+  }
+
+  .modal-actions > button{
+    flex:1 1 140px;
+  }
+
+  /* 긴 관리자/로그 데이터 */
+  table{
+    display:block;
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  pre,
+  code{
+    overflow-wrap:anywhere;
+    word-break:break-word;
+  }
+
+  /* 플로팅 버튼 safe area */
+  .floating-top,
+  .dialog-top-button{
+    right:12px;
+    bottom:calc(12px + env(safe-area-inset-bottom));
+  }
+
+  /* 몬스터 러시 */
+  .monster-rush-mode-row{
+    align-items:stretch;
+  }
+
+  .monster-rush-mode-btn{
+    flex:1 1 120px;
+    min-height:42px;
+  }
+
+  .monster-rush-scene{
+    width:100%;
+    min-height:160px;
+  }
+
+  .monster-rush-enemy-icon{
+    font-size:72px;
+  }
+
+  .monster-rush-enemy-name{
+    font-size:18px;
+  }
+
+  .monster-rush-cards,
+  .monster-rush-cards.hard-mode{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px;
+  }
+
+  .monster-card-btn{
+    min-height:70px;
+    touch-action:manipulation;
+  }
+
+  /* 스나이퍼: 화면은 우선 맞춤. 터치 조작은 2차 패치 */
+  #sniperRushCanvas{
+    display:block;
+    width:100% !important;
+    max-width:100%;
+    height:auto !important;
+    touch-action:none;
+  }
+
+  .sniper-rush-ranking .row{
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+
+  /* 이미지/캔버스 공통 */
+  img,
+  canvas{
+    max-width:100%;
+  }
+
+  /* iOS 입력 확대 방지 */
+  input,
+  select,
+  textarea{
+    font-size:16px;
+  }
+
+  /* 긴 텍스트가 화면을 밀지 않게 */
+  .panel,
+  .card,
+  .review,
+  .req,
+  .notification-item,
+  .favorite-box,
+  .series-card{
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+}
+
+@media (max-width: 480px){
+  .wrap{
+    padding:10px;
+  }
+
+  .tabs{
+    margin-left:-10px;
+    margin-right:-10px;
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  h1{
+    font-size:20px;
+  }
+
+  .panel,
+  .card{
+    padding:11px;
+    border-radius:12px;
+  }
+
+  .profile-picks,
+  .stat-grid{
+    grid-template-columns:1fr;
+  }
+
+  .poster{
+    width:66px;
+  }
+
+  .poster-lg{
+    width:92px;
+  }
+
+  .media-card{
+    gap:8px;
+  }
+
+  .row{
+    gap:7px;
+  }
+
+  .modal{
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .modal-title-row h2{
+    font-size:18px;
+  }
+
+  .monster-rush-enemy-icon{
+    font-size:62px;
+  }
+
+  .monster-rush-cards,
+  .monster-rush-cards.hard-mode{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .monster-card-btn{
+    min-height:64px;
+    padding:9px 7px;
+    font-size:13px;
+  }
+
+  .chat-message{
+    max-width:94%;
+  }
+
+  .related-anime-card{
+    min-width:122px;
+  }
+
+  .bar-row{
+    grid-template-columns:74px 1fr auto;
+  }
+}
+
+/* 가로모드 모바일: 높이가 짧을 때 */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px){
+  dialog{
+    height:100dvh;
+    max-height:100dvh;
+  }
+
+  .modal{
+    min-height:100dvh;
+  }
+
+  .chat-messages{
+    height:48dvh;
+  }
+
+  .monster-rush-scene{
+    min-height:125px;
+  }
+
+  .monster-rush-enemy-icon{
+    font-size:58px;
+  }
+}
 </style>
 </head>
 <body>
@@ -1158,8 +1639,8 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   <div class="field"><label>이메일</label><input id="email" type="email" placeholder="example@gmail.com"></div>
   <div class="field">
     <label>비밀번호</label>
-    <input id="password" type="password" placeholder="6자 이상">
-    <div class="auth-inline-note">비밀번호는 6자 이상으로 입력해주세요.</div>
+    <input id="password" type="password" placeholder="8자 이상">
+    <div class="auth-inline-note">비밀번호는 8자 이상으로 입력해주세요.</div>
   </div>
   <div style="display:flex;gap:8px">
     <button id="loginBtn" class="primary" style="flex:1">로그인</button>
@@ -1187,7 +1668,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   <div class="headrow">
    <div>
     <h1>📒 애니노트</h1>
-    <div class="app-version">v1.10.7</div>
+    <div class="app-version">v1.10.8</div>
     
    </div>
    <div class="global-search-wrap">
@@ -1612,7 +2093,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
 </main>
 <div class="meta" style="text-align:center;padding:30px 0 40px">
  <div>
-  <span>애니노트 v1.10.7</span>
+  <span>애니노트 v1.10.8</span>
   <button id="bugReportBtn" class="bug-report-btn" type="button" style="margin-left:7px;vertical-align:middle">버그제보</button>
  </div>
  <div class="legal-actions">
@@ -2244,7 +2725,7 @@ body.light-mode .achievement[data-rarity="unique"],body.light-mode .achievement[
   </div>
 
   <div class="panel privacy-body">
-   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.7</div>
+   <div class="meta">시행일: 2026년 9월 17일 · 애니노트 v1.10.8</div>
 
    <h3>1. 수집·처리하는 정보</h3>
    <ul>
@@ -2685,8 +3166,8 @@ $('#signupBtn').onclick=async()=>{
   return;
  }
 
- if(password.length<6){
-  alert('비밀번호는 6자 이상으로 입력해주세요.');
+ if(password.length<8){
+  alert('비밀번호는 8자 이상으로 입력해주세요.');
   return;
  }
 
@@ -4011,7 +4492,7 @@ async function drawProfileShareCard(){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.7',72,630);
+ ctx.fillText('aninote · v1.10.8',72,630);
 }
 
 $('#shareProfileCardBtn').onclick=async()=>{
@@ -10298,7 +10779,7 @@ async function drawAnnualWrapCard(year){
 
  ctx.fillStyle='#768196';
  ctx.font='500 17px sans-serif';
- ctx.fillText('aninote · v1.10.7',72,635);
+ ctx.fillText('aninote · v1.10.8',72,635);
 }
 
 function annualWrapBlob(){
