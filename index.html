@@ -8567,12 +8567,15 @@ function spawnMonsterRushMonster(){
 
 function monsterRushMultiplier(){return Math.min(3,1+Math.floor(monsterRushCombo/5)*0.25);}
 
-// 몬스터 러시 정답: 짧은 삑음 대신 맑게 잔향이 남는 '띵~'
+// 몬스터 러시 정답: '띵↗' 하고 음정이 위로 올라가는 성공음
 function playMonsterRushBeep(correct){
  if(correct){
-  // 기본음 + 아주 약한 고조파를 겹쳐서 깨끗한 벨 느낌
-  appTone({freq:1046.5,endFreq:987.77,duration:.24,gain:.06,type:'sine',attack:.003,release:.17});
-  appTone({freq:2093,endFreq:1975.53,duration:.18,delay:.006,gain:.018,type:'sine',attack:.002,release:.13});
+  // 첫 음에서 위쪽 음으로 자연스럽게 올라가는 짧은 글리산도
+  appTone({freq:880,endFreq:1318.51,duration:.26,gain:.065,type:'sine',attack:.002,release:.16});
+  // 얇은 고조파를 같이 올려서 맑은 금속성 '띵↗' 느낌
+  appTone({freq:1760,endFreq:2637.02,duration:.20,delay:.004,gain:.018,type:'sine',attack:.002,release:.13});
+  // 마지막 도착음을 아주 짧게 남겨 성공감을 강조
+  appTone({freq:1318.51,duration:.12,delay:.16,gain:.018,type:'triangle',attack:.002,release:.10});
   return;
  }
 
