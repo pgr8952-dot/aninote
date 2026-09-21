@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PLANK ARCHIVE v0.3.0</title>
+<title>PLANK ARCHIVE v0.3.1</title>
 <style>
 :root {
   --bg: #0b0f14;
@@ -203,6 +203,35 @@ kbd { color: #76879b; border: 1px solid #344154; padding: 4px 7px; border-radius
 .help-copy{color:var(--muted);font-size:11px;line-height:1.65;margin-top:7px}.profile-section-title{margin:0 0 7px;font-size:14px}.empty-small{padding:10px 0;color:var(--muted);font-size:11px}
 @media(max-width:780px){.profile-grid{grid-template-columns:1fr}.profile-grid .wide{grid-column:auto}.request-row,.member-row,.invite-row{grid-template-columns:1fr}.rank-control{justify-content:flex-start}}
 
+
+/* ===== v0.3.1 · 접속자 / 공용 통신 ===== */
+.comms-grid{display:grid;grid-template-columns:minmax(230px,300px) minmax(0,1fr);gap:14px;align-items:start}
+.comms-panel{min-width:0}
+.online-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
+.online-count{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid #2d3948;border-radius:999px;color:#b8c6d8;font-size:12px}
+.online-count i{width:7px;height:7px;border-radius:50%;background:#56d38b;box-shadow:0 0 10px #56d38b88}
+.online-member{padding:10px 0;border-top:1px solid var(--line);min-width:0}
+.online-member:first-child{border-top:0}
+.online-code{font-family:var(--mono);font-weight:800;overflow-wrap:anywhere}
+.online-meta{color:var(--muted);font-size:12px;margin-top:3px}
+.online-me{color:#9cdcff}
+.role-chip-small{display:inline-flex;margin-left:6px;padding:2px 6px;border-radius:999px;border:1px solid #334153;color:#aebbd0;font-size:10px;vertical-align:1px}
+.chat-panel{display:flex;flex-direction:column;min-height:560px;max-height:calc(100vh - 135px)}
+.chat-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.archive-chat{flex:1;min-height:320px;overflow:auto;padding:12px;border:1px solid var(--line);border-radius:12px;background:#0b1017;display:flex;flex-direction:column;gap:9px;scrollbar-width:thin}
+.archive-chat-msg{max-width:min(78%,640px);padding:9px 11px;border-radius:12px;background:#151d28;border:1px solid #253244;align-self:flex-start;min-width:0;overflow-wrap:anywhere}
+.archive-chat-msg.mine{align-self:flex-end;background:#182a31;border-color:#2f5661}
+.archive-chat-who{font-family:var(--mono);font-size:11px;font-weight:850;color:#9eb0c5;margin-bottom:5px}
+.archive-chat-msg.mine .archive-chat-who{color:#8fd6e8;text-align:right}
+.archive-chat-body{line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.archive-chat-time{font-size:10px;color:#68778a;margin-top:5px}
+.archive-chat-msg.mine .archive-chat-time{text-align:right}
+.chat-compose{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:10px}
+.chat-compose textarea{min-height:52px;max-height:130px;resize:vertical}
+.comms-note{font-size:11px;color:#6f7e91;line-height:1.5;margin-top:8px}
+@media(max-width:820px){.comms-grid{grid-template-columns:1fr}.chat-panel{min-height:480px;max-height:none}.archive-chat-msg{max-width:90%}}
+@media(max-width:560px){.chat-compose{grid-template-columns:1fr}.archive-chat-msg{max-width:94%}}
+
 </style>
 </head>
 <body>
@@ -234,6 +263,7 @@ kbd { color: #76879b; border: 1px solid #344154; padding: 4px 7px; border-radius
       <button data-route="recent" class="nav-item">◴ <span>최근 기록</span></button>
       <button data-route="random" class="nav-item">⤨ <span>무작위 기록</span></button>
       <button id="createDocNav" data-route="create" class="nav-item hidden">＋ <span>기록 작성</span></button>
+      <button id="commsNav" data-route="comms" class="nav-item">● <span>접속자 · 통신</span></button>
       <div class="nav-label">분류</div>
       <button data-category="WORLD" class="nav-item">◈ <span>세계</span></button><button data-category="ENTITY" class="nav-item">◎ <span>존재</span></button><button data-category="LOCATION" class="nav-item">⌖ <span>장소</span></button><button data-category="EVENT" class="nav-item">◇ <span>사건</span></button><button data-category="OBJECT" class="nav-item">□ <span>물품</span></button><button data-category="ORGANIZATION" class="nav-item">▦ <span>조직</span></button><button data-category="CONCEPT" class="nav-item">∞ <span>개념</span></button><button data-category="PHENOMENON" class="nav-item">⌁ <span>현상</span></button><button data-category="DOCUMENT" class="nav-item">≡ <span>문서</span></button>
     </nav>
@@ -260,6 +290,8 @@ const ANINOTE_SESSION_KEY='sb-zkmxtvompqzhyfbrnupc-auth-token';
 const FROM_ANINOTE=new URLSearchParams(location.search).get('from')==='aninote';
 const state={session:null,user:null,member:null,documents:[],route:'home',busy:false};
 let guestExpiryTimer=null;
+let presenceTimer=null;
+let commsTimer=null;
 const categoryNames={WORLD:'세계',ENTITY:'존재',LOCATION:'장소',EVENT:'사건',OBJECT:'물품',ORGANIZATION:'조직',CONCEPT:'개념',PHENOMENON:'현상',DOCUMENT:'문서'};
 const categoryPrefixes={WORLD:'WLD',ENTITY:'ENT',LOCATION:'LOC',EVENT:'EVT',OBJECT:'OBJ',ORGANIZATION:'ORG',CONCEPT:'CON',PHENOMENON:'PHN',DOCUMENT:'DOC'};
 const accessNames={0:'공개',1:'제한 1급',2:'제한 2급',3:'제한 3급'};
@@ -289,6 +321,23 @@ function scheduleGuestExpiry(){
   const delay=new Date(state.member.access_expires_at).getTime()-Date.now();
   if(delay<=0){state.member=null;state.documents=[];showDenied();return;}
   guestExpiryTimer=setTimeout(()=>{state.member=null;state.documents=[];showDenied();},Math.min(delay+500,2147483647));
+}
+
+function stopPresence(){
+  if(presenceTimer){clearInterval(presenceTimer);presenceTimer=null;}
+}
+function startPresence(){
+  stopPresence();
+  if(!state.session||!state.member)return;
+  const beat=async()=>{
+    if(!state.session||!state.member)return;
+    try{await rpc('archive_presence_ping')}catch(e){console.warn('presence ping failed',e.message||e)}
+  };
+  beat();
+  presenceTimer=setInterval(beat,30000);
+}
+function stopCommsPolling(){
+  if(commsTimer){clearInterval(commsTimer);commsTimer=null;}
 }
 
 function setLoginStatus(msg,type=''){const el=$('#loginStatus');el.textContent=msg;el.className='status-msg '+type}
@@ -324,6 +373,7 @@ async function signIn(email,password){
   const data=await rawFetch('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password},auth:false});saveSession(data);state.user=data.user;return data
 }
 async function signOut(){
+  stopPresence();stopCommsPolling();
   saveSession(null);state.user=null;state.member=null;state.documents=[];
   if(FROM_ANINOTE){location.href='index.html';return;}
   showLogin();
@@ -336,8 +386,9 @@ async function loadDocuments(){state.documents=await restQuery('archive_document
 async function bootstrap(){
   try{state.session=loadSession();if(!state.session)return showLogin();state.user=state.session.user||null;$('#loginScreen').classList.add('hidden');$('#app').classList.remove('hidden');$('#view').innerHTML='<div class="loading">기록망 동기화 중...</div>';await loadMember();if(!state.member){return showDenied()}await loadDocuments();applyMemberUI();renderHome()}catch(e){console.error(e);saveSession(null);showLogin();setLoginStatus('세션을 복구하지 못했습니다. 다시 로그인해주세요.','error')}
 }
-function showLogin(){$('#app').classList.add('hidden');$('#loginScreen').classList.remove('hidden');setLoginStatus('')}
+function showLogin(){stopPresence();stopCommsPolling();$('#app').classList.add('hidden');$('#loginScreen').classList.remove('hidden');setLoginStatus('')}
 function showDenied(){
+  stopPresence();stopCommsPolling();
   $('#loginScreen').classList.add('hidden');
   $('#app').classList.remove('hidden');
   $('#view').innerHTML=`<div class="access-denied">
@@ -379,19 +430,20 @@ function applyMemberUI(){
  $('#profileAccess').textContent=`${roleNames[m.role]||m.role} · ${accessNames[m.access_level]}${m.role==='guest'&&m.access_expires_at?' · '+remainingTime(m.access_expires_at):''}`;
  $('#createDocNav').classList.toggle('hidden',!['archivist','chief'].includes(m.role));
  scheduleGuestExpiry();
+ startPresence();
 }
 function setCrumb(t){$('#crumbs').textContent='ARCHIVE / '+t}
 function badgeFor(d){if(d.access_class==='sealed')return '<span class="tag sealed">봉인</span>';if(d.min_access_level>0)return `<span class="tag restricted">제한 ${d.min_access_level}급</span>`;return '<span class="tag public">공개</span>'}
 function recordRow(d){return `<div class="record-row" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)}</div><div><div class="record-title">${escapeHTML(d.title)}</div><div class="record-summary">${escapeHTML(d.summary||'')}</div></div>${badgeFor(d)}</div>`}
 function wireDocClicks(root=document){root.querySelectorAll('[data-doc]').forEach(el=>el.onclick=()=>openDocument(el.dataset.doc))}
-function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(state.member.member_code||'')}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.3.0</p><p class="muted">실제 데이터베이스 연결이 활성화되었습니다. 문서와 섹션의 열람 권한은 서버의 RLS 정책으로 판정됩니다.</p></div></section>`;
+function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(state.member.member_code||'')}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.3.1</p><p class="muted">실제 데이터베이스 연결이 활성화되었습니다. 문서와 섹션의 열람 권한은 서버의 RLS 정책으로 판정됩니다.</p></div></section>`;
   wireDocClicks();$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});$('#allRecent').onclick=renderRecent;$$('[data-catpill]').forEach(b=>b.onclick=()=>renderCategory(b.dataset.catpill))
 }
-function renderSearch(q){q=(q||'').trim().toLowerCase();setCrumb('SEARCH RESULTS');const rows=!q?state.documents:state.documents.filter(d=>[d.archive_code,d.title,d.title_en,d.summary,d.primary_world].some(v=>String(v||'').toLowerCase().includes(q)));$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">SEARCH</div><h1>검색 결과</h1><div class="subtitle">${escapeHTML(q||'전체 기록')} · ${rows.length}건</div></div><div class="search-results">${rows.length?rows.map(d=>`<div class="result-card" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</div><h3>${escapeHTML(d.title)}</h3><div class="muted">${escapeHTML(d.summary||'')}</div><div style="margin-top:10px">${badgeFor(d)}</div></div>`).join(''):'<div class="empty">일치하는 기록이 없습니다.</div>'}</div></div>`;wireDocClicks()}
-function renderRecent(){setCrumb('RECENT');const rows=[...state.documents].sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));renderListPage('최근 기록','최근 갱신 순으로 표시합니다.',rows)}
-function renderCategory(cat){setCrumb(categoryNames[cat]||cat);renderListPage(categoryNames[cat]||cat,'현재 계정에서 열람 가능한 분류 기록입니다.',state.documents.filter(d=>d.category===cat))}
+function renderSearch(q){state.route='search';q=(q||'').trim().toLowerCase();setCrumb('SEARCH RESULTS');const rows=!q?state.documents:state.documents.filter(d=>[d.archive_code,d.title,d.title_en,d.summary,d.primary_world].some(v=>String(v||'').toLowerCase().includes(q)));$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">SEARCH</div><h1>검색 결과</h1><div class="subtitle">${escapeHTML(q||'전체 기록')} · ${rows.length}건</div></div><div class="search-results">${rows.length?rows.map(d=>`<div class="result-card" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</div><h3>${escapeHTML(d.title)}</h3><div class="muted">${escapeHTML(d.summary||'')}</div><div style="margin-top:10px">${badgeFor(d)}</div></div>`).join(''):'<div class="empty">일치하는 기록이 없습니다.</div>'}</div></div>`;wireDocClicks()}
+function renderRecent(){state.route='recent';setCrumb('RECENT');const rows=[...state.documents].sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));renderListPage('최근 기록','최근 갱신 순으로 표시합니다.',rows)}
+function renderCategory(cat){state.route='category';setCrumb(categoryNames[cat]||cat);renderListPage(categoryNames[cat]||cat,'현재 계정에서 열람 가능한 분류 기록입니다.',state.documents.filter(d=>d.category===cat))}
 function renderListPage(title,sub,rows){$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">ARCHIVE INDEX</div><h1>${escapeHTML(title)}</h1><div class="subtitle">${escapeHTML(sub)}</div></div><div class="panel"><div class="record-list">${rows.length?rows.map(recordRow).join(''):'<div class="empty">기록이 없습니다.</div>'}</div></div></div>`;wireDocClicks()}
-async function openDocument(id){setCrumb('RECORD');$('#view').innerHTML='<div class="loading">기록을 복호화하는 중...</div>';try{const d=state.documents.find(x=>x.id===id);if(!d)throw new Error('현재 권한에서 문서를 찾을 수 없습니다.');const [sections,anns,links]=await Promise.all([restQuery('archive_document_sections',`select=id,heading,body,sort_order,min_access_level,created_at,updated_at&document_id=eq.${encodeURIComponent(id)}&order=sort_order.asc`),restQuery('archive_annotations',`select=id,parent_id,author_id,author_code,body,min_access_level,created_at&document_id=eq.${encodeURIComponent(id)}&order=created_at.asc`),restQuery('archive_document_links',`select=target_document_id,relation,label&source_document_id=eq.${encodeURIComponent(id)}`)]);renderDocument(d,sections,anns,links)}catch(e){$('#view').innerHTML=`<div class="empty">${escapeHTML(e.message)}</div>`}}
+async function openDocument(id){state.route='record';setCrumb('RECORD');$('#view').innerHTML='<div class="loading">기록을 복호화하는 중...</div>';try{const d=state.documents.find(x=>x.id===id);if(!d)throw new Error('현재 권한에서 문서를 찾을 수 없습니다.');const [sections,anns,links]=await Promise.all([restQuery('archive_document_sections',`select=id,heading,body,sort_order,min_access_level,created_at,updated_at&document_id=eq.${encodeURIComponent(id)}&order=sort_order.asc`),restQuery('archive_annotations',`select=id,parent_id,author_id,author_code,body,min_access_level,created_at&document_id=eq.${encodeURIComponent(id)}&order=created_at.asc`),restQuery('archive_document_links',`select=target_document_id,relation,label&source_document_id=eq.${encodeURIComponent(id)}`)]);renderDocument(d,sections,anns,links)}catch(e){$('#view').innerHTML=`<div class="empty">${escapeHTML(e.message)}</div>`}}
 function renderDocument(d,sections,anns,links){const canAnnotate=['archivist','chief'].includes(state.member?.role);const related=(links||[]).map(l=>{const t=state.documents.find(x=>x.id===l.target_document_id);return t?`<button data-doc="${t.id}">${escapeHTML(l.label||t.title)}</button>`:''}).join('');$('#view').innerHTML=`<article class="page"><div class="page-head"><div class="eyebrow">${escapeHTML(d.archive_code)}</div><h1>${escapeHTML(d.title)}</h1><div class="subtitle">${escapeHTML(d.title_en||'')}</div><div class="doc-toolbar"><span class="badge">${escapeHTML(categoryNames[d.category]||d.category)}</span>${badgeFor(d)}<span class="badge">${escapeHTML(statusNames[d.record_status]||d.record_status)}</span></div></div><div class="document-layout"><div class="document-body">${sections.length?sections.map(s=>`<section class="doc-section"><h2>${escapeHTML(s.heading)}${s.min_access_level?`<span class="section-level">제한 ${s.min_access_level}급</span>`:''}</h2>${textToHtml(s.body)}</section>`).join(''):'<div class="empty">본문 섹션이 없습니다.</div>'}<section class="annotation-thread"><h2>기록관 주석</h2>${anns.length?anns.map(a=>`<div class="annotation thread"><b class="mono">${escapeHTML(a.author_code||'ARC-UNKNOWN')}</b><div>${textToHtml(a.body)}</div><small class="muted">${fmtDate(a.created_at)}</small></div>`).join(''):'<div class="muted">등록된 주석이 없습니다.</div>'}${canAnnotate?`<form id="annotationForm" class="comment-form"><label class="field-label" for="annotationBody">주석 추가</label><textarea id="annotationBody" class="control textarea" maxlength="5000" placeholder="기록관 의견, 보충 기록, 경고 등을 남깁니다."></textarea><div class="toolbar-row end"><select id="annotationLevel" class="control" style="width:auto"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select><button class="primary-inline" type="submit">주석 등록</button></div><div id="annotationStatus" class="status-msg"></div></form>`:''}</section></div><aside class="meta-card"><h4>RECORD METADATA</h4><div class="meta-row"><span>기록 ID</span><b>${escapeHTML(d.archive_code)}</b></div><div class="meta-row"><span>분류</span><b>${escapeHTML(categoryNames[d.category]||d.category)}</b></div><div class="meta-row"><span>상태</span><b>${escapeHTML(statusNames[d.record_status]||d.record_status)}</b></div><div class="meta-row"><span>세계</span><b>${escapeHTML(d.primary_world||'—')}</b></div><div class="meta-row"><span>갱신</span><b>${fmtDate(d.updated_at)}</b></div>${related?`<h4 style="margin-top:18px">RELATED RECORDS</h4><div class="link-list">${related}</div>`:''}</aside></div></article>`;wireDocClicks();const form=$('#annotationForm');if(form)form.onsubmit=async e=>{e.preventDefault();const body=$('#annotationBody').value.trim();if(!body)return;const st=$('#annotationStatus');st.textContent='등록 중...';try{await restInsert('archive_annotations',{document_id:d.id,body,min_access_level:Number($('#annotationLevel').value)});await openDocument(d.id)}catch(err){st.textContent=err.message;st.className='status-msg error'}}}
 async function renderProfile(){
   state.route='profile';setCrumb('PROFILE');
@@ -486,11 +538,83 @@ async function renderProfile(){
   $$('[data-revoke-invite]').forEach(b=>b.onclick=async()=>{if(!confirm('이 등록 코드를 폐기할까요?'))return;await rpc('revoke_archive_invite',{p_invite_id:b.dataset.revokeInvite});renderProfile()});
   $$('[data-save-rank]').forEach(b=>b.onclick=async()=>{const code=b.dataset.saveRank;const sel=document.querySelector(`[data-rank-select="${CSS.escape(code)}"]`);if(!sel)return;b.disabled=true;try{await rpc('set_archivist_level',{p_member_code:code,p_level:Number(sel.value)});await renderProfile()}catch(e){alert(e.message)}finally{b.disabled=false}});
 }
-function renderCreate(){if(!['archivist','chief'].includes(state.member.role))return renderHome();setCrumb('NEW RECORD');$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">RECORD EDITOR</div><h1>새 기록 작성</h1><div class="subtitle">v0.3.0 기본 편집기 · 최초 섹션은 “개요”로 생성됩니다.</div></div><form id="createForm" class="panel"><div class="field-grid"><div><label class="field-label">분류</label><select id="docCategory" class="control">${Object.entries(categoryNames).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div><div><label class="field-label">기록 ID</label><input id="docCode" class="control mono" required /></div><div><label class="field-label">제목</label><input id="docTitle" class="control" required /></div><div><label class="field-label">영문/보조 제목</label><input id="docTitleEn" class="control" /></div><div><label class="field-label">열람 등급</label><select id="docLevel" class="control"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select></div><div><label class="field-label">상태</label><select id="docStatus" class="control"><option value="confirmed">확인</option><option value="observing">관측 중</option><option value="investigating">조사 중</option><option value="incomplete">불완전</option><option value="damaged">손상</option><option value="disputed">논쟁 중</option></select></div><div class="full"><label class="field-label">관련 세계</label><input id="docWorld" class="control" placeholder="예: 테스티아 / 지구" /></div><div class="full"><label class="field-label">요약</label><textarea id="docSummary" class="control" rows="3"></textarea></div><div class="full"><label class="field-label">개요 본문</label><textarea id="docBody" class="control textarea" placeholder="첫 번째 기록 섹션을 작성합니다."></textarea></div></div><div id="createStatus" class="status-msg"></div><div class="toolbar-row end"><button type="button" id="cancelCreate" class="small-btn">취소</button><button type="submit" class="primary-inline">기록 등록</button></div></form></div>`;$('#docCategory').onchange=updateSuggestedCode;$('#cancelCreate').onclick=renderHome;$('#createForm').onsubmit=createDocument;updateSuggestedCode()}
+async function loadOnlineMembers(){
+  try{return await rpc('archive_online_members')}catch(e){console.warn('online members failed',e);return []}
+}
+async function loadArchiveChat(){
+  try{
+    const rows=await restQuery('archive_chat_messages','select=id,sender_code,body,created_at&order=created_at.desc&limit=100');
+    return Array.isArray(rows)?rows.reverse():[];
+  }catch(e){console.warn('archive chat failed',e);return []}
+}
+function onlineRoleText(row){
+  const base=roleNames[row.role]||row.role;
+  if(row.role==='archivist')return `${base} · ${row.access_level}급`;
+  if(row.role==='chief')return `${base} · 3급`;
+  return base;
+}
+function paintOnlineMembers(rows){
+  const box=$('#onlineMembers');if(!box)return;
+  const count=$('#onlineCount');if(count)count.textContent=String(rows.length);
+  box.innerHTML=rows.length?rows.map(x=>{
+    const mine=x.member_code===state.member?.member_code;
+    return `<div class="online-member"><div class="online-code ${mine?'online-me':''}">${escapeHTML(x.member_code)}${mine?' · YOU':''}<span class="role-chip-small">${escapeHTML(onlineRoleText(x))}</span></div><div class="online-meta">최근 신호 ${escapeHTML(fmtDate(x.last_seen))}</div></div>`;
+  }).join(''):'<div class="empty-small">현재 확인되는 접속자가 없습니다.</div>';
+}
+function paintArchiveChat(rows,forceBottom=false){
+  const box=$('#archiveChat');if(!box)return;
+  const oldHeight=box.scrollHeight, oldTop=box.scrollTop, oldClient=box.clientHeight;
+  const bottomGap=Math.max(0,oldHeight-oldTop-oldClient);
+  const stick=forceBottom||bottomGap<90||oldHeight===0;
+  box.innerHTML=rows.length?rows.map(m=>{
+    const mine=m.sender_code===state.member?.member_code;
+    return `<div class="archive-chat-msg ${mine?'mine':''}"><div class="archive-chat-who">${escapeHTML(m.sender_code)}${mine?' · YOU':''}</div><div class="archive-chat-body">${escapeHTML(m.body)}</div><div class="archive-chat-time">${escapeHTML(fmtDate(m.created_at))}</div></div>`;
+  }).join(''):'<div class="empty-small">아직 통신 기록이 없습니다.</div>';
+  requestAnimationFrame(()=>{
+    if(stick)box.scrollTop=box.scrollHeight;
+    else box.scrollTop=Math.max(0,box.scrollHeight-box.clientHeight-bottomGap);
+  });
+}
+async function refreshComms(forceBottom=false){
+  if(state.route!=='comms')return;
+  const [online,messages]=await Promise.all([loadOnlineMembers(),loadArchiveChat()]);
+  if(state.route!=='comms')return;
+  paintOnlineMembers(online||[]);
+  paintArchiveChat(messages||[],forceBottom);
+}
+async function sendArchiveChat(){
+  const input=$('#archiveChatInput'),st=$('#archiveChatStatus');
+  if(!input)return;
+  const body=input.value.trim();
+  if(!body)return;
+  if(body.length>1000){if(st)st.textContent='메시지는 1000자까지 작성할 수 있습니다.';return;}
+  const btn=$('#archiveChatSend');if(btn)btn.disabled=true;
+  if(st){st.textContent='전송 중...';st.className='status-msg';}
+  try{
+    await restInsert('archive_chat_messages',{body},{returnRows:false});
+    input.value='';
+    if(st){st.textContent='';st.className='status-msg';}
+    await refreshComms(true);
+  }catch(e){if(st){st.textContent=e.message;st.className='status-msg error';}}
+  finally{if(btn)btn.disabled=false;input.focus();}
+}
+async function renderComms(){
+  if(!state.member)return showDenied();
+  state.route='comms';setCrumb('COMMUNICATION');
+  $('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">EARTH NODE COMMUNICATION</div><h1>접속자 · 공용 통신</h1><div class="subtitle">현재 기록망에 접속한 구성원과 대화합니다. 아카이브에서는 각자의 고유 코드가 이름으로 사용됩니다.</div></div><div class="comms-grid"><section class="panel comms-panel"><div class="online-head"><div><h3 style="margin:0">현재 접속 중</h3><div class="meta" style="margin-top:4px">90초 이내 접속 신호 기준</div></div><span class="online-count"><i></i><b id="onlineCount">0</b></span></div><div id="onlineMembers"><div class="loading">접속자 확인 중...</div></div></section><section class="panel chat-panel"><div class="chat-head"><div><h3 style="margin:0">지구 노드 공용 통신</h3><div class="meta" style="margin-top:4px">최근 메시지 100개 · 모든 활성 아카이브 구성원 공용</div></div><button id="refreshCommsBtn" class="small-btn">새로고침</button></div><div id="archiveChat" class="archive-chat"><div class="loading">통신 기록 동기화 중...</div></div><div class="chat-compose"><textarea id="archiveChatInput" class="control" maxlength="1000" placeholder="${escapeHTML(state.member.member_code)} 명의로 메시지 전송 · Enter 전송 / Shift+Enter 줄바꿈"></textarea><button id="archiveChatSend" class="primary-inline" type="button">전송</button></div><div id="archiveChatStatus" class="status-msg"></div><div class="comms-note">접속 목록은 약 30초마다 갱신됩니다. 탭을 닫은 사용자는 마지막 신호 후 최대 약 90초 동안 온라인으로 보일 수 있습니다.</div></section></div></div>`;
+  $('#archiveChatSend').onclick=sendArchiveChat;
+  $('#archiveChatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendArchiveChat();}});
+  $('#refreshCommsBtn').onclick=()=>refreshComms(false);
+  await refreshComms(true);
+  stopCommsPolling();
+  commsTimer=setInterval(()=>{if(state.route==='comms')refreshComms(false);},4000);
+}
+
+function renderCreate(){state.route='create';if(!['archivist','chief'].includes(state.member.role))return renderHome();setCrumb('NEW RECORD');$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">RECORD EDITOR</div><h1>새 기록 작성</h1><div class="subtitle">v0.3.1 기본 편집기 · 최초 섹션은 “개요”로 생성됩니다.</div></div><form id="createForm" class="panel"><div class="field-grid"><div><label class="field-label">분류</label><select id="docCategory" class="control">${Object.entries(categoryNames).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div><div><label class="field-label">기록 ID</label><input id="docCode" class="control mono" required /></div><div><label class="field-label">제목</label><input id="docTitle" class="control" required /></div><div><label class="field-label">영문/보조 제목</label><input id="docTitleEn" class="control" /></div><div><label class="field-label">열람 등급</label><select id="docLevel" class="control"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select></div><div><label class="field-label">상태</label><select id="docStatus" class="control"><option value="confirmed">확인</option><option value="observing">관측 중</option><option value="investigating">조사 중</option><option value="incomplete">불완전</option><option value="damaged">손상</option><option value="disputed">논쟁 중</option></select></div><div class="full"><label class="field-label">관련 세계</label><input id="docWorld" class="control" placeholder="예: 테스티아 / 지구" /></div><div class="full"><label class="field-label">요약</label><textarea id="docSummary" class="control" rows="3"></textarea></div><div class="full"><label class="field-label">개요 본문</label><textarea id="docBody" class="control textarea" placeholder="첫 번째 기록 섹션을 작성합니다."></textarea></div></div><div id="createStatus" class="status-msg"></div><div class="toolbar-row end"><button type="button" id="cancelCreate" class="small-btn">취소</button><button type="submit" class="primary-inline">기록 등록</button></div></form></div>`;$('#docCategory').onchange=updateSuggestedCode;$('#cancelCreate').onclick=renderHome;$('#createForm').onsubmit=createDocument;updateSuggestedCode()}
 async function updateSuggestedCode(){const cat=$('#docCategory')?.value;if(!cat)return;try{const codes=await restQuery('archive_documents',`select=archive_code&category=eq.${encodeURIComponent(cat)}`);const prefix=`PA-${categoryPrefixes[cat]}-`;let max=0;(codes||[]).forEach(x=>{const m=String(x.archive_code).match(/(\d{4})$/);if(m)max=Math.max(max,Number(m[1]))});$('#docCode').value=prefix+String(max+1).padStart(4,'0')}catch(e){$('#docCode').value=`PA-${categoryPrefixes[cat]}-0001`}}
 async function createDocument(e){e.preventDefault();const st=$('#createStatus');st.textContent='기록 등록 중...';st.className='status-msg';const level=Number($('#docLevel').value);const payload={archive_code:$('#docCode').value.trim().toUpperCase(),title:$('#docTitle').value.trim(),title_en:$('#docTitleEn').value.trim()||null,category:$('#docCategory').value,access_class:level===0?'public':'restricted',min_access_level:level,record_status:$('#docStatus').value,summary:$('#docSummary').value.trim(),primary_world:$('#docWorld').value.trim()||null};try{const rows=await restInsert('archive_documents',payload);const d=rows[0];const body=$('#docBody').value.trim();if(body)await restInsert('archive_document_sections',{document_id:d.id,heading:'개요',body,sort_order:10,min_access_level:level});await restInsert('archive_document_revisions',{document_id:d.id,change_summary:'문서 생성',snapshot:payload});await loadDocuments();st.textContent='등록 완료';st.className='status-msg ok';setTimeout(()=>openDocument(d.id),250)}catch(err){st.textContent=err.message;st.className='status-msg error'}}
 async function syncNow(){const btn=$('#refreshBtn');btn.textContent='동기화 중…';try{await loadMember();if(!state.member)return showDenied();await loadDocuments();applyMemberUI();renderHome()}catch(e){alert('동기화 실패: '+e.message)}finally{btn.textContent='동기화'}}
-function route(name){$$('.nav-item').forEach(x=>x.classList.remove('active'));const active=document.querySelector(`[data-route="${name}"]`);if(active)active.classList.add('active');if(name==='home')renderHome();else if(name==='recent')renderRecent();else if(name==='random'){if(state.documents.length)openDocument(state.documents[Math.floor(Math.random()*state.documents.length)].id);else renderHome()}else if(name==='create')renderCreate()}
+function route(name){if(name!=='comms')stopCommsPolling();state.route=name;$$('.nav-item').forEach(x=>x.classList.remove('active'));const active=document.querySelector(`[data-route="${name}"]`);if(active)active.classList.add('active');if(name==='home')renderHome();else if(name==='recent')renderRecent();else if(name==='random'){if(state.documents.length)openDocument(state.documents[Math.floor(Math.random()*state.documents.length)].id);else renderHome()}else if(name==='create')renderCreate();else if(name==='comms')renderComms()}
 $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();if(state.busy)return;state.busy=true;$('#loginBtn').disabled=true;setLoginStatus('계정 인증 중...');try{await signIn($('#email').value.trim(),$('#password').value);await loadMember();if(!state.member){showDenied();return}await loadDocuments();$('#loginScreen').classList.add('hidden');$('#app').classList.remove('hidden');applyMemberUI();renderHome()}catch(err){console.error(err);saveSession(null);setLoginStatus(err.message||'로그인에 실패했습니다.','error')}finally{state.busy=false;$('#loginBtn').disabled=false}});
 $$('[data-route]').forEach(b=>b.addEventListener('click',()=>route(b.dataset.route)));$$('[data-category]').forEach(b=>b.addEventListener('click',()=>renderCategory(b.dataset.category)));$('#profileBtn').onclick=renderProfile;$('#logoutBtn').onclick=signOut;$('#refreshBtn').onclick=syncNow;
 window.addEventListener('unhandledrejection',e=>console.error('PLANK UNHANDLED',e.reason));bootstrap();
