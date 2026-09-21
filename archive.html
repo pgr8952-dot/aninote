@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PLANK ARCHIVE v0.3.2</title>
+<title>PLANK ARCHIVE v0.3.3</title>
 <style>
 :root {
   --bg: #0b0f14;
@@ -109,6 +109,7 @@ kbd { color: #76879b; border: 1px solid #344154; padding: 4px 7px; border-radius
 .doc-section p, .doc-section li { color: #c4cfdb; line-height: 1.85; font-size: 14px; }
 .doc-section blockquote { margin: 18px 0; padding: 13px 16px; border-left: 2px solid #5976a7; background: #111925; color: #d7e0ec; }
 .redacted { display: inline-block; background: #020304; color: #020304; border-radius: 2px; user-select: none; letter-spacing: .1em; }
+.redaction-block{display:inline;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:900;letter-spacing:.04em;color:#050607;background:#050607;border-radius:2px;padding:0 .08em;user-select:none}.redaction-revealed{color:#e7edf5;border-bottom:1px dotted #5b7396}.doc-section h3{font-size:15px;margin:20px 0 8px;color:#d9e2ee}.doc-section h4{font-size:13px;margin:18px 0 7px;color:#b9c7d8}.doc-section ul{padding-left:22px;margin:10px 0 16px}.doc-section code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#0b1118;border:1px solid #253244;border-radius:4px;padding:1px 5px;color:#b9d0ff}.editor-tabs{display:flex;gap:7px;margin-bottom:14px}.editor-tab{border:1px solid var(--line);background:#0f151d;color:var(--muted);padding:9px 13px;border-radius:7px;cursor:pointer}.editor-tab.active{background:#172232;border-color:#496486;color:var(--text)}.md-dropzone{border:1px dashed #40536d;background:#0d141d;border-radius:10px;padding:28px 18px;text-align:center;cursor:pointer;transition:.15s}.md-dropzone:hover,.md-dropzone.drag{border-color:#7398cf;background:#111c29}.md-dropzone b{display:block;margin-bottom:5px}.md-dropzone small{color:var(--muted)}.md-preview{margin-top:16px}.md-section-list{display:grid;gap:7px;margin-top:12px}.md-section-row{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #202a37;padding:9px 2px;font-size:12px}.md-section-row:first-child{border-top:0}.md-redaction-note{margin-top:14px;padding:12px 14px;border:1px solid #4c3f2d;background:#18140d;border-radius:8px;color:#d5bd8e;font-size:12px;line-height:1.7}.file-chip{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:5px 8px;border:1px solid #34445a;border-radius:999px;color:#9fb0c5;font:11px ui-monospace,SFMono-Regular,Menlo,monospace}
 .locked-block { padding: 18px; border: 1px dashed #6d3b45; background: #1a1014; color: #df9ca6; font: 12px ui-monospace, monospace; margin: 15px 0; }
 .meta-card { position: sticky; top: 88px; border: 1px solid var(--line); background: var(--panel); border-radius: 9px; padding: 16px; height: fit-content; }
 .meta-card h4 { margin: 0 0 13px; font-size: 12px; color: var(--muted); letter-spacing: .08em; }
@@ -204,7 +205,7 @@ kbd { color: #76879b; border: 1px solid #344154; padding: 4px 7px; border-radius
 @media(max-width:780px){.profile-grid{grid-template-columns:1fr}.profile-grid .wide{grid-column:auto}.request-row,.member-row,.invite-row{grid-template-columns:1fr}.rank-control{justify-content:flex-start}}
 
 
-/* ===== v0.3.2 · 접속자 / 공용 통신 ===== */
+/* ===== v0.3.3 · 접속자 / 공용 통신 ===== */
 .comms-grid{display:grid;grid-template-columns:minmax(230px,300px) minmax(0,1fr);gap:14px;align-items:start}
 .comms-panel{min-width:0}
 .online-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
@@ -288,7 +289,7 @@ const safeStore={
 const SESSION_KEY='plang_archive_session_v02';
 const ANINOTE_SESSION_KEY='sb-zkmxtvompqzhyfbrnupc-auth-token';
 const FROM_ANINOTE=new URLSearchParams(location.search).get('from')==='aninote';
-const state={session:null,user:null,member:null,documents:[],route:'home',busy:false};
+const state={session:null,user:null,member:null,documents:[],route:'home',busy:false,mdDraft:null};
 let guestExpiryTimer=null;
 let presenceTimer=null;
 let commsTimer=null;
@@ -302,6 +303,120 @@ function $$(s){return [...document.querySelectorAll(s)]}
 function escapeHTML(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function fmtDate(v){if(!v)return '—';try{return new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(v))}catch(e){return v}}
 function textToHtml(v=''){return escapeHTML(v).split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('')}
+function stripYamlValue(v=''){
+  const t=String(v).trim();
+  if((t.startsWith('"')&&t.endsWith('"'))||(t.startsWith("'")&&t.endsWith("'")))return t.slice(1,-1);
+  return t;
+}
+function normalizeCategory(v='DOCUMENT'){
+  const x=String(v||'').trim().toUpperCase();
+  const map={세계:'WORLD',존재:'ENTITY',장소:'LOCATION',사건:'EVENT',물품:'OBJECT',조직:'ORGANIZATION',개념:'CONCEPT',현상:'PHENOMENON',문서:'DOCUMENT'};
+  return categoryNames[x]?x:(map[String(v||'').trim()]||'DOCUMENT');
+}
+function normalizeStatus(v='incomplete'){
+  const x=String(v||'').trim().toLowerCase();
+  const map={'확인':'confirmed','관측 중':'observing','조사 중':'investigating','불완전':'incomplete','손상':'damaged','분실':'lost','논쟁 중':'disputed','봉인':'sealed'};
+  return statusNames[x]?x:(map[String(v||'').trim()]||'incomplete');
+}
+function makeRedactionToken(){
+  try{return crypto.randomUUID().replace(/-/g,'')}catch(e){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
+}
+function extractRedactions(body=''){
+  const redactions=[];
+  const clean=String(body).replace(/\{\{redact:([\s\S]*?)\}\}/g,(full,inner)=>{
+    const parts=String(inner).split('|').map(x=>x.trim()).filter(Boolean);
+    const secret=(parts.shift()||'').trim();
+    if(!secret)return full;
+    let revealLevel=null,blockLength=6;
+    for(const p of parts){
+      const lm=p.match(/^level\s*=\s*([1-3])$/i);if(lm)revealLevel=Number(lm[1]);
+      const bm=p.match(/^(?:blocks?|length)\s*=\s*(\d{1,2})$/i);if(bm)blockLength=Math.max(3,Math.min(24,Number(bm[1])));
+      if(/^always$/i.test(p))revealLevel=null;
+    }
+    const token=makeRedactionToken();
+    redactions.push({token,secret_text:secret,reveal_level:revealLevel,block_length:blockLength});
+    return `{{redaction:${token}:${blockLength}}}`;
+  });
+  return {body:clean,redactions};
+}
+function parseArchiveMarkdown(text,fileName='record.md'){
+  let src=String(text||'').replace(/\r\n?/g,'\n');
+  const meta={};
+  if(src.startsWith('---\n')){
+    const end=src.indexOf('\n---\n',4);
+    if(end>=0){
+      const head=src.slice(4,end);
+      src=src.slice(end+5);
+      for(const line of head.split('\n')){
+        if(!line.trim()||/^\s*#/.test(line))continue;
+        const m=line.match(/^([A-Za-z_][A-Za-z0-9_-]*)\s*:\s*(.*)$/);
+        if(m)meta[m[1].toLowerCase()]=stripYamlValue(m[2]);
+      }
+    }
+  }
+  const baseName=fileName.replace(/\.md$/i,'').trim()||'새 기록';
+  const title=(meta.title||baseName).trim();
+  const category=normalizeCategory(meta.category||'DOCUMENT');
+  const status=normalizeStatus(meta.status||'incomplete');
+  const accessRaw=String(meta.access||'public').toLowerCase();
+  let level=Number(meta.level||meta.min_access_level||0)||0;
+  let accessClass='public';
+  if(accessRaw==='sealed'){accessClass='sealed';level=Math.max(level,3)}
+  else if(accessRaw==='restricted'||level>0){accessClass='restricted';level=Math.max(1,level)}
+  else {accessClass='public';level=0}
+  level=Math.max(0,Math.min(3,level));
+  const lines=src.split('\n');
+  const rawSections=[];let heading='';let buf=[];
+  const push=()=>{const body=buf.join('\n').trim();if(heading||body)rawSections.push({heading:heading||'개요',body});buf=[]};
+  for(const line of lines){
+    const m=line.match(/^#\s+(.+?)\s*$/);
+    if(m){push();heading=m[1].trim();}
+    else buf.push(line);
+  }
+  push();
+  const sections=rawSections.filter(x=>x.body||x.heading).map((x,i)=>{
+    const parsed=extractRedactions(x.body);
+    return {heading:x.heading||`섹션 ${i+1}`,body:parsed.body,sort_order:(i+1)*10,min_access_level:level,redactions:parsed.redactions};
+  });
+  if(!sections.length)sections.push({heading:'개요',body:'',sort_order:10,min_access_level:level,redactions:[]});
+  return {
+    fileName,
+    document:{archive_code:(meta.archive_code||meta.code||'').trim().toUpperCase()||null,title,title_en:(meta.title_en||'').trim()||null,category,access_class:accessClass,min_access_level:level,record_status:status,summary:(meta.summary||'').trim(),primary_world:(meta.world||meta.primary_world||'').trim()||null},
+    sections
+  };
+}
+function inlineMarkdown(v='',redactions=new Map()){
+  let x=escapeHTML(v);
+  x=x.replace(/\{\{redaction:([A-Za-z0-9_-]+):(\d{1,2})\}\}/g,(full,token,len)=>{
+    const r=redactions.get(token);
+    if(r)return `<span class="redaction-revealed" title="제한 ${escapeHTML(r.reveal_level)}급 검열 해제">${escapeHTML(r.secret_text)}</span>`;
+    return `<span class="redaction-block" aria-label="검열됨">${'█'.repeat(Math.max(3,Math.min(24,Number(len)||6)))}</span>`;
+  });
+  x=x.replace(/`([^`]+)`/g,'<code>$1</code>');
+  x=x.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  x=x.replace(/(^|[^*])\*([^*]+)\*(?!\*)/g,'$1<em>$2</em>');
+  return x;
+}
+function markdownToHtml(v='',redactions=new Map()){
+  const lines=String(v||'').replace(/\r\n?/g,'\n').split('\n');
+  let out='',para=[],list=[];
+  const flushPara=()=>{if(para.length){out+=`<p>${para.map(x=>inlineMarkdown(x,redactions)).join('<br>')}</p>`;para=[]}};
+  const flushList=()=>{if(list.length){out+='<ul>'+list.map(x=>`<li>${inlineMarkdown(x,redactions)}</li>`).join('')+'</ul>';list=[]}};
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    if(!line.trim()){flushPara();flushList();continue;}
+    const h=line.match(/^(#{2,4})\s+(.+)$/);if(h){flushPara();flushList();const n=Math.min(4,h[1].length+1);out+=`<h${n}>${inlineMarkdown(h[2],redactions)}</h${n}>`;continue;}
+    if(/^>\s?/.test(line)){
+      flushPara();flushList();const q=[];
+      while(i<lines.length&&/^>\s?/.test(lines[i])){q.push(lines[i].replace(/^>\s?/,''));i++;}i--;
+      out+=`<blockquote>${q.map(x=>inlineMarkdown(x,redactions)).join('<br>')}</blockquote>`;continue;
+    }
+    const li=line.match(/^[-*]\s+(.+)$/);if(li){flushPara();list.push(li[1]);continue;}
+    flushList();para.push(line);
+  }
+  flushPara();flushList();return out;
+}
+
 function rpc(name,body={}){return rawFetch(`/rest/v1/rpc/${name}`,{method:'POST',body})}
 function remainingTime(v){
   if(!v)return '무기한';
@@ -436,15 +551,15 @@ function setCrumb(t){$('#crumbs').textContent='ARCHIVE / '+t}
 function badgeFor(d){if(d.access_class==='sealed')return '<span class="tag sealed">봉인</span>';if(d.min_access_level>0)return `<span class="tag restricted">제한 ${d.min_access_level}급</span>`;return '<span class="tag public">공개</span>'}
 function recordRow(d){return `<div class="record-row" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)}</div><div><div class="record-title">${escapeHTML(d.title)}</div><div class="record-summary">${escapeHTML(d.summary||'')}</div></div>${badgeFor(d)}</div>`}
 function wireDocClicks(root=document){root.querySelectorAll('[data-doc]').forEach(el=>el.onclick=()=>openDocument(el.dataset.doc))}
-function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(state.member.member_code||'')}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.3.2</p><p class="muted">실제 데이터베이스 연결이 활성화되었습니다. 문서와 섹션의 열람 권한은 서버의 RLS 정책으로 판정됩니다.</p></div></section>`;
+function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(state.member.member_code||'')}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.3.3</p><p class="muted">실제 데이터베이스 연결이 활성화되었습니다. 문서와 섹션의 열람 권한은 서버의 RLS 정책으로 판정됩니다.</p></div></section>`;
   wireDocClicks();$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});$('#allRecent').onclick=renderRecent;$$('[data-catpill]').forEach(b=>b.onclick=()=>renderCategory(b.dataset.catpill))
 }
 function renderSearch(q){state.route='search';q=(q||'').trim().toLowerCase();setCrumb('SEARCH RESULTS');const rows=!q?state.documents:state.documents.filter(d=>[d.archive_code,d.title,d.title_en,d.summary,d.primary_world].some(v=>String(v||'').toLowerCase().includes(q)));$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">SEARCH</div><h1>검색 결과</h1><div class="subtitle">${escapeHTML(q||'전체 기록')} · ${rows.length}건</div></div><div class="search-results">${rows.length?rows.map(d=>`<div class="result-card" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</div><h3>${escapeHTML(d.title)}</h3><div class="muted">${escapeHTML(d.summary||'')}</div><div style="margin-top:10px">${badgeFor(d)}</div></div>`).join(''):'<div class="empty">일치하는 기록이 없습니다.</div>'}</div></div>`;wireDocClicks()}
 function renderRecent(){state.route='recent';setCrumb('RECENT');const rows=[...state.documents].sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));renderListPage('최근 기록','최근 갱신 순으로 표시합니다.',rows)}
 function renderCategory(cat){state.route='category';setCrumb(categoryNames[cat]||cat);renderListPage(categoryNames[cat]||cat,'현재 계정에서 열람 가능한 분류 기록입니다.',state.documents.filter(d=>d.category===cat))}
 function renderListPage(title,sub,rows){$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">ARCHIVE INDEX</div><h1>${escapeHTML(title)}</h1><div class="subtitle">${escapeHTML(sub)}</div></div><div class="panel"><div class="record-list">${rows.length?rows.map(recordRow).join(''):'<div class="empty">기록이 없습니다.</div>'}</div></div></div>`;wireDocClicks()}
-async function openDocument(id){state.route='record';setCrumb('RECORD');$('#view').innerHTML='<div class="loading">기록을 복호화하는 중...</div>';try{const d=state.documents.find(x=>x.id===id);if(!d)throw new Error('현재 권한에서 문서를 찾을 수 없습니다.');const [sections,anns,links]=await Promise.all([restQuery('archive_document_sections',`select=id,heading,body,sort_order,min_access_level,created_at,updated_at&document_id=eq.${encodeURIComponent(id)}&order=sort_order.asc`),restQuery('archive_annotations',`select=id,parent_id,author_id,author_code,body,min_access_level,created_at&document_id=eq.${encodeURIComponent(id)}&order=created_at.asc`),restQuery('archive_document_links',`select=target_document_id,relation,label&source_document_id=eq.${encodeURIComponent(id)}`)]);renderDocument(d,sections,anns,links)}catch(e){$('#view').innerHTML=`<div class="empty">${escapeHTML(e.message)}</div>`}}
-function renderDocument(d,sections,anns,links){const canAnnotate=['archivist','chief'].includes(state.member?.role);const related=(links||[]).map(l=>{const t=state.documents.find(x=>x.id===l.target_document_id);return t?`<button data-doc="${t.id}">${escapeHTML(l.label||t.title)}</button>`:''}).join('');$('#view').innerHTML=`<article class="page"><div class="page-head"><div class="eyebrow">${escapeHTML(d.archive_code)}</div><h1>${escapeHTML(d.title)}</h1><div class="subtitle">${escapeHTML(d.title_en||'')}</div><div class="doc-toolbar"><span class="badge">${escapeHTML(categoryNames[d.category]||d.category)}</span>${badgeFor(d)}<span class="badge">${escapeHTML(statusNames[d.record_status]||d.record_status)}</span></div></div><div class="document-layout"><div class="document-body">${sections.length?sections.map(s=>`<section class="doc-section"><h2>${escapeHTML(s.heading)}${s.min_access_level?`<span class="section-level">제한 ${s.min_access_level}급</span>`:''}</h2>${textToHtml(s.body)}</section>`).join(''):'<div class="empty">본문 섹션이 없습니다.</div>'}<section class="annotation-thread"><h2>기록관 주석</h2>${anns.length?anns.map(a=>`<div class="annotation thread"><b class="mono">${escapeHTML(a.author_code||'ARC-UNKNOWN')}</b><div>${textToHtml(a.body)}</div><small class="muted">${fmtDate(a.created_at)}</small></div>`).join(''):'<div class="muted">등록된 주석이 없습니다.</div>'}${canAnnotate?`<form id="annotationForm" class="comment-form"><label class="field-label" for="annotationBody">주석 추가</label><textarea id="annotationBody" class="control textarea" maxlength="5000" placeholder="기록관 의견, 보충 기록, 경고 등을 남깁니다."></textarea><div class="toolbar-row end"><select id="annotationLevel" class="control" style="width:auto"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select><button class="primary-inline" type="submit">주석 등록</button></div><div id="annotationStatus" class="status-msg"></div></form>`:''}</section></div><aside class="meta-card"><h4>RECORD METADATA</h4><div class="meta-row"><span>기록 ID</span><b>${escapeHTML(d.archive_code)}</b></div><div class="meta-row"><span>분류</span><b>${escapeHTML(categoryNames[d.category]||d.category)}</b></div><div class="meta-row"><span>상태</span><b>${escapeHTML(statusNames[d.record_status]||d.record_status)}</b></div><div class="meta-row"><span>세계</span><b>${escapeHTML(d.primary_world||'—')}</b></div><div class="meta-row"><span>갱신</span><b>${fmtDate(d.updated_at)}</b></div>${related?`<h4 style="margin-top:18px">RELATED RECORDS</h4><div class="link-list">${related}</div>`:''}</aside></div></article>`;wireDocClicks();const form=$('#annotationForm');if(form)form.onsubmit=async e=>{e.preventDefault();const body=$('#annotationBody').value.trim();if(!body)return;const st=$('#annotationStatus');st.textContent='등록 중...';try{await restInsert('archive_annotations',{document_id:d.id,body,min_access_level:Number($('#annotationLevel').value)});await openDocument(d.id)}catch(err){st.textContent=err.message;st.className='status-msg error'}}}
+async function openDocument(id){state.route='record';setCrumb('RECORD');$('#view').innerHTML='<div class="loading">기록을 복호화하는 중...</div>';try{const d=state.documents.find(x=>x.id===id);if(!d)throw new Error('현재 권한에서 문서를 찾을 수 없습니다.');const [sections,anns,links,redactions]=await Promise.all([restQuery('archive_document_sections',`select=id,heading,body,sort_order,min_access_level,created_at,updated_at&document_id=eq.${encodeURIComponent(id)}&order=sort_order.asc`),restQuery('archive_annotations',`select=id,parent_id,author_id,author_code,body,min_access_level,created_at&document_id=eq.${encodeURIComponent(id)}&order=created_at.asc`),restQuery('archive_document_links',`select=target_document_id,relation,label&source_document_id=eq.${encodeURIComponent(id)}`),rpc('archive_visible_redactions',{p_document_id:id})]);renderDocument(d,sections,anns,links,redactions)}catch(e){$('#view').innerHTML=`<div class="empty">${escapeHTML(e.message)}</div>`}}
+function renderDocument(d,sections,anns,links,redactions=[]){const canAnnotate=['archivist','chief'].includes(state.member?.role);const redactionMap=new Map((Array.isArray(redactions)?redactions:[]).map(r=>[r.token,r]));const related=(links||[]).map(l=>{const t=state.documents.find(x=>x.id===l.target_document_id);return t?`<button data-doc="${t.id}">${escapeHTML(l.label||t.title)}</button>`:''}).join('');$('#view').innerHTML=`<article class="page"><div class="page-head"><div class="eyebrow">${escapeHTML(d.archive_code)}</div><h1>${escapeHTML(d.title)}</h1><div class="subtitle">${escapeHTML(d.title_en||'')}</div><div class="doc-toolbar"><span class="badge">${escapeHTML(categoryNames[d.category]||d.category)}</span>${badgeFor(d)}<span class="badge">${escapeHTML(statusNames[d.record_status]||d.record_status)}</span></div></div><div class="document-layout"><div class="document-body">${sections.length?sections.map(s=>`<section class="doc-section"><h2>${escapeHTML(s.heading)}${s.min_access_level?`<span class="section-level">제한 ${s.min_access_level}급</span>`:''}</h2>${markdownToHtml(s.body,redactionMap)}</section>`).join(''):'<div class="empty">본문 섹션이 없습니다.</div>'}<section class="annotation-thread"><h2>기록관 주석</h2>${anns.length?anns.map(a=>`<div class="annotation thread"><b class="mono">${escapeHTML(a.author_code||'ARC-UNKNOWN')}</b><div>${textToHtml(a.body)}</div><small class="muted">${fmtDate(a.created_at)}</small></div>`).join(''):'<div class="muted">등록된 주석이 없습니다.</div>'}${canAnnotate?`<form id="annotationForm" class="comment-form"><label class="field-label" for="annotationBody">주석 추가</label><textarea id="annotationBody" class="control textarea" maxlength="5000" placeholder="기록관 의견, 보충 기록, 경고 등을 남깁니다."></textarea><div class="toolbar-row end"><select id="annotationLevel" class="control" style="width:auto"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select><button class="primary-inline" type="submit">주석 등록</button></div><div id="annotationStatus" class="status-msg"></div></form>`:''}</section></div><aside class="meta-card"><h4>RECORD METADATA</h4><div class="meta-row"><span>기록 ID</span><b>${escapeHTML(d.archive_code)}</b></div><div class="meta-row"><span>분류</span><b>${escapeHTML(categoryNames[d.category]||d.category)}</b></div><div class="meta-row"><span>상태</span><b>${escapeHTML(statusNames[d.record_status]||d.record_status)}</b></div><div class="meta-row"><span>세계</span><b>${escapeHTML(d.primary_world||'—')}</b></div><div class="meta-row"><span>갱신</span><b>${fmtDate(d.updated_at)}</b></div>${related?`<h4 style="margin-top:18px">RELATED RECORDS</h4><div class="link-list">${related}</div>`:''}</aside></div></article>`;wireDocClicks();const form=$('#annotationForm');if(form)form.onsubmit=async e=>{e.preventDefault();const body=$('#annotationBody').value.trim();if(!body)return;const st=$('#annotationStatus');st.textContent='등록 중...';try{await restInsert('archive_annotations',{document_id:d.id,body,min_access_level:Number($('#annotationLevel').value)});await openDocument(d.id)}catch(err){st.textContent=err.message;st.className='status-msg error'}}}
 async function renderProfile(){
   state.route='profile';setCrumb('PROFILE');
   $('#view').innerHTML='<div class="loading">프로필 권한 정보를 불러오는 중...</div>';
@@ -610,7 +725,101 @@ async function renderComms(){
   commsTimer=setInterval(()=>{if(state.route==='comms')refreshComms(false);},4000);
 }
 
-function renderCreate(){state.route='create';if(!['archivist','chief'].includes(state.member.role))return renderHome();setCrumb('NEW RECORD');$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">RECORD EDITOR</div><h1>새 기록 작성</h1><div class="subtitle">v0.3.2 기본 편집기 · 최초 섹션은 “개요”로 생성됩니다.</div></div><form id="createForm" class="panel"><div class="field-grid"><div><label class="field-label">분류</label><select id="docCategory" class="control">${Object.entries(categoryNames).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div><div><label class="field-label">기록 ID</label><input id="docCode" class="control mono" required /></div><div><label class="field-label">제목</label><input id="docTitle" class="control" required /></div><div><label class="field-label">영문/보조 제목</label><input id="docTitleEn" class="control" /></div><div><label class="field-label">열람 등급</label><select id="docLevel" class="control"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select></div><div><label class="field-label">상태</label><select id="docStatus" class="control"><option value="confirmed">확인</option><option value="observing">관측 중</option><option value="investigating">조사 중</option><option value="incomplete">불완전</option><option value="damaged">손상</option><option value="disputed">논쟁 중</option></select></div><div class="full"><label class="field-label">관련 세계</label><input id="docWorld" class="control" placeholder="예: 테스티아 / 지구" /></div><div class="full"><label class="field-label">요약</label><textarea id="docSummary" class="control" rows="3"></textarea></div><div class="full"><label class="field-label">개요 본문</label><textarea id="docBody" class="control textarea" placeholder="첫 번째 기록 섹션을 작성합니다."></textarea></div></div><div id="createStatus" class="status-msg"></div><div class="toolbar-row end"><button type="button" id="cancelCreate" class="small-btn">취소</button><button type="submit" class="primary-inline">기록 등록</button></div></form></div>`;$('#docCategory').onchange=updateSuggestedCode;$('#cancelCreate').onclick=renderHome;$('#createForm').onsubmit=createDocument;updateSuggestedCode()}
+function renderCreate(){
+  state.route='create';
+  if(!['archivist','chief'].includes(state.member.role))return renderHome();
+  state.mdDraft=null;
+  setCrumb('NEW RECORD');
+  $('#view').innerHTML=`<div class="page">
+    <div class="page-head"><div class="eyebrow">RECORD EDITOR</div><h1>새 기록 작성</h1><div class="subtitle">v0.3.3 · 직접 작성하거나 PLANK ARCHIVE용 Markdown 문서를 가져올 수 있습니다.</div></div>
+    <div class="editor-tabs"><button id="manualModeBtn" class="editor-tab active" type="button">직접 작성</button><button id="mdModeBtn" class="editor-tab" type="button">MD 가져오기</button></div>
+    <div id="manualCreatePanel">
+      <form id="createForm" class="panel"><div class="field-grid">
+        <div><label class="field-label">분류</label><select id="docCategory" class="control">${Object.entries(categoryNames).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
+        <div><label class="field-label">기록 ID</label><input id="docCode" class="control mono" required /></div>
+        <div><label class="field-label">제목</label><input id="docTitle" class="control" required /></div>
+        <div><label class="field-label">영문/보조 제목</label><input id="docTitleEn" class="control" /></div>
+        <div><label class="field-label">열람 등급</label><select id="docLevel" class="control"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select></div>
+        <div><label class="field-label">상태</label><select id="docStatus" class="control"><option value="confirmed">확인</option><option value="observing">관측 중</option><option value="investigating">조사 중</option><option value="incomplete">불완전</option><option value="damaged">손상</option><option value="disputed">논쟁 중</option></select></div>
+        <div class="full"><label class="field-label">관련 세계</label><input id="docWorld" class="control" placeholder="예: 테스티아 / 지구" /></div>
+        <div class="full"><label class="field-label">요약</label><textarea id="docSummary" class="control" rows="3"></textarea></div>
+        <div class="full"><label class="field-label">개요 본문</label><textarea id="docBody" class="control textarea" placeholder="첫 번째 기록 섹션을 작성합니다."></textarea></div>
+      </div><div id="createStatus" class="status-msg"></div><div class="toolbar-row end"><button type="button" id="cancelCreate" class="small-btn">취소</button><button type="submit" class="primary-inline">기록 등록</button></div></form>
+    </div>
+    <div id="mdCreatePanel" class="hidden">
+      <div class="panel">
+        <div id="mdDropzone" class="md-dropzone"><b>Markdown 기록을 여기에 놓기</b><small>.md 파일을 끌어오거나 클릭해서 선택 · UTF-8 권장</small><div id="mdFileChip"></div></div>
+        <input id="mdFileInput" type="file" accept=".md,text/markdown,text/plain" class="hidden" />
+        <div id="mdLoadStatus" class="status-msg"></div>
+        <div id="mdPreview" class="md-preview hidden"></div>
+      </div>
+    </div>
+  </div>`;
+  const setMode=(mode)=>{
+    const md=mode==='md';
+    $('#manualCreatePanel').classList.toggle('hidden',md);$('#mdCreatePanel').classList.toggle('hidden',!md);
+    $('#manualModeBtn').classList.toggle('active',!md);$('#mdModeBtn').classList.toggle('active',md);
+  };
+  $('#manualModeBtn').onclick=()=>setMode('manual');$('#mdModeBtn').onclick=()=>setMode('md');
+  $('#docCategory').onchange=updateSuggestedCode;$('#cancelCreate').onclick=renderHome;$('#createForm').onsubmit=createDocument;updateSuggestedCode();
+  const dz=$('#mdDropzone'),fi=$('#mdFileInput');
+  dz.onclick=()=>fi.click();
+  fi.onchange=()=>{if(fi.files?.[0])loadMarkdownFile(fi.files[0])};
+  dz.ondragover=e=>{e.preventDefault();dz.classList.add('drag')};dz.ondragleave=()=>dz.classList.remove('drag');
+  dz.ondrop=e=>{e.preventDefault();dz.classList.remove('drag');const f=e.dataTransfer?.files?.[0];if(f)loadMarkdownFile(f)};
+}
+async function loadMarkdownFile(file){
+  const st=$('#mdLoadStatus');st.textContent='MD 분석 중...';st.className='status-msg';
+  try{
+    if(!file.name.toLowerCase().endsWith('.md'))throw new Error('.md 파일만 가져올 수 있습니다.');
+    if(file.size>2*1024*1024)throw new Error('MD 파일은 2MB 이하만 가져올 수 있습니다.');
+    const text=await file.text();
+    const draft=parseArchiveMarkdown(text,file.name);
+    if(draft.document.min_access_level>state.member.access_level)throw new Error(`이 문서는 ${draft.document.min_access_level}급으로 설정되어 있지만 현재 계정 권한보다 높습니다.`);
+    state.mdDraft=draft;st.textContent='분석 완료';st.className='status-msg ok';
+    $('#mdFileChip').innerHTML=`<span class="file-chip">${escapeHTML(file.name)} · ${(file.size/1024).toFixed(1)} KB</span>`;
+    renderMarkdownPreview();
+  }catch(e){state.mdDraft=null;st.textContent=e.message||'MD 분석에 실패했습니다.';st.className='status-msg error';$('#mdPreview').classList.add('hidden')}
+}
+function renderMarkdownPreview(){
+  const d=state.mdDraft;if(!d)return;
+  const doc=d.document,totalRedactions=d.sections.reduce((n,s)=>n+(s.redactions?.length||0),0);
+  const accessOptions=[`<option value="public:0" ${doc.access_class==='public'?'selected':''}>공개</option>`]
+    .concat([1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="restricted:${n}" ${doc.access_class==='restricted'&&doc.min_access_level===n?'selected':''}>제한 ${n}급</option>`))
+    .concat(state.member.role==='chief'?[`<option value="sealed:3" ${doc.access_class==='sealed'?'selected':''}>봉인 · 3급</option>`]:[]).join('');
+  $('#mdPreview').classList.remove('hidden');
+  $('#mdPreview').innerHTML=`<div class="notice-box"><b>분석 결과</b> · 기록 ID는 비워두면 서버에서 분류에 맞는 다음 번호를 자동 발급합니다.</div>
+    <div class="field-grid" style="margin-top:14px">
+      <div><label class="field-label">분류</label><select id="mdCategory" class="control">${Object.entries(categoryNames).map(([k,v])=>`<option value="${k}" ${doc.category===k?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div><label class="field-label">기록 ID</label><input id="mdArchiveCode" class="control mono" value="${escapeHTML(doc.archive_code||'')}" placeholder="자동 발급" /></div>
+      <div><label class="field-label">제목</label><input id="mdTitle" class="control" value="${escapeHTML(doc.title)}" /></div>
+      <div><label class="field-label">영문/보조 제목</label><input id="mdTitleEn" class="control" value="${escapeHTML(doc.title_en||'')}" /></div>
+      <div><label class="field-label">열람 등급</label><select id="mdAccess" class="control">${accessOptions}</select></div>
+      <div><label class="field-label">상태</label><select id="mdStatus" class="control">${Object.entries(statusNames).map(([k,v])=>`<option value="${k}" ${doc.record_status===k?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div class="full"><label class="field-label">관련 세계</label><input id="mdWorld" class="control" value="${escapeHTML(doc.primary_world||'')}" /></div>
+      <div class="full"><label class="field-label">요약</label><textarea id="mdSummary" class="control" rows="3">${escapeHTML(doc.summary||'')}</textarea></div>
+    </div>
+    <div class="md-section-list"><div class="md-section-row"><b>섹션</b><b>${d.sections.length}개 · 검열 ${totalRedactions}개</b></div>${d.sections.map(s=>`<div class="md-section-row"><span>${escapeHTML(s.heading)}</span><span class="muted">${s.body.length.toLocaleString()}자${s.redactions?.length?` · 검열 ${s.redactions.length}`:''}</span></div>`).join('')}</div>
+    <div class="md-redaction-note"><b>검열 문법</b><br><code>{{redact:비밀정보}}</code> → 모든 열람자에게 항상 ██████<br><code>{{redact:비밀정보|level=2}}</code> → 2급 이상 기록관에게만 원문 표시. 실제 비밀값은 공개 본문과 분리되어 저장됩니다.</div>
+    <div id="mdImportStatus" class="status-msg"></div><div class="toolbar-row end"><button id="clearMdDraft" class="small-btn" type="button">다른 파일 선택</button><button id="importMdBtn" class="primary-inline" type="button">MD 기록 등록</button></div>`;
+  $('#clearMdDraft').onclick=()=>{state.mdDraft=null;$('#mdPreview').classList.add('hidden');$('#mdFileChip').innerHTML='';$('#mdFileInput').value='';$('#mdLoadStatus').textContent=''};
+  $('#importMdBtn').onclick=importMarkdownDraft;
+}
+async function importMarkdownDraft(){
+  const draft=state.mdDraft,st=$('#mdImportStatus');if(!draft||!st)return;
+  const [accessClass,levelRaw]=$('#mdAccess').value.split(':');
+  const document={...draft.document,archive_code:$('#mdArchiveCode').value.trim().toUpperCase()||null,title:$('#mdTitle').value.trim(),title_en:$('#mdTitleEn').value.trim()||null,category:$('#mdCategory').value,access_class:accessClass,min_access_level:Number(levelRaw),record_status:$('#mdStatus').value,summary:$('#mdSummary').value.trim(),primary_world:$('#mdWorld').value.trim()||null};
+  if(!document.title){st.textContent='제목이 필요합니다.';st.className='status-msg error';return;}
+  const sections=draft.sections.map(s=>({...s,min_access_level:Math.max(Number(levelRaw),Number(s.min_access_level||0))}));
+  const btn=$('#importMdBtn');btn.disabled=true;st.textContent='기록망에 MD 등록 중...';st.className='status-msg';
+  try{
+    const result=await rpc('import_archive_markdown',{p_document:document,p_sections:sections});
+    if(!result?.ok)throw new Error('MD 등록 결과를 확인할 수 없습니다.');
+    st.textContent=`등록 완료 · ${result.archive_code} · 섹션 ${result.section_count}개 · 검열 ${result.redaction_count}개`;st.className='status-msg ok';
+    await loadDocuments();setTimeout(()=>openDocument(result.document_id),350);
+  }catch(e){st.textContent=e.message||'MD 등록에 실패했습니다.';st.className='status-msg error'}finally{btn.disabled=false}
+}
+
 async function updateSuggestedCode(){const cat=$('#docCategory')?.value;if(!cat)return;try{const codes=await restQuery('archive_documents',`select=archive_code&category=eq.${encodeURIComponent(cat)}`);const prefix=`PA-${categoryPrefixes[cat]}-`;let max=0;(codes||[]).forEach(x=>{const m=String(x.archive_code).match(/(\d{4})$/);if(m)max=Math.max(max,Number(m[1]))});$('#docCode').value=prefix+String(max+1).padStart(4,'0')}catch(e){$('#docCode').value=`PA-${categoryPrefixes[cat]}-0001`}}
 async function createDocument(e){e.preventDefault();const st=$('#createStatus');st.textContent='기록 등록 중...';st.className='status-msg';const level=Number($('#docLevel').value);const payload={archive_code:$('#docCode').value.trim().toUpperCase(),title:$('#docTitle').value.trim(),title_en:$('#docTitleEn').value.trim()||null,category:$('#docCategory').value,access_class:level===0?'public':'restricted',min_access_level:level,record_status:$('#docStatus').value,summary:$('#docSummary').value.trim(),primary_world:$('#docWorld').value.trim()||null};try{const rows=await restInsert('archive_documents',payload);const d=rows[0];const body=$('#docBody').value.trim();if(body)await restInsert('archive_document_sections',{document_id:d.id,heading:'개요',body,sort_order:10,min_access_level:level});await restInsert('archive_document_revisions',{document_id:d.id,change_summary:'문서 생성',snapshot:payload});await loadDocuments();st.textContent='등록 완료';st.className='status-msg ok';setTimeout(()=>openDocument(d.id),250)}catch(err){st.textContent=err.message;st.className='status-msg error'}}
 async function syncNow(){const btn=$('#refreshBtn');btn.textContent='동기화 중…';try{await loadMember();if(!state.member)return showDenied();await loadDocuments();applyMemberUI();renderHome()}catch(e){alert('동기화 실패: '+e.message)}finally{btn.textContent='동기화'}}
