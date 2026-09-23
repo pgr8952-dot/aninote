@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PLANK ARCHIVE v0.3.6</title>
+<title>PLANK ARCHIVE v0.3.7</title>
 <style>
 :root {
   --bg: #0b0f14;
@@ -221,10 +221,10 @@ body.sidebar-lock{overflow:hidden}
 .help-copy{color:var(--muted);font-size:11px;line-height:1.65;margin-top:7px}.profile-section-title{margin:0 0 7px;font-size:14px}.empty-small{padding:10px 0;color:var(--muted);font-size:11px}
 .doc-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}.document-editor-modal{width:min(1040px,100%)}.edit-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.edit-meta-grid .full{grid-column:1/-1}.locked-field{background:#0a0f15;color:#77879a}.editor-section-list{display:grid;gap:12px;margin-top:12px}.editor-section-card{border:1px solid #2b394c;background:#0b1118;border-radius:10px;padding:14px}.editor-section-head{display:flex;gap:8px;align-items:end}.editor-section-head .grow{flex:1}.editor-section-toolbar{display:flex;gap:6px;flex-wrap:wrap}.editor-section-card textarea{min-height:210px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.65}.edit-warning{margin-top:7px;color:#d0aa70;font-size:11px;line-height:1.6}.edit-section-index{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#718196;margin-bottom:7px}.edit-footer{position:sticky;bottom:-22px;background:linear-gradient(180deg,rgba(15,21,30,0),#0f151e 24%);padding-top:26px;margin-top:18px}.edit-summary{min-height:86px}.danger-zone{border-top:1px solid #34252a;margin-top:14px;padding-top:12px}@media(max-width:700px){.doc-edit-actions,.edit-meta-grid{grid-template-columns:1fr}.edit-meta-grid .full{grid-column:auto}.editor-section-head{align-items:stretch;flex-direction:column}}
 
-/* ===== v0.3.6 · document image blocks ===== */
+/* ===== v0.3.7 · private document image blocks ===== */
 .archive-image-block{width:min(var(--archive-image-width,72%),100%);margin:24px auto;transform:rotate(var(--archive-image-rotate,0deg));transform-origin:center center;transition:transform .15s ease}
 .archive-image-block.align-left{margin-left:0;margin-right:auto}.archive-image-block.align-right{margin-left:auto;margin-right:0}.archive-image-block.align-center{margin-left:auto;margin-right:auto}
-.archive-image-block img{display:block;width:100%;height:auto;border:1px solid #334258;border-radius:6px;background:#080c11;box-shadow:0 12px 34px rgba(0,0,0,.28)}
+.archive-image-block img{display:block;width:100%;height:auto;border:1px solid #334258;border-radius:6px;background:#080c11;box-shadow:0 12px 34px rgba(0,0,0,.28)}.archive-image-block img.archive-image-error{min-height:120px;border-style:dashed;opacity:.55}
 .archive-image-block figcaption{margin-top:8px;color:#7f8fa4;font-size:11px;line-height:1.55;text-align:center;font-style:italic}
 .editor-image-tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:8px}.editor-image-tools .muted{font-size:11px}
 .image-insert-layer{position:relative;z-index:130}.image-insert-modal{width:min(680px,100%)}.image-pick-grid{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:14px;align-items:start}.image-preview-box{min-height:210px;border:1px dashed #3b4b60;border-radius:10px;background:#090e14;display:grid;place-items:center;overflow:hidden;padding:12px}.image-preview-box img{max-width:100%;max-height:330px;object-fit:contain;transform:rotate(var(--preview-rotate,0deg));transition:transform .12s ease}.image-preview-empty{color:#65758a;font-size:12px;text-align:center;line-height:1.6}.image-control-row{display:grid;grid-template-columns:1fr 82px;gap:8px;align-items:center}.image-control-row input[type=range]{width:100%}.image-size-note{color:#6f8094;font-size:10px;line-height:1.5;margin-top:6px}
@@ -428,17 +428,22 @@ function inlineMarkdown(v='',redactions=new Map()){
 function parseArchiveImageBlock(line=''){
   const m=String(line||'').trim().match(/^\{\{image\|([\s\S]+)\}\}$/i);
   if(!m)return null;
-  const data={src:'',width:72,align:'center',rotate:0,caption:''};
+  const data={src:'',path:'',pending:'',width:72,align:'center',rotate:0,caption:''};
   for(const part of m[1].split('|')){
     const eq=part.indexOf('=');if(eq<1)continue;
     const key=part.slice(0,eq).trim().toLowerCase(),raw=part.slice(eq+1).trim();
     if(key==='src')data.src=raw;
+    else if(key==='path')data.path=raw;
+    else if(key==='pending')data.pending=raw;
     else if(key==='width')data.width=Math.max(25,Math.min(100,Number(raw)||72));
     else if(key==='align'&&['left','center','right'].includes(raw))data.align=raw;
     else if(key==='rotate')data.rotate=Math.max(-15,Math.min(15,Number(raw)||0));
     else if(key==='caption'){try{data.caption=decodeURIComponent(raw)}catch(e){data.caption=raw}}
   }
-  if(!/^data:image\/(?:png|jpeg|jpg|webp);base64,[a-z0-9+/=]+$/i.test(data.src))return null;
+  const oldData=/^data:image\/(?:png|jpeg|jpg|webp);base64,[a-z0-9+/=]+$/i.test(data.src);
+  const storedPath=/^[0-9a-f-]{36}\/[A-Za-z0-9._-]+$/i.test(data.path);
+  const pending=/^[A-Za-z0-9_-]{8,80}$/.test(data.pending);
+  if(!oldData&&!storedPath&&!pending)return null;
   return data;
 }
 function archiveImageHtml(img){
@@ -446,37 +451,72 @@ function archiveImageHtml(img){
   const rotate=Math.max(-15,Math.min(15,Number(img.rotate)||0));
   const align=['left','center','right'].includes(img.align)?img.align:'center';
   const caption=String(img.caption||'').trim();
-  return `<figure class="archive-image-block align-${align}" style="--archive-image-width:${width}%;--archive-image-rotate:${rotate}deg"><img src="${escapeHTML(img.src)}" alt="${escapeHTML(caption||'기록 이미지')}" loading="lazy">${caption?`<figcaption>${escapeHTML(caption)}</figcaption>`:''}</figure>`;
+  let image='';
+  if(img.path){
+    image=`<img data-archive-image-path="${escapeHTML(img.path)}" alt="${escapeHTML(caption||'기록 이미지')}" loading="lazy">`;
+  }else if(img.src){
+    image=`<img src="${escapeHTML(img.src)}" alt="${escapeHTML(caption||'기록 이미지')}" loading="lazy">`;
+  }else{
+    image=`<div class="image-preview-empty">저장되지 않은 이미지</div>`;
+  }
+  return `<figure class="archive-image-block align-${align}" style="--archive-image-width:${width}%;--archive-image-rotate:${rotate}deg">${image}${caption?`<figcaption>${escapeHTML(caption)}</figcaption>`:''}</figure>`;
 }
-function buildArchiveImageBlock(src,{width=72,align='center',rotate=0,caption=''}={}){
+function buildArchiveImageBlock(ref,{width=72,align='center',rotate=0,caption=''}={}){
   const safeWidth=Math.max(25,Math.min(100,Number(width)||72));
   const safeRotate=Math.max(-15,Math.min(15,Number(rotate)||0));
   const safeAlign=['left','center','right'].includes(align)?align:'center';
   const safeCaption=encodeURIComponent(String(caption||'').replace(/\|/g,'／'));
-  return `{{image|src=${src}|width=${safeWidth}|align=${safeAlign}|rotate=${safeRotate}|caption=${safeCaption}}}`;
+  const refPart=ref?.path?`path=${ref.path}`:ref?.pending?`pending=${ref.pending}`:ref?.src?`src=${ref.src}`:'';
+  return `{{image|${refPart}|width=${safeWidth}|align=${safeAlign}|rotate=${safeRotate}|caption=${safeCaption}}}`;
 }
-async function archiveImageFileToDataUrl(file){
+async function archiveImageFileToBlob(file){
   if(!file)throw new Error('이미지 파일을 선택해줘.');
   if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('JPG, PNG, WebP 이미지만 사용할 수 있어.');
   if(file.size>20*1024*1024)throw new Error('원본 이미지는 20MB 이하만 사용할 수 있어.');
   const url=URL.createObjectURL(file);
   try{
     const img=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('이미지를 읽지 못했어.'));im.src=url});
-    const maxEdge=1600,ratio=Math.min(1,maxEdge/Math.max(img.naturalWidth,img.naturalHeight));
+    const maxEdge=2200,ratio=Math.min(1,maxEdge/Math.max(img.naturalWidth,img.naturalHeight));
     let w=Math.max(1,Math.round(img.naturalWidth*ratio)),h=Math.max(1,Math.round(img.naturalHeight*ratio));
-    let quality=.86,blob=null;
+    let quality=.9,blob=null;
     for(let attempt=0;attempt<7;attempt++){
       const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
       const ctx=canvas.getContext('2d',{alpha:true});ctx.drawImage(img,0,0,w,h);
       blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',quality));
       if(!blob)blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
-      if(blob&&blob.size<=430*1024)break;
-      quality=Math.max(.54,quality-.07);w=Math.max(1,Math.round(w*.9));h=Math.max(1,Math.round(h*.9));
+      if(blob&&blob.size<=2*1024*1024)break;
+      quality=Math.max(.58,quality-.07);w=Math.max(1,Math.round(w*.9));h=Math.max(1,Math.round(h*.9));
     }
     if(!blob)throw new Error('이미지 압축에 실패했어.');
-    if(blob.size>700*1024)throw new Error('압축 후에도 이미지가 너무 커. 더 작은 사진을 선택해줘.');
-    return await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||''));r.onerror=()=>reject(new Error('이미지 변환에 실패했어.'));r.readAsDataURL(blob)});
+    if(blob.size>4.5*1024*1024)throw new Error('압축 후에도 이미지가 너무 커. 더 작은 사진을 선택해줘.');
+    return blob;
   }finally{URL.revokeObjectURL(url)}
+}
+function encodeStoragePath(path=''){return String(path).split('/').map(encodeURIComponent).join('/')}
+async function uploadArchiveImage(documentId,blob){
+  if(!documentId||!blob)throw new Error('이미지 업로드 정보가 부족해.');
+  const uid=crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const objectPath=`${documentId}/${uid}.webp`;
+  const doUpload=()=>fetch(`${SUPABASE_URL}/storage/v1/object/plang-archive-images/${encodeStoragePath(objectPath)}`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+state.session.access_token,'Content-Type':blob.type||'image/webp','x-upsert':'false'},body:blob});
+  let res=await doUpload();
+  if(res.status===401&&state.session?.refresh_token){const ok=await refreshSession();if(ok)res=await doUpload()}
+  if(!res.ok){let msg='이미지 업로드에 실패했어.';try{const d=await res.json();msg=d.message||d.error||msg}catch(e){}throw new Error(msg)}
+  return objectPath;
+}
+let archiveImageObjectUrls=[];
+function clearArchiveImageObjectUrls(){archiveImageObjectUrls.forEach(u=>URL.revokeObjectURL(u));archiveImageObjectUrls=[]}
+async function hydrateArchiveImages(root=document){
+  const nodes=[...root.querySelectorAll('img[data-archive-image-path]')];
+  await Promise.all(nodes.map(async img=>{
+    const path=img.dataset.archiveImagePath;if(!path)return;
+    try{
+      const doFetch=()=>fetch(`${SUPABASE_URL}/storage/v1/object/authenticated/plang-archive-images/${encodeStoragePath(path)}`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+state.session.access_token}});
+      let res=await doFetch();
+      if(res.status===401&&state.session?.refresh_token){const ok=await refreshSession();if(ok)res=await doFetch()}
+      if(!res.ok)throw new Error(`HTTP ${res.status}`);
+      const blob=await res.blob(),url=URL.createObjectURL(blob);archiveImageObjectUrls.push(url);img.src=url;
+    }catch(e){img.alt='이미지를 불러오지 못했습니다.';img.classList.add('archive-image-error');console.warn('archive image load failed',path,e)}
+  }));
 }
 function markdownToHtml(v='',redactions=new Map()){
   const lines=String(v||'').replace(/\r\n?/g,'\n').split('\n');
@@ -636,7 +676,7 @@ function toggleMobileSidebar(){if($('.sidebar')?.classList.contains('mobile-open
 function badgeFor(d){if(d.access_class==='sealed')return '<span class="tag sealed">봉인</span>';if(d.min_access_level>0)return `<span class="tag restricted">제한 ${d.min_access_level}급</span>`;return '<span class="tag public">공개</span>'}
 function recordRow(d){return `<div class="record-row" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)}</div><div><div class="record-title">${escapeHTML(d.title)}</div><div class="record-summary">${escapeHTML(d.summary||'')}</div></div>${badgeFor(d)}</div>`}
 function wireDocClicks(root=document){root.querySelectorAll('[data-doc]').forEach(el=>el.onclick=()=>openDocument(el.dataset.doc))}
-function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(state.member.member_code||'')}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.3.6</p><p class="muted">실제 데이터베이스 연결이 활성화되었습니다. 문서와 섹션의 열람 권한은 서버의 RLS 정책으로 판정됩니다.</p></div></section>`;
+function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(state.member.member_code||'')}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.3.7</p><p class="muted">실제 데이터베이스 연결이 활성화되었습니다. 문서와 섹션의 열람 권한은 서버의 RLS 정책으로 판정됩니다.</p></div></section>`;
   wireDocClicks();$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});$('#allRecent').onclick=renderRecent;$$('[data-catpill]').forEach(b=>b.onclick=()=>renderCategory(b.dataset.catpill))
 }
 function renderSearch(q){state.route='search';q=(q||'').trim().toLowerCase();setCrumb('SEARCH RESULTS');const rows=!q?state.documents:state.documents.filter(d=>[d.archive_code,d.title,d.title_en,d.summary,d.primary_world].some(v=>String(v||'').toLowerCase().includes(q)));$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">SEARCH</div><h1>검색 결과</h1><div class="subtitle">${escapeHTML(q||'전체 기록')} · ${rows.length}건</div></div><div class="search-results">${rows.length?rows.map(d=>`<div class="result-card" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</div><h3>${escapeHTML(d.title)}</h3><div class="muted">${escapeHTML(d.summary||'')}</div><div style="margin-top:10px">${badgeFor(d)}</div></div>`).join(''):'<div class="empty">일치하는 기록이 없습니다.</div>'}</div></div>`;wireDocClicks()}
@@ -645,6 +685,7 @@ function renderCategory(cat){closeMobileSidebar();state.route='category';setCrum
 function renderListPage(title,sub,rows){$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">ARCHIVE INDEX</div><h1>${escapeHTML(title)}</h1><div class="subtitle">${escapeHTML(sub)}</div></div><div class="panel"><div class="record-list">${rows.length?rows.map(recordRow).join(''):'<div class="empty">기록이 없습니다.</div>'}</div></div></div>`;wireDocClicks()}
 async function openDocument(id){state.route='record';setCrumb('RECORD');$('#view').innerHTML='<div class="loading">기록을 복호화하는 중...</div>';try{const d=state.documents.find(x=>x.id===id);if(!d)throw new Error('현재 권한에서 문서를 찾을 수 없습니다.');const [sections,anns,links,redactions]=await Promise.all([restQuery('archive_document_sections',`select=id,heading,body,sort_order,min_access_level,created_at,updated_at&document_id=eq.${encodeURIComponent(id)}&order=sort_order.asc`),restQuery('archive_annotations',`select=id,parent_id,author_id,author_code,body,min_access_level,created_at&document_id=eq.${encodeURIComponent(id)}&order=created_at.asc`),restQuery('archive_document_links',`select=target_document_id,relation,label&source_document_id=eq.${encodeURIComponent(id)}`),rpc('archive_visible_redactions',{p_document_id:id})]);renderDocument(d,sections,anns,links,redactions)}catch(e){$('#view').innerHTML=`<div class="empty">${escapeHTML(e.message)}</div>`}}
 function renderDocument(d,sections,anns,links,redactions=[]){
+  clearArchiveImageObjectUrls();
   const canAnnotate=['archivist','chief'].includes(state.member?.role);
   const canEdit=canAnnotate;
   const canRedact=canAnnotate&&sections.length>0;
@@ -652,6 +693,7 @@ function renderDocument(d,sections,anns,links,redactions=[]){
   const related=(links||[]).map(l=>{const t=state.documents.find(x=>x.id===l.target_document_id);return t?`<button data-doc="${t.id}">${escapeHTML(l.label||t.title)}</button>`:''}).join('');
   $('#view').innerHTML=`<article class="page"><div class="page-head"><div class="eyebrow">${escapeHTML(d.archive_code)}</div><h1>${escapeHTML(d.title)}</h1><div class="subtitle">${escapeHTML(d.title_en||'')}</div><div class="doc-toolbar"><span class="badge">${escapeHTML(categoryNames[d.category]||d.category)}</span>${badgeFor(d)}<span class="badge">${escapeHTML(statusNames[d.record_status]||d.record_status)}</span></div></div><div class="document-layout"><div class="document-body">${sections.length?sections.map(s=>`<section class="doc-section"><h2>${escapeHTML(s.heading)}${s.min_access_level?`<span class="section-level">제한 ${s.min_access_level}급</span>`:''}</h2>${markdownToHtml(s.body,redactionMap)}</section>`).join(''):'<div class="empty">본문 섹션이 없습니다.</div>'}<section class="annotation-thread"><h2>기록관 주석</h2>${anns.length?anns.map(a=>`<div class="annotation thread"><b class="mono">${escapeHTML(a.author_code||'ARC-UNKNOWN')}</b><div>${textToHtml(a.body)}</div><small class="muted">${fmtDate(a.created_at)}</small></div>`).join(''):'<div class="muted">등록된 주석이 없습니다.</div>'}${canAnnotate?`<form id="annotationForm" class="comment-form"><label class="field-label" for="annotationBody">주석 추가</label><textarea id="annotationBody" class="control textarea" maxlength="5000" placeholder="기록관 의견, 보충 기록, 경고 등을 남깁니다."></textarea><div class="toolbar-row end"><select id="annotationLevel" class="control" style="width:auto"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select><button class="primary-inline" type="submit">주석 등록</button></div><div id="annotationStatus" class="status-msg"></div></form>`:''}</section></div><aside class="meta-card"><h4>RECORD METADATA</h4><div class="meta-row"><span>기록 ID</span><b>${escapeHTML(d.archive_code)}</b></div><div class="meta-row"><span>분류</span><b>${escapeHTML(categoryNames[d.category]||d.category)}</b></div><div class="meta-row"><span>상태</span><b>${escapeHTML(statusNames[d.record_status]||d.record_status)}</b></div><div class="meta-row"><span>세계</span><b>${escapeHTML(d.primary_world||'—')}</b></div><div class="meta-row"><span>갱신</span><b>${fmtDate(d.updated_at)}</b></div>${canEdit?`<div class="doc-edit-actions"><button id="documentEditBtn" class="small-btn" type="button">✎ 문서 수정</button>${canRedact?`<button id="redactionEditBtn" class="small-btn redaction-edit-btn" type="button">▰ 검열 편집</button>`:''}</div>`:''}${related?`<h4 style="margin-top:18px">RELATED RECORDS</h4><div class="link-list">${related}</div>`:''}</aside></div></article>`;
   wireDocClicks();
+  hydrateArchiveImages($('#view'));
   if($('#documentEditBtn'))$('#documentEditBtn').onclick=()=>openDocumentEditor(d,sections);
   if($('#redactionEditBtn'))$('#redactionEditBtn').onclick=()=>openRedactionEditor(d,sections);
   const form=$('#annotationForm');if(form)form.onsubmit=async e=>{e.preventDefault();const body=$('#annotationBody').value.trim();if(!body)return;const st=$('#annotationStatus');st.textContent='등록 중...';try{await restInsert('archive_annotations',{document_id:d.id,body,min_access_level:Number($('#annotationLevel').value)});await openDocument(d.id)}catch(err){st.textContent=err.message;st.className='status-msg error'}};
@@ -671,6 +713,7 @@ function editLevelOptions(current,docMin=0){
 async function openDocumentEditor(d,sections){
   const root=$('#modalRoot');
   const draftSections=sections.map(s=>({...s}));
+  const pendingArchiveImages=new Map();
   root.innerHTML=`<div class="modal-backdrop" id="documentEditBackdrop"><div class="modal document-editor-modal"><button class="modal-close" id="closeDocumentEditor" aria-label="닫기">×</button><div class="eyebrow">DOCUMENT EDITOR</div><h2>${escapeHTML(d.archive_code)} · 문서 수정</h2><div class="notice-box">기록 ID와 분류는 기록의 정체성을 위해 생성 후 고정됩니다. 기존 검열 토큰은 일반 수정에서 삭제할 수 없으며, 검열 내용은 <b>검열 편집</b>에서 별도로 관리합니다.</div><div class="edit-meta-grid" style="margin-top:16px"><div><label class="field-label">기록 ID</label><input id="editArchiveCode" class="control locked-field" value="${escapeHTML(d.archive_code)}" readonly></div><div><label class="field-label">분류</label><input class="control locked-field" value="${escapeHTML(categoryNames[d.category]||d.category)}" readonly></div><div><label class="field-label">제목</label><input id="editTitle" class="control" maxlength="300" value="${escapeHTML(d.title)}"></div><div><label class="field-label">영문명</label><input id="editTitleEn" class="control" maxlength="300" value="${escapeHTML(d.title_en||'')}"></div><div><label class="field-label">상태</label><select id="editStatus" class="control">${Object.entries(statusNames).map(([k,v])=>`<option value="${k}" ${d.record_status===k?'selected':''}>${v}</option>`).join('')}</select></div><div><label class="field-label">주 세계</label><input id="editWorld" class="control" maxlength="300" value="${escapeHTML(d.primary_world||'')}"></div><div><label class="field-label">열람 형태</label><select id="editAccessClass" class="control">${editAccessOptions(d)}</select></div><div><label class="field-label">최소 등급</label><select id="editDocLevel" class="control"></select></div><div class="full"><label class="field-label">요약</label><textarea id="editSummary" class="control edit-summary" maxlength="10000">${escapeHTML(d.summary||'')}</textarea></div></div><div class="panel-head" style="margin-top:20px"><div><h3 style="margin:0">본문 섹션</h3><div class="meta" style="margin-top:4px">순서 변경 · 추가 · 삭제 · Markdown 본문 수정</div></div><button id="addEditSection" class="small-btn" type="button">+ 섹션 추가</button></div><div id="editSectionList" class="editor-section-list"></div><div class="edit-footer"><label class="field-label">변경 요약 · 선택</label><input id="editChangeSummary" class="control" maxlength="300" placeholder="예: 등장인물 설명 보강 / 오탈자 수정"><div id="documentEditStatus" class="status-msg"></div><div class="toolbar-row end"><button id="saveDocumentEdit" class="primary-inline" type="button">수정 저장</button></div></div></div></div>`;
 
   const close=()=>{root.innerHTML=''};
@@ -711,24 +754,25 @@ async function openDocumentEditor(d,sections){
     const ta=document.querySelector(`[data-edit-body="${index}"]`);
     const cursor=ta?ta.selectionStart:String(section.body||'').length;
     const layer=document.createElement('div');layer.className='image-insert-layer';
-    layer.innerHTML=`<div class="modal-backdrop" id="imageInsertBackdrop"><div class="modal image-insert-modal"><button class="modal-close" id="closeImageInsert" aria-label="닫기">×</button><div class="eyebrow">IMAGE BLOCK</div><h2>문서 이미지 삽입</h2><div class="notice-box">사진은 자동으로 WebP 압축되어 이 문서 본문 안에 저장됩니다. 문서 권한을 그대로 따르며, 한 장당 약 430KB 이하를 목표로 압축합니다.</div><div class="image-pick-grid" style="margin-top:14px"><div><label class="field-label">이미지 파일</label><input id="archiveImageFile" class="control" type="file" accept="image/jpeg,image/png,image/webp"><div id="archiveImageStatus" class="status-msg"></div><div class="image-preview-box"><div id="archiveImageEmpty" class="image-preview-empty">JPG · PNG · WebP<br>사진을 선택하면 미리보기가 표시됩니다.</div><img id="archiveImagePreview" class="hidden" alt="이미지 미리보기"></div></div><div><label class="field-label">크기</label><div class="image-control-row"><input id="archiveImageWidth" type="range" min="25" max="100" value="72"><input id="archiveImageWidthNumber" class="control" type="number" min="25" max="100" value="72"></div><label class="field-label">정렬</label><select id="archiveImageAlign" class="control"><option value="left">왼쪽</option><option value="center" selected>가운데</option><option value="right">오른쪽</option></select><label class="field-label">회전 각도</label><div class="image-control-row"><input id="archiveImageRotate" type="range" min="-15" max="15" value="0"><input id="archiveImageRotateNumber" class="control" type="number" min="-15" max="15" value="0"></div><label class="field-label">캡션 · 선택</label><textarea id="archiveImageCaption" class="control" rows="3" maxlength="300" placeholder="예: 기록 종료 후 촬영된 사진"></textarea><div class="image-size-note">모바일에서는 너무 큰 폭을 자동으로 줄여 화면 밖으로 벗어나지 않게 합니다.</div></div></div><div class="toolbar-row end" style="margin-top:16px"><button id="cancelImageInsert" class="small-btn" type="button">취소</button><button id="confirmImageInsert" class="primary-inline" type="button">커서 위치에 삽입</button></div></div></div>`;
+    layer.innerHTML=`<div class="modal-backdrop" id="imageInsertBackdrop"><div class="modal image-insert-modal"><button class="modal-close" id="closeImageInsert" aria-label="닫기">×</button><div class="eyebrow">IMAGE BLOCK</div><h2>문서 이미지 삽입</h2><div class="notice-box">사진은 자동으로 WebP 압축된 뒤 아카이브 전용 비공개 저장소에 업로드됩니다. 본문에는 짧은 이미지 경로만 기록되어 SECTION_TOO_LARGE 오류를 피합니다.</div><div class="image-pick-grid" style="margin-top:14px"><div><label class="field-label">이미지 파일</label><input id="archiveImageFile" class="control" type="file" accept="image/jpeg,image/png,image/webp"><div id="archiveImageStatus" class="status-msg"></div><div class="image-preview-box"><div id="archiveImageEmpty" class="image-preview-empty">JPG · PNG · WebP<br>사진을 선택하면 미리보기가 표시됩니다.</div><img id="archiveImagePreview" class="hidden" alt="이미지 미리보기"></div></div><div><label class="field-label">크기</label><div class="image-control-row"><input id="archiveImageWidth" type="range" min="25" max="100" value="72"><input id="archiveImageWidthNumber" class="control" type="number" min="25" max="100" value="72"></div><label class="field-label">정렬</label><select id="archiveImageAlign" class="control"><option value="left">왼쪽</option><option value="center" selected>가운데</option><option value="right">오른쪽</option></select><label class="field-label">회전 각도</label><div class="image-control-row"><input id="archiveImageRotate" type="range" min="-15" max="15" value="0"><input id="archiveImageRotateNumber" class="control" type="number" min="-15" max="15" value="0"></div><label class="field-label">캡션 · 선택</label><textarea id="archiveImageCaption" class="control" rows="3" maxlength="300" placeholder="예: 기록 종료 후 촬영된 사진"></textarea><div class="image-size-note">모바일에서는 너무 큰 폭을 자동으로 줄여 화면 밖으로 벗어나지 않게 합니다.</div></div></div><div class="toolbar-row end" style="margin-top:16px"><button id="cancelImageInsert" class="small-btn" type="button">취소</button><button id="confirmImageInsert" class="primary-inline" type="button">커서 위치에 삽입</button></div></div></div>`;
     document.body.appendChild(layer);
-    const close=()=>layer.remove();
+    const close=()=>{if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl='';}layer.remove()};
     $('#closeImageInsert').onclick=close;$('#cancelImageInsert').onclick=close;$('#imageInsertBackdrop').addEventListener('click',e=>{if(e.target.id==='imageInsertBackdrop')close()});
     const width=$('#archiveImageWidth'),widthN=$('#archiveImageWidthNumber'),rotate=$('#archiveImageRotate'),rotateN=$('#archiveImageRotateNumber'),preview=$('#archiveImagePreview');
     const syncWidth=v=>{const n=Math.max(25,Math.min(100,Number(v)||72));width.value=String(n);widthN.value=String(n)};
     const syncRotate=v=>{const n=Math.max(-15,Math.min(15,Number(v)||0));rotate.value=String(n);rotateN.value=String(n);preview.style.setProperty('--preview-rotate',`${n}deg`)};
     width.oninput=()=>syncWidth(width.value);widthN.oninput=()=>syncWidth(widthN.value);rotate.oninput=()=>syncRotate(rotate.value);rotateN.oninput=()=>syncRotate(rotateN.value);
-    let imageData='';
+    let imageBlob=null;let previewUrl='';
     $('#archiveImageFile').onchange=async e=>{
-      const file=e.target.files?.[0],st=$('#archiveImageStatus');imageData='';
+      const file=e.target.files?.[0],st=$('#archiveImageStatus');imageBlob=null;if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl='';}
       if(!file)return;st.textContent='이미지 압축 중...';st.className='status-msg';
-      try{imageData=await archiveImageFileToDataUrl(file);preview.src=imageData;preview.classList.remove('hidden');$('#archiveImageEmpty').classList.add('hidden');st.textContent=`준비 완료 · 약 ${Math.round(imageData.length*0.75/1024).toLocaleString()} KB`;st.className='status-msg ok'}
+      try{imageBlob=await archiveImageFileToBlob(file);previewUrl=URL.createObjectURL(imageBlob);preview.src=previewUrl;preview.classList.remove('hidden');$('#archiveImageEmpty').classList.add('hidden');st.textContent=`준비 완료 · 약 ${Math.round(imageBlob.size/1024).toLocaleString()} KB`;st.className='status-msg ok'}
       catch(err){preview.classList.add('hidden');$('#archiveImageEmpty').classList.remove('hidden');st.textContent=err.message||'이미지 준비에 실패했어.';st.className='status-msg error'}
     };
     $('#confirmImageInsert').onclick=()=>{
-      const st=$('#archiveImageStatus');if(!imageData){st.textContent='먼저 이미지 파일을 선택해줘.';st.className='status-msg error';return}
-      const block=buildArchiveImageBlock(imageData,{width:Number(widthN.value),align:$('#archiveImageAlign').value,rotate:Number(rotateN.value),caption:$('#archiveImageCaption').value.trim()});
+      const st=$('#archiveImageStatus');if(!imageBlob){st.textContent='먼저 이미지 파일을 선택해줘.';st.className='status-msg error';return}
+      const pendingId='img_'+(crypto.randomUUID?crypto.randomUUID():`${Date.now()}_${Math.random().toString(36).slice(2)}`).replace(/-/g,'');pendingArchiveImages.set(pendingId,imageBlob);
+      const block=buildArchiveImageBlock({pending:pendingId},{width:Number(widthN.value),align:$('#archiveImageAlign').value,rotate:Number(rotateN.value),caption:$('#archiveImageCaption').value.trim()});
       const body=String(section.body||''),before=body.slice(0,cursor),after=body.slice(cursor);
       const lead=before&&!before.endsWith('\n')?'\n':'',tail=after&&!after.startsWith('\n')?'\n':'';
       section.body=before+lead+block+tail+after;close();renderSectionCards();
@@ -745,13 +789,21 @@ async function openDocumentEditor(d,sections){
     for(const s of draftSections){if(!String(s.heading||'').trim()){st.textContent='빈 섹션 제목이 있습니다.';st.className='status-msg error';return}}
     const accessClass=$('#editAccessClass').value,docLevel=accessClass==='public'?0:Number($('#editDocLevel').value||0);
     const payload={archive_code:d.archive_code,category:d.category,title,title_en:$('#editTitleEn').value.trim()||null,record_status:$('#editStatus').value,primary_world:$('#editWorld').value.trim()||null,summary:$('#editSummary').value,access_class:accessClass,min_access_level:docLevel};
-    const sectionPayload=draftSections.map((s,i)=>({id:s.id||null,heading:String(s.heading||'').trim(),body:String(s.body||''),sort_order:(i+1)*10,min_access_level:Math.max(docLevel,Number(s.min_access_level||0))}));
-    btn.disabled=true;st.textContent='수정 저장 중...';
+    btn.disabled=true;st.textContent=pendingArchiveImages.size?'이미지 업로드 중...':'수정 저장 중...';
     try{
+      for(const [pendingId,blob] of [...pendingArchiveImages.entries()]){
+        const objectPath=await uploadArchiveImage(d.id,blob);
+        const token=`pending=${pendingId}`;
+        for(const section of draftSections)section.body=String(section.body||'').replaceAll(token,`path=${objectPath}`);
+        pendingArchiveImages.delete(pendingId);
+      }
+      const sectionPayload=draftSections.map((s,i)=>({id:s.id||null,heading:String(s.heading||'').trim(),body:String(s.body||''),sort_order:(i+1)*10,min_access_level:Math.max(docLevel,Number(s.min_access_level||0))}));
+      const tooLarge=sectionPayload.find(s=>s.body.length>200000);if(tooLarge)throw new Error(`섹션 「${tooLarge.heading}」 본문이 200,000자를 넘었습니다.`);
+      st.textContent='수정 저장 중...';
       await rpc('update_archive_document',{p_document_id:d.id,p_document:payload,p_sections:sectionPayload,p_change_summary:$('#editChangeSummary').value.trim()||null});
       st.textContent='수정이 저장되었습니다.';st.className='status-msg ok';
       await loadDocuments();root.innerHTML='';await openDocument(d.id);
-    }catch(e){st.textContent=e.message||'문서 수정에 실패했습니다.';st.className='status-msg error'}finally{btn.disabled=false}
+    }catch(e){st.textContent=e.message==='SECTION_TOO_LARGE'?'섹션 본문이 200,000자를 넘었습니다. 이미지가 본문 데이터로 들어간 구버전 블록이 있다면 삭제 후 다시 삽입해줘.':(e.message||'문서 수정에 실패했습니다.');st.className='status-msg error'}finally{btn.disabled=false}
   };
 }
 
