@@ -565,7 +565,7 @@ async function archiveImageFileToBlob(file){
   }finally{URL.revokeObjectURL(url)}
 }
 
-// v0.4.12 compatibility: older profile-photo handlers used this name.
+// v0.4.13 compatibility: older profile-photo handlers used this name.
 async function compressArchiveImage(file){
   return archiveImageFileToBlob(file);
 }
@@ -1153,10 +1153,29 @@ async function uploadArchivistProfileImage(p,file){
   if(state.member?.role!=='chief')throw new Error('최고기록관리자만 기록관 프로필 사진을 변경할 수 있어.');
   const blob=await archiveImageFileToBlob(file);
   const path=archivistProfileImagePath(p);
+
+  // Storage는 만료되었거나 시계 오차가 있는 JWT를 400으로도 거절할 수 있다.
+  // 업로드 직전에 refresh token으로 새 access token을 받아 항상 최신 토큰을 사용한다.
+  if(state.session?.refresh_token){
+    const ok=await refreshSession();
+    if(!ok)throw new Error('로그인 세션이 만료됐어. 다시 로그인해줘.');
+  }
+
   const doUpload=()=>fetch(`${SUPABASE_URL}/storage/v1/object/plang-archive-images/${encodeStoragePath(path)}`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+state.session.access_token,'Content-Type':blob.type||'image/webp','x-upsert':'true'},body:blob});
   let res=await doUpload();
-  if(res.status===401&&state.session?.refresh_token){const ok=await refreshSession();if(ok)res=await doUpload()}
-  if(!res.ok){let msg='프로필 사진 업로드에 실패했어.';try{const d=await res.json();msg=d.message||d.error||msg}catch(e){}throw new Error(msg)}
+
+  // Supabase Storage의 JWT 시간 검증 오류는 환경에 따라 400/401로 올 수 있으므로
+  // 응답 본문까지 확인한 뒤 한 번 더 갱신/재시도한다.
+  if(!res.ok){
+    let firstMsg='';
+    try{const d=await res.clone().json();firstMsg=String(d.message||d.error||d.error_description||'')}catch(e){}
+    const authProblem=res.status===401||/claim|jwt|token|timestamp|exp/i.test(firstMsg);
+    if(authProblem&&state.session?.refresh_token){
+      const ok=await refreshSession();
+      if(ok)res=await doUpload();
+    }
+  }
+  if(!res.ok){let msg='프로필 사진 업로드에 실패했어.';try{const d=await res.json();msg=d.message||d.error||d.error_description||msg}catch(e){}throw new Error(msg)}
   return path;
 }
 function documentsByArchivist(p){
