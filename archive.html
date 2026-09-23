@@ -1095,6 +1095,14 @@ async function sendArchiveChat(){
 }
 const ARCHIVIST_PROFILES=[
   {
+    key:'seon',code:'ARC-A2-S31E08',name:'세온',state:'현재 활동 중',rank:'2급 기록관',species:'인간',
+    age:'286세',apparent:'27세',origin:'루메아 인터월드 · 에르딘 자유도시연합',height:'미설정',
+    appearance:'27세 당시의 외형이 기록의 모신에게서 빌린 신성의 영향으로 고정되었다.',
+    note:'본명 시엘 로엔(Siel Roen). 27세에 기록의 모신에게 선택되어 기록관이 되었으며, 기록관 경력은 259년. 기록관이 되기 전에는 지도 제작자 겸 여행기 작가로 활동했다.',
+    personality:'평소에는 말이 많고 장난스러운 편이지만 기록 검증에는 집요하다. 모르는 것은 모른다고 적고, 추측은 반드시 추측으로 구분한다.',
+    relation:'서로 다른 기록의 연결 관계를 찾고 관련 문서를 주석으로 엮는 데 관심이 많다. 사소한 오류나 연결고리도 그냥 넘기지 않고 직접 현장까지 찾아가는 성향이 있다. 아스트라와 약 250년간 동시대에 활동하며 그의 기록 방식에 영향을 받았고, 나스아는 세온보다 오래 활동한 선배 기록관이다.'
+  },
+  {
     key:'nasua',code:'ARC-A1-D19F72',name:'나스아',state:'현재 활동 중',rank:'1급 기록관',species:'인간',
     age:'412세',apparent:'약 23세',origin:'테스티아 인터월드 · 마그누스 제국',height:'183 cm',
     appearance:'여성 · 진한 갈색 장단발 · 갈색에 가까운 녹색 눈',
@@ -1116,7 +1124,7 @@ function documentsByArchivist(p){
     const byProfile=d.lore_author_profile_id&&profileById(d.lore_author_profile_id);
     const code=byProfile?.archivist_code||'';
     const name=String(d.lore_author_name||'');
-    return code===p.code||name.includes(p.code)||name.includes(p.name)|| (p.key==='astra'&&name.includes('아스트라')) || (p.key==='nasua'&&name.includes('나스아'));
+    return code===p.code||name.includes(p.code)||name.includes(p.name)|| (p.key==='astra'&&name.includes('아스트라')) || (p.key==='nasua'&&name.includes('나스아')) || (p.key==='seon'&&name.includes('세온'));
   });
 }
 function renderArchivistDetail(key){
