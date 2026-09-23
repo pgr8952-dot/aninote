@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PLANK ARCHIVE v0.4.6</title>
+<title>PLANK ARCHIVE v0.4.12</title>
 <style>
 :root {
   --bg: #0b0f14;
@@ -564,6 +564,12 @@ async function archiveImageFileToBlob(file){
     return blob;
   }finally{URL.revokeObjectURL(url)}
 }
+
+// v0.4.12 compatibility: older profile-photo handlers used this name.
+async function compressArchiveImage(file){
+  return archiveImageFileToBlob(file);
+}
+
 function encodeStoragePath(path=''){return String(path).split('/').map(encodeURIComponent).join('/')}
 async function uploadArchiveImage(documentId,blob){
   if(!documentId||!blob)throw new Error('이미지 업로드 정보가 부족해.');
