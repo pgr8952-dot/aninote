@@ -262,6 +262,33 @@ body.sidebar-lock{overflow:hidden}
 @media(max-width:820px){.comms-grid{grid-template-columns:1fr}.chat-panel{min-height:480px;max-height:none}.archive-chat-msg{max-width:90%}}
 @media(max-width:560px){.chat-compose{grid-template-columns:1fr}.archive-chat-msg{max-width:94%}}
 
+
+/* ===== v0.4.9 · 기록관 프로필 디렉터리 ===== */
+.archivist-directory{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:14px}
+.archivist-profile-card{overflow:hidden;padding:0;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.archivist-profile-card:hover{transform:translateY(-2px);border-color:rgba(199,169,106,.5);box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.archivist-photo{aspect-ratio:4/3;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(199,169,106,.08));display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.archivist-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.archivist-photo-placeholder{font-family:Georgia,serif;font-size:54px;letter-spacing:.08em;color:rgba(199,169,106,.55)}
+.archivist-card-body{padding:15px 16px 17px}
+.archivist-card-name{font-size:20px;font-weight:800;margin-bottom:9px}
+.archivist-card-facts{display:flex;flex-wrap:wrap;gap:7px}
+.archivist-state{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted)}
+.archivist-detail-head{display:grid;grid-template-columns:minmax(190px,300px) 1fr;gap:24px;align-items:start;margin-top:20px}
+.archivist-detail-photo{overflow:hidden;padding:0;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(199,169,106,.08))}
+.archivist-detail-photo img{width:100%;height:100%;object-fit:cover}
+.archivist-detail-info{padding:20px}
+.archivist-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 22px;margin-top:18px}
+.archivist-detail-item span{display:block;font-size:11px;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.archivist-detail-text{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);line-height:1.75}
+.archivist-record-list{display:grid;gap:10px;margin-top:12px}
+.archivist-record{padding:14px 16px;cursor:pointer}
+.archivist-record:hover{border-color:rgba(199,169,106,.45)}
+.archivist-record-title{font-weight:750}
+.archivist-record-meta{font-size:12px;color:var(--muted);margin-top:5px}
+.archivist-back{margin-bottom:14px}
+@media(max-width:720px){.archivist-directory{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.archivist-card-body{padding:12px}.archivist-card-name{font-size:17px}.archivist-detail-head{grid-template-columns:1fr}.archivist-detail-photo{max-height:430px}.archivist-detail-grid{grid-template-columns:1fr}.archivist-photo-placeholder{font-size:38px}}
+
 </style>
 </head>
 <body>
@@ -1069,31 +1096,51 @@ async function sendArchiveChat(){
   }catch(e){if(st){st.textContent=e.message;st.className='status-msg error';}}
   finally{if(btn)btn.disabled=false;input.focus();}
 }
+const ARCHIVIST_PROFILES=[
+  {
+    key:'nasua',code:'ARC-A1-D19F72',name:'나스아',state:'현재 활동 중',rank:'1급 기록관',species:'인간',
+    age:'412세',apparent:'약 23세',origin:'테스티아 인터월드 · 마그누스 제국',height:'183 cm',
+    appearance:'여성 · 진한 갈색 장단발 · 갈색에 가까운 녹색 눈',photo:'',
+    note:'23세에 기록의 모신에게 선택받아 기록관이 되었으며, 모신에게 신격을 빌린 뒤 당시의 외형이 고정되었다. 기록관 경력은 약 390년.',
+    personality:'평소에는 차분한 편이며, 가까워진 사람 앞에서는 조금씩 긴장이 풀리고 편한 모습을 보인다.',
+    relation:'기록관이 된 직후 프로미아시에서 아스트라 기록관에게 기록 업무를 배웠다. 약 390년 동안 아스트라를 따랐으며, 그의 사망 이후 사건 조사에 참여했다.'
+  },
+  {
+    key:'astra',code:'ARC-A2-A57A01',name:'아스트라 맥스',state:'활동 종료 · 사망',rank:'2급 기록관',species:'비잔티움성인',
+    age:'향년 30,249세',apparent:'젊은 외형',origin:'매니움 인터월드 · 중앙부 비잔티움',height:'약 160 cm',
+    appearance:'남성 · 검은 머리 · 젊고 온화한 인상',photo:'',
+    note:'4213.08.12 사망. 방대한 지식과 오랜 기록 경력을 지녔으며, 사건뿐 아니라 그 시대의 일상과 분위기까지 함께 남기는 기록을 중시했다.',
+    personality:'온화하고 다정하며 후배를 잘 챙겼다. 사실성과 출처에는 엄격했지만 기록이 지나치게 건조해지는 것은 좋아하지 않았다.',
+    relation:'마지막 주요 기록은 4213.08.04 작성. 이후에도 사망 전까지 여러 소규모 기록을 남겼다.'
+  }
+];
+function archivistInitial(p){return (p.name||'?').replace(/\s+/g,'').slice(0,1)}
+function archivistPhotoHTML(p,detail=false){return p.photo?`<img src="${escapeHTML(p.photo)}" alt="${escapeHTML(p.name)}">`:`<div class="archivist-photo-placeholder">${escapeHTML(archivistInitial(p))}</div>`}
+function documentsByArchivist(p){
+  return (state.documents||[]).filter(d=>{
+    const byProfile=d.lore_author_profile_id&&profileById(d.lore_author_profile_id);
+    const code=byProfile?.archivist_code||'';
+    const name=String(d.lore_author_name||'');
+    return code===p.code||name.includes(p.code)||name.includes(p.name)|| (p.key==='astra'&&name.includes('아스트라')) || (p.key==='nasua'&&name.includes('나스아'));
+  });
+}
+function renderArchivistDetail(key){
+  stopCommsPolling();
+  const p=ARCHIVIST_PROFILES.find(x=>x.key===key);if(!p)return renderArchivists();
+  const docs=documentsByArchivist(p);
+  const records=docs.length?docs.map(d=>`<article class="panel archivist-record" data-doc="${escapeHTML(d.id)}"><div class="eyebrow">${escapeHTML(d.archive_code||'ARCHIVE RECORD')}</div><div class="archivist-record-title">${escapeHTML(d.title)}</div><div class="archivist-record-meta">${escapeHTML(loreDateLabel(d.lore_year,d.lore_month,d.lore_day))}${d.summary?` · ${escapeHTML(d.summary)}`:''}</div></article>`).join(''):'<div class="empty-small">현재 연결된 기록이 없습니다.</div>';
+  $('#crumbs').textContent=`ARCHIVE / ARCHIVISTS / ${p.code}`;
+  $('#view').innerHTML=`<div class="page"><button id="archivistBack" class="small-btn archivist-back" type="button">← 기록관 목록</button><div class="page-head"><div class="eyebrow">${escapeHTML(p.code)}</div><h1>${escapeHTML(p.name)}</h1><div class="subtitle">${escapeHTML(p.state)} · ${escapeHTML(p.rank)}</div></div><div class="archivist-detail-head"><div class="panel archivist-detail-photo">${archivistPhotoHTML(p,true)}</div><section class="panel archivist-detail-info"><div class="archivist-card-facts"><span class="tag">${escapeHTML(p.rank)}</span><span class="archivist-state">${escapeHTML(p.state)}</span></div><div class="archivist-detail-grid"><div class="archivist-detail-item"><span>종족</span><b>${escapeHTML(p.species)}</b></div><div class="archivist-detail-item"><span>출신</span><b>${escapeHTML(p.origin)}</b></div><div class="archivist-detail-item"><span>실제 나이</span><b>${escapeHTML(p.age)}</b></div><div class="archivist-detail-item"><span>외형 나이</span><b>${escapeHTML(p.apparent)}</b></div><div class="archivist-detail-item"><span>신장</span><b>${escapeHTML(p.height)}</b></div><div class="archivist-detail-item"><span>외형</span><b>${escapeHTML(p.appearance)}</b></div></div><div class="archivist-detail-text"><b>프로필</b><br>${escapeHTML(p.note)}</div><div class="archivist-detail-text"><b>성격</b><br>${escapeHTML(p.personality)}</div><div class="archivist-detail-text"><b>관련 사항</b><br>${escapeHTML(p.relation)}</div></section></div><section style="margin-top:28px"><div class="eyebrow">AUTHORED RECORDS</div><h2 style="margin-top:5px">이 기록관이 남긴 기록</h2><div class="archivist-record-list">${records}</div></section></div>`;
+  $('#archivistBack').onclick=renderArchivists;wireDocClicks($('#view'));
+}
 function renderArchivists(){
   stopCommsPolling();
-  const profiles=[
-    {
-      code:'ARC-A1-D19F72', name:'나스아', state:'현재 활동 중', rank:'1급 기록관', species:'인간',
-      age:'412세', apparent:'약 23세', origin:'테스티아 인터월드 · 마그누스 제국',
-      appearance:'여성 · 183 cm · 진한 갈색 장단발 · 갈색에 가까운 녹색 눈',
-      note:'23세에 기록의 모신에게 선택받아 기록관이 되었으며, 모신에게 신격을 빌린 뒤 당시의 외형이 고정되었다.',
-      personality:'평소에는 차분한 편이며, 가까워진 사람 앞에서는 조금씩 긴장이 풀리고 편한 모습을 보인다.',
-      relation:'아스트라 기록관의 후배. 아스트라 사망 사건의 조사 및 기록을 담당했다.'
-    },
-    {
-      code:'ARC-A2-A57A01', name:'아스트라', state:'활동 종료 · 사망', rank:'2급 기록관', species:'비잔티움성인',
-      age:'향년 30,249세', apparent:'젊은 외형', origin:'매니움 인터월드 · 중앙부 비잔티움',
-      appearance:'남성 · 약 160 cm · 검은 머리 · 젊고 온화한 인상',
-      note:'4213.08.12 사망. 방대한 지식과 오랜 기록 경력을 지녔으며, 사건뿐 아니라 그 시대의 일상과 분위기까지 함께 남기는 기록을 중시했다.',
-      personality:'온화하고 다정하며 후배를 잘 챙겼다. 사실성과 출처에는 엄격했지만 기록이 지나치게 건조해지는 것은 좋아하지 않았다.',
-      relation:'마지막 주요 기록은 4213.08.04 작성. 이후 남긴 여러 소규모 기록이 존재한다.'
-    }
-  ];
-  const active=profiles.filter(x=>x.state==='현재 활동 중');
-  const past=profiles.filter(x=>x.state!=='현재 활동 중');
-  const card=p=>`<article class="panel" style="padding:18px;margin:0 0 14px"><div class="eyebrow">${escapeHTML(p.code)}</div><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-top:5px"><div><h2 style="margin:0 0 5px">${escapeHTML(p.name)}</h2><div class="meta">${escapeHTML(p.rank)} · ${escapeHTML(p.species)}</div></div><span class="tag">${escapeHTML(p.state)}</span></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px 18px;margin-top:16px"><div><b>실제 나이</b><div class="meta">${escapeHTML(p.age)}</div></div><div><b>외형 나이</b><div class="meta">${escapeHTML(p.apparent)}</div></div><div><b>출신</b><div class="meta">${escapeHTML(p.origin)}</div></div><div><b>외형</b><div class="meta">${escapeHTML(p.appearance)}</div></div></div><div style="margin-top:16px;line-height:1.75">${escapeHTML(p.note)}</div><div style="margin-top:10px;line-height:1.75"><b>성격</b><br>${escapeHTML(p.personality)}</div><div style="margin-top:10px;line-height:1.75"><b>관련 기록</b><br>${escapeHTML(p.relation)}</div></article>`;
+  const active=ARCHIVIST_PROFILES.filter(x=>x.state==='현재 활동 중');
+  const past=ARCHIVIST_PROFILES.filter(x=>x.state!=='현재 활동 중');
+  const card=p=>`<article class="panel archivist-profile-card" data-archivist="${escapeHTML(p.key)}"><div class="archivist-photo">${archivistPhotoHTML(p)}</div><div class="archivist-card-body"><div class="archivist-card-name">${escapeHTML(p.name)}</div><div class="archivist-card-facts"><span class="archivist-state">${escapeHTML(p.state)}</span><span class="tag">${escapeHTML(p.rank)}</span></div></div></article>`;
   $('#crumbs').textContent='ARCHIVE / ARCHIVISTS';
-  $('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">ARCHIVIST DIRECTORY</div><h1>기록관 프로필</h1><div class="subtitle">기록의 모신에게 선택되어 활동한 기록관들의 명부입니다. 현재 활동 중인 기록관과 역대 기록관의 정보를 확인할 수 있습니다.</div></div><section style="margin-top:22px"><h3>현재 활동 중</h3>${active.map(card).join('')}</section><section style="margin-top:28px"><h3>역대 기록관</h3>${past.map(card).join('')}</section></div>`;
+  $('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">ARCHIVIST DIRECTORY</div><h1>기록관 프로필</h1><div class="subtitle">기록의 모신에게 선택되어 활동한 기록관들의 명부입니다. 프로필을 선택하면 상세 정보와 해당 기록관이 남긴 기록을 확인할 수 있습니다.</div></div><section style="margin-top:22px"><h3>현재 활동 중</h3><div class="archivist-directory">${active.map(card).join('')}</div></section><section style="margin-top:30px"><h3>역대 기록관</h3><div class="archivist-directory">${past.map(card).join('')}</div></section></div>`;
+  $$('[data-archivist]').forEach(el=>el.onclick=()=>renderArchivistDetail(el.dataset.archivist));
 }
 
 async function renderComms(){
