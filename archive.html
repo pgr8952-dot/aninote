@@ -294,6 +294,7 @@ body.sidebar-lock{overflow:hidden}
       <button data-route="random" class="nav-item">⤨ <span>무작위 기록</span></button>
       <button id="createDocNav" data-route="create" class="nav-item hidden">＋ <span>기록 작성</span></button>
       <button id="commsNav" data-route="comms" class="nav-item">● <span>접속자 · 통신</span></button>
+      <button id="archivistsNav" data-route="archivists" class="nav-item">◉ <span>기록관 프로필</span></button>
       <div class="nav-label">분류</div>
       <button data-category="WORLD" class="nav-item">◈ <span>세계</span></button><button data-category="ENTITY" class="nav-item">◎ <span>존재</span></button><button data-category="LOCATION" class="nav-item">⌖ <span>장소</span></button><button data-category="EVENT" class="nav-item">◇ <span>사건</span></button><button data-category="OBJECT" class="nav-item">□ <span>물품</span></button><button data-category="ORGANIZATION" class="nav-item">▦ <span>조직</span></button><button data-category="CONCEPT" class="nav-item">∞ <span>개념</span></button><button data-category="PHENOMENON" class="nav-item">⌁ <span>현상</span></button><button data-category="DOCUMENT" class="nav-item">≡ <span>문서</span></button>
     </nav>
@@ -1068,6 +1069,33 @@ async function sendArchiveChat(){
   }catch(e){if(st){st.textContent=e.message;st.className='status-msg error';}}
   finally{if(btn)btn.disabled=false;input.focus();}
 }
+function renderArchivists(){
+  stopCommsPolling();
+  const profiles=[
+    {
+      code:'ARC-A1-D19F72', name:'나스아', state:'현재 활동 중', rank:'1급 기록관', species:'인간',
+      age:'412세', apparent:'약 23세', origin:'테스티아 인터월드 · 마그누스 제국',
+      appearance:'여성 · 183 cm · 진한 갈색 장단발 · 갈색에 가까운 녹색 눈',
+      note:'23세에 기록의 모신에게 선택받아 기록관이 되었으며, 모신에게 신격을 빌린 뒤 당시의 외형이 고정되었다.',
+      personality:'평소에는 차분한 편이며, 가까워진 사람 앞에서는 조금씩 긴장이 풀리고 편한 모습을 보인다.',
+      relation:'아스트라 기록관의 후배. 아스트라 사망 사건의 조사 및 기록을 담당했다.'
+    },
+    {
+      code:'ARC-A2-A57A01', name:'아스트라', state:'활동 종료 · 사망', rank:'2급 기록관', species:'비잔티움성인',
+      age:'향년 30,249세', apparent:'젊은 외형', origin:'매니움 인터월드 · 중앙부 비잔티움',
+      appearance:'남성 · 약 160 cm · 검은 머리 · 젊고 온화한 인상',
+      note:'4213.08.12 사망. 방대한 지식과 오랜 기록 경력을 지녔으며, 사건뿐 아니라 그 시대의 일상과 분위기까지 함께 남기는 기록을 중시했다.',
+      personality:'온화하고 다정하며 후배를 잘 챙겼다. 사실성과 출처에는 엄격했지만 기록이 지나치게 건조해지는 것은 좋아하지 않았다.',
+      relation:'마지막 주요 기록은 4213.08.04 작성. 이후 남긴 여러 소규모 기록이 존재한다.'
+    }
+  ];
+  const active=profiles.filter(x=>x.state==='현재 활동 중');
+  const past=profiles.filter(x=>x.state!=='현재 활동 중');
+  const card=p=>`<article class="panel" style="padding:18px;margin:0 0 14px"><div class="eyebrow">${escapeHTML(p.code)}</div><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-top:5px"><div><h2 style="margin:0 0 5px">${escapeHTML(p.name)}</h2><div class="meta">${escapeHTML(p.rank)} · ${escapeHTML(p.species)}</div></div><span class="tag">${escapeHTML(p.state)}</span></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px 18px;margin-top:16px"><div><b>실제 나이</b><div class="meta">${escapeHTML(p.age)}</div></div><div><b>외형 나이</b><div class="meta">${escapeHTML(p.apparent)}</div></div><div><b>출신</b><div class="meta">${escapeHTML(p.origin)}</div></div><div><b>외형</b><div class="meta">${escapeHTML(p.appearance)}</div></div></div><div style="margin-top:16px;line-height:1.75">${escapeHTML(p.note)}</div><div style="margin-top:10px;line-height:1.75"><b>성격</b><br>${escapeHTML(p.personality)}</div><div style="margin-top:10px;line-height:1.75"><b>관련 기록</b><br>${escapeHTML(p.relation)}</div></article>`;
+  $('#crumbs').textContent='ARCHIVE / ARCHIVISTS';
+  $('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">ARCHIVIST DIRECTORY</div><h1>기록관 프로필</h1><div class="subtitle">기록의 모신에게 선택되어 활동한 기록관들의 명부입니다. 현재 활동 중인 기록관과 역대 기록관의 정보를 확인할 수 있습니다.</div></div><section style="margin-top:22px"><h3>현재 활동 중</h3>${active.map(card).join('')}</section><section style="margin-top:28px"><h3>역대 기록관</h3>${past.map(card).join('')}</section></div>`;
+}
+
 async function renderComms(){
   if(!state.member)return showDenied();
   state.route='comms';setCrumb('COMMUNICATION');
@@ -1188,7 +1216,7 @@ async function importMarkdownDraft(){
 async function updateSuggestedCode(){const cat=$('#docCategory')?.value;if(!cat)return;try{const codes=await restQuery('archive_documents',`select=archive_code&category=eq.${encodeURIComponent(cat)}`);const prefix=`PA-${categoryPrefixes[cat]}-`;let max=0;(codes||[]).forEach(x=>{const m=String(x.archive_code).match(/(\d{4})$/);if(m)max=Math.max(max,Number(m[1]))});$('#docCode').value=prefix+String(max+1).padStart(4,'0')}catch(e){$('#docCode').value=`PA-${categoryPrefixes[cat]}-0001`}}
 async function createDocument(e){e.preventDefault();const st=$('#createStatus');st.textContent='기록 등록 중...';st.className='status-msg';const level=Number($('#docLevel').value);const payload={archive_code:$('#docCode').value.trim().toUpperCase(),title:$('#docTitle').value.trim(),title_en:$('#docTitleEn').value.trim()||null,category:$('#docCategory').value,access_class:level===0?'public':'restricted',min_access_level:level,record_status:$('#docStatus').value,summary:$('#docSummary').value.trim(),primary_world:$('#docWorld').value.trim()||null};try{if(state.member.role==='chief'){const author=readLoreAuthor('docLoreAuthor','docLoreAuthorCustom'),date=readLoreDate('docLore');validateLoreAuthorDate(author,date);Object.assign(payload,{lore_author_profile_id:author.profile_id,lore_author_name:author.name,lore_year:date.year,lore_month:date.month,lore_day:date.day})}const rows=await restInsert('archive_documents',payload);const d=rows[0];const body=$('#docBody').value.trim();if(body)await restInsert('archive_document_sections',{document_id:d.id,heading:'개요',body,sort_order:10,min_access_level:level});await restInsert('archive_document_revisions',{document_id:d.id,change_summary:'문서 생성',snapshot:payload});await loadDocuments();st.textContent='등록 완료';st.className='status-msg ok';setTimeout(()=>openDocument(d.id),250)}catch(err){st.textContent=loreErrorMessage(err);st.className='status-msg error'}}
 async function syncNow(){const btn=$('#refreshBtn');btn.textContent='동기화 중…';try{await loadMember();if(!state.member)return showDenied();await Promise.all([loadDocuments(),loadMemberLabels()]);applyMemberUI();renderHome()}catch(e){alert('동기화 실패: '+e.message)}finally{btn.textContent='동기화'}}
-function route(name){closeMobileSidebar();if(name!=='comms')stopCommsPolling();state.route=name;$$('.nav-item').forEach(x=>x.classList.remove('active'));const active=document.querySelector(`[data-route="${name}"]`);if(active)active.classList.add('active');if(name==='home')renderHome();else if(name==='recent')renderRecent();else if(name==='random'){if(state.documents.length)openDocument(state.documents[Math.floor(Math.random()*state.documents.length)].id);else renderHome()}else if(name==='create')renderCreate();else if(name==='comms')renderComms()}
+function route(name){closeMobileSidebar();if(name!=='comms')stopCommsPolling();state.route=name;$$('.nav-item').forEach(x=>x.classList.remove('active'));const active=document.querySelector(`[data-route="${name}"]`);if(active)active.classList.add('active');if(name==='home')renderHome();else if(name==='recent')renderRecent();else if(name==='random'){if(state.documents.length)openDocument(state.documents[Math.floor(Math.random()*state.documents.length)].id);else renderHome()}else if(name==='create')renderCreate();else if(name==='comms')renderComms();else if(name==='archivists')renderArchivists()}
 $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();if(state.busy)return;state.busy=true;$('#loginBtn').disabled=true;setLoginStatus('계정 인증 중...');try{await signIn($('#email').value.trim(),$('#password').value);await loadMember();if(!state.member){showDenied();return}await Promise.all([loadDocuments(),loadMemberLabels()]);$('#loginScreen').classList.add('hidden');$('#app').classList.remove('hidden');applyMemberUI();renderHome()}catch(err){console.error(err);saveSession(null);setLoginStatus(err.message||'로그인에 실패했습니다.','error')}finally{state.busy=false;$('#loginBtn').disabled=false}});
 $$('[data-route]').forEach(b=>b.addEventListener('click',()=>route(b.dataset.route)));$$('[data-category]').forEach(b=>b.addEventListener('click',()=>renderCategory(b.dataset.category)));$('#profileBtn').onclick=()=>{closeMobileSidebar();renderProfile()};$('#logoutBtn').onclick=signOut;$('#refreshBtn').onclick=syncNow;
 $('#mobileMenuBtn').onclick=toggleMobileSidebar;$('#sidebarOverlay').onclick=closeMobileSidebar;window.addEventListener('resize',()=>{if(innerWidth>620)closeMobileSidebar()});
