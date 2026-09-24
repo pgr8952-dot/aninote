@@ -997,8 +997,7 @@ async function renderProfile(){
     pendingPanel=`<div class="panel wide">
       <h3 class="profile-section-title">손님 열람 승인 대기</h3>
       <div class="help-copy">자신이 초대한 손님의 요청만 승인할 수 있습니다. 최고기록관리자는 모든 요청을 처리할 수 있습니다. 기록관은 자신의 등급 이하 기록만 승인할 수 있습니다.</div>
-      <div id="pendingAccessList">${rows.length?rows.map(r=>`<div class="request-row"><div class="request-main"><div class="request-title">${escapeHTML(r.requester_code)} → ${escapeHTML(r.archive_code)} · ${escapeHTML(r.title)}</div><div class="request-sub">제한 ${r.level}급 · 요청 ${escapeHTML(fmtDate(r.requested_at))} · 손님 권한 ${escapeHTML(fmtDate(r.guest_expires_at))}까지</div></div><div class="action-row" style="margin:0"><button class="mini-btn ok" data-resolve-access="${r.id}" data-approve="1">허가</button><button class="mini-btn danger" data-resolve-access="${r.id}" data-approve="0">거절</button></div></div>`).join(''):'<div class="empty-small">대기 중인 열람 요청이 없습니다.</div>'}</div>
-    </div>`;
+      <div id="pendingAccessList">${rows.length?rows.map(r=>`<div class="request-row"><div class="request-main"><div class="request-title">${escapeHTML(r.requester_code)} → ${escapeHTML(r.archive_code)} · ${escapeHTML(r.title)}</div><div class="request-sub">제한 ${r.level}급 · 요청 ${escapeHTML(fmtDate(r.requested_at))} · 손님 권한 ${escapeHTML(fmtDate(r.guest_expires_at))}까지</div></div><div class="action-row" style="margin:0"><button class="mini-btn ok" data-resolve-access="${r.id}" data-approve="1">허가</button><button class="mini-btn danger" data-resolve-access="${r.id}" data-approve="0">거절</button></div></div>`).join(''):'<div class="empty-small">대기 중인 열람 요청이 없습니다.</div>'}</div></div>`;
   }
 
   let chiefPanel='';
@@ -1095,20 +1094,12 @@ async function sendArchiveChat(){
 }
 const ARCHIVIST_PROFILES=[
   {
-    key:'seon',code:'ARC-A2-S31E08',name:'세온',state:'현재 활동 중',rank:'2급 기록관',species:'인간',
-    age:'286세',apparent:'27세',origin:'루메아 인터월드 · 에르딘 자유도시연합',height:'미설정',
-    appearance:'27세 당시의 외형이 기록의 모신에게서 빌린 신성의 영향으로 고정되었다.',
-    note:'본명 시엘 로엔(Siel Roen). 27세에 기록의 모신에게 선택되어 기록관이 되었으며, 기록관 경력은 259년. 기록관이 되기 전에는 지도 제작자 겸 여행기 작가로 활동했다.',
-    personality:'평소에는 말이 많고 장난스러운 편이지만 기록 검증에는 집요하다. 모르는 것은 모른다고 적고, 추측은 반드시 추측으로 구분한다.',
-    relation:'서로 다른 기록의 연결 관계를 찾고 관련 문서를 주석으로 엮는 데 관심이 많다. 사소한 오류나 연결고리도 그냥 넘기지 않고 직접 현장까지 찾아가는 성향이 있다. 아스트라와 약 250년간 동시대에 활동하며 그의 기록 방식에 영향을 받았고, 나스아는 세온보다 오래 활동한 선배 기록관이다.'
-  },
-  {
-    key:'nasua',code:'ARC-A1-D19F72',name:'나스아',state:'현재 활동 중',rank:'1급 기록관',species:'인간',
-    age:'412세',apparent:'약 23세',origin:'테스티아 인터월드 · 마그누스 제국',height:'183 cm',
-    appearance:'여성 · 진한 갈색 장단발 · 갈색에 가까운 녹색 눈',
-    note:'23세에 기록의 모신에게 선택받아 기록관이 되었으며, 모신에게 신격을 빌린 뒤 당시의 외형이 고정되었다. 기록관 경력은 약 390년.',
-    personality:'평소에는 차분한 편이며, 가까워진 사람 앞에서는 조금씩 긴장이 풀리고 편한 모습을 보인다.',
-    relation:'기록관이 된 직후 프로미아시에서 아스트라 기록관에게 기록 업무를 배웠다. 약 390년 동안 아스트라를 따랐으며, 그의 사망 이후 사건 조사에 참여했다.'
+    key:'ryo',code:'ARC-C3-B07F44',name:'료',state:'현재 활동 중',rank:'최고기록관리자',species:'미기록',
+    age:'미기록',apparent:'미기록',origin:'미기록',height:'미기록',
+    appearance:'미기록',
+    note:'PLANK ARCHIVE의 최고기록관리자. 일반 기록관 등급 체계 바깥의 관리직으로, 아카이브 전체의 기록과 운영을 총괄한다.',
+    personality:'세부 성격 기록은 아직 등록되지 않았다.',
+    relation:'주요 기록관 7인의 한 명이며 최고기록관리자 권한 코드 C3를 사용한다.'
   },
   {
     key:'astra',code:'ARC-A2-A57A01',name:'아스트라 맥스',state:'활동 종료 · 사망',rank:'2급 기록관',species:'비잔티움성인',
@@ -1116,7 +1107,47 @@ const ARCHIVIST_PROFILES=[
     appearance:'남성 · 검은 머리 · 젊고 온화한 인상',
     note:'4213.08.12 사망. 방대한 지식과 오랜 기록 경력을 지녔으며, 사건뿐 아니라 그 시대의 일상과 분위기까지 함께 남기는 기록을 중시했다.',
     personality:'온화하고 다정하며 후배를 잘 챙겼다. 사실성과 출처에는 엄격했지만 기록이 지나치게 건조해지는 것은 좋아하지 않았다.',
-    relation:'마지막 주요 기록은 4213.08.04 작성. 이후에도 사망 전까지 여러 소규모 기록을 남겼다.'
+    relation:'나스아의 스승. 마지막 주요 기록은 4213.08.04 작성했으며 사망 전까지 여러 소규모 기록을 남겼다.'
+  },
+  {
+    key:'nasua',code:'ARC-A1-D19F72',name:'나스아',state:'현재 활동 중',rank:'1급 기록관',species:'인간',
+    age:'412세',apparent:'약 23세',origin:'테스티아 인터월드 · 마그누스 제국',height:'183 cm',
+    appearance:'여성 · 진한 갈색 장단발 · 갈색에 가까운 녹색 눈',
+    note:'23세에 기록의 모신에게 선택받아 기록관이 되었으며, 모신에게 신격을 빌린 뒤 당시의 외형이 고정되었다. 기록관 경력은 약 390년.',
+    personality:'평소에는 차분한 편이며, 가까워진 사람 앞에서는 조금씩 긴장이 풀리고 편한 모습을 보인다.',
+    relation:'기록관이 된 직후 프로미아시에서 아스트라에게 기록 업무를 배웠다. 약 390년 동안 아스트라를 따랐으며 그의 사망 이후 사건 조사에도 참여했다.'
+  },
+  {
+    key:'seon',code:'ARC-A2-S31E08',name:'세온',state:'현재 활동 중',rank:'2급 기록관',species:'인간',
+    age:'286세',apparent:'약 27세',origin:'루메아 인터월드 · 에르딘 자유도시연합',height:'미기록',
+    appearance:'인간형 · 기록관이 된 27세의 외형이 유지됨',
+    note:'본명은 시엘 로엔(Siel Roen). 기록관 이전에는 지도 제작자이자 여행기 작가였으며, 기록관 경력은 259년이다. 기록 연결과 교차검증에 특히 강하다.',
+    personality:'말이 많고 장난도 치지만 기록 오류와 출처 불일치를 그냥 넘기지 않는다. 검증이 풀리지 않으면 직접 현장까지 확인하러 가는 집요한 성격.',
+    relation:'비교적 젊은 기록관이지만 많은 기록량과 검증 실적으로 빠르게 2급에 올랐다.'
+  },
+  {
+    key:'rian',code:'ARC-A1-R14E50',name:'리안',state:'현재 활동 중',rank:'1급 기록관',species:'엘프',
+    age:'50세',apparent:'고등학교 1학년 정도의 어린 외형',origin:'특별한 것이 거의 없는 시골 인터월드',height:'약 150 cm',
+    appearance:'여성 · 중성적인 귀염상 · 가슴까지 오는 백발 생머리와 연두빛 머리카락 · 연두색 눈 · 긴 정통 엘프귀 · 녹색 활동복 · 오른손목의 큰 금색 링 팔찌',
+    note:'14세에 기록관이 되어 경력 36년. 출신 인터월드의 엘프는 100세부터 성인으로 인정되기 때문에 현재도 한창 성장기인 사춘기 엘프다. 오른손목의 금팔찌는 부모님이 챙겨준 보호 아티팩트다.',
+    personality:'호기심이 많고 충동적이며 사고를 자주 치는 현장형 기록관. 사고를 치면서도 다른 기록관이 놓친 정보와 성과를 가져오는 경우가 많다.',
+    relation:'아카이브 선배 기록관들에게 거의 반쯤 길러졌으며, 평소에는 목이 늘어난 옷을 입고 다니지만 부모님이 챙겨준 녹색 활동복만큼은 단정하게 착용한다.'
+  },
+  {
+    key:'star_gaia',code:'ARC-A3-G00S04',name:'★★★★_★',state:'현재 활동 중',rank:'3급 기록관',species:'성운인',
+    age:'미기록',apparent:'인간형으로 형태를 잡을 때도 연령 판별 불가',origin:'미기록',height:'가변',
+    appearance:'무성 · 어두운 우주 같은 에너지체 · 몸 내부에 별과 성운이 떠다님 · 인간형 종족과 대화할 때 키 크고 가느다란 인간형 실루엣으로 변형 · 긴 성운 에너지 형태의 머리',
+    note:'본명은 스타 가이아(Star Gaia). 신격을 지닌 성운인으로, 정식 기록은 거의 남기지 않지만 아카이브 전역의 주석에서 매우 활발하게 활동한다. 몇 안 되는 정식 기록도 대부분 술에 취했거나 제정신이 아닐 때 끄적인 것이다.',
+    personality:'느긋하고 장난스러우며 오래된 사건에도 짧은 주석을 남기는 고인물. 필요할 때는 오래되고 깊은 시선을 드러낸다.',
+    relation:'옷과 가방은 사용하지 않는다. 필요한 기록도구와 물품은 모두 아공간에 보관했다가 즉시 꺼낸다.'
+  },
+  {
+    key:'m22c01',code:'ARC-A2-M22C01',name:'ARC-A2-M22C01',state:'현재 활동 중',rank:'2급 기록관',species:'M22 기계종',
+    age:'기원전 20년 제조',apparent:'해당 없음',origin:'미기록',height:'본체 비율 40 : 40 : 60',
+    appearance:'황동 직육면체형 기계종 · 주변을 떠다니는 큐브형 센서 · 수납형 팔 · 이온추진기 · 보조 무한궤도',
+    note:'원래 개체명은 존재했지만 현재는 아카이브 코드 자체를 이름이자 호칭으로 사용한다. 규정, 양식, 출처, 분류, 승인 절차를 정확히 준수하는 기록관.',
+    personality:'모든 일을 정해진 규정과 절차대로 처리한다. 감정의 유무와 관계없이 판단 기준을 명확한 규정과 기록 형식에 둔다.',
+    relation:'주 이동은 이온추진기이며 지상 보조 이동에는 무한궤도를 사용한다. 작업용 팔은 본체에 수납되며 복수의 부유 큐브 센서가 관측과 스캔을 담당한다.'
   }
 ];
 function documentsByArchivist(p){
@@ -1124,7 +1155,7 @@ function documentsByArchivist(p){
     const byProfile=d.lore_author_profile_id&&profileById(d.lore_author_profile_id);
     const code=byProfile?.archivist_code||'';
     const name=String(d.lore_author_name||'');
-    return code===p.code||name.includes(p.code)||name.includes(p.name)|| (p.key==='astra'&&name.includes('아스트라')) || (p.key==='nasua'&&name.includes('나스아')) || (p.key==='seon'&&name.includes('세온'));
+    return code===p.code||name.includes(p.code)||name.includes(p.name)|| (p.key==='astra'&&name.includes('아스트라')) || (p.key==='nasua'&&name.includes('나스아'));
   });
 }
 function renderArchivistDetail(key){
