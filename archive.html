@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PLANK ARCHIVE v0.4.30</title>
+<title>PLANK ARCHIVE v0.4.31</title>
 <style>
 :root {
   --bg: #0b0f14;
@@ -372,6 +372,19 @@ body.sidebar-lock{overflow:hidden}
 .world-folder-tools .small-btn{white-space:nowrap}
 .world-folder-empty-note{padding:12px 4px 4px;color:#74879e;font-size:11px;line-height:1.55}
 
+
+/* v0.4.31 · folder clearance */
+.world-folder-item.locked{border-color:rgba(255,78,92,.52);background:linear-gradient(180deg,rgba(54,18,24,.78),rgba(37,15,20,.88));color:#ff7d87;cursor:not-allowed}
+.world-folder-item.locked:hover{border-color:rgba(255,78,92,.72);background:linear-gradient(180deg,rgba(64,20,27,.82),rgba(43,16,22,.92))}
+.world-folder-item.locked .world-folder-icon,.world-folder-item.locked .world-folder-name{color:#ff737f}
+.world-folder-item.locked .world-folder-count{color:#ff737f}
+.world-folder-item.restricted:not(.locked){border-color:rgba(135,166,214,.27)}
+.world-folder-level{font-size:10px;color:#8ca4c1;white-space:nowrap}
+.world-folder-lock-btn{border-color:rgba(134,166,211,.28)!important}
+.world-folder-lock-btn.restricted{background:#1a2940!important;border-color:#6686b1!important;color:#dceaff!important}
+.world-folder-locked-view{padding:18px 14px;border:1px solid rgba(255,78,92,.5);border-radius:12px;background:rgba(48,16,22,.72);color:#ff8992;text-align:center;line-height:1.65}
+.world-folder-locked-view .lock-icon{display:block;font-size:28px;margin-bottom:7px}
+
 /* v0.4.30 · My Files style folder move mode */
 .world-folder-tools{justify-content:flex-start}
 .world-folder-tools .move-spacer{flex:1 1 auto}
@@ -584,7 +597,7 @@ function loreAuthorSelectHTML(selectId,customId,{profileId=null,name='',allowNon
 function bindLoreAuthorSelect(selectId,customId){const sel=$(`#${selectId}`),inp=$(`#${customId}`);if(!sel||!inp)return;const sync=()=>{inp.classList.toggle('hidden',sel.value!=='custom');if(sel.value==='custom')inp.focus()};sel.onchange=sync;sync()}
 function readLoreAuthor(selectId,customId,{allowNone=false}={}){const sel=$(`#${selectId}`);if(!sel)throw new Error('기록관 선택창을 찾을 수 없어.');const v=sel.value;if(v==='none'&&allowNone)return null;if(v==='self')return {profile_id:null,name:selfLoreAuthorName()};if(v==='unknown')return {profile_id:null,name:'기록관 미상'};if(v==='fixed:nasua')return {profile_id:null,name:'ARC-A1-D19F72 · 나스아 기록관'};if(v==='fixed:seon')return {profile_id:null,name:'ARC-A2-S31E08 · 세온 기록관'};if(v==='custom'){const name=$(`#${customId}`).value.trim();if(!name)throw new Error('기록관 이름을 입력해줘.');return {profile_id:null,name}}if(v.startsWith('profile:')){const id=v.slice(8),p=profileById(id);if(!p)throw new Error('선택한 기록관 정보를 찾을 수 없어.');return {profile_id:id,name:p.display_name,profile:p}}throw new Error('기록관을 선택해줘.')}
 function validateLoreAuthorDate(author,date){if(!author?.profile||!date)return;const p=author.profile,key=loreDateKey(date);if(p.activity_start_year){const start=loreDateKey({year:Number(p.activity_start_year),month:Number(p.activity_start_month),day:Number(p.activity_start_day)});if(key<start)throw new Error(`${p.display_name}의 활동 시작 이전 날짜야.`)}if(p.death_year){const death=loreDateKey({year:Number(p.death_year),month:Number(p.death_month),day:Number(p.death_day)});if(key>death)throw new Error(`${p.display_name}의 사망 이후 날짜에는 기록이나 주석을 남길 수 없어.`)}}
-function loreErrorMessage(err){const raw=String(err?.message||err||'');const map={ANNOTATION_BEFORE_DOCUMENT:'문서 작성일보다 앞선 날짜에는 주석을 남길 수 없어.',LORE_BEFORE_ARCHIVIST_ACTIVITY:'해당 기록관의 활동 시작 이전 날짜야.',LORE_AFTER_ARCHIVIST_DEATH:'해당 기록관의 사망 이후 날짜에는 작성할 수 없어.',LORE_DATE_INCOMPLETE:'년도·월·일을 모두 선택해줘.',LORE_DAY_INVALID:'존재하지 않는 날짜야.',LORE_AUTHOR_REQUIRED:'기록관을 선택하거나 이름을 입력해줘.',CHIEF_REQUIRED_FOR_LORE_METADATA:'과거 작성자와 날짜 지정은 최고기록관리자만 할 수 있어.',CHIEF_REQUIRED_FOR_LORE_ANNOTATION:'과거 기록관 명의 주석은 최고기록관리자만 등록할 수 있어.',VAULT_ALREADY_IMPORTED:'이미 동일한 Obsidian Vault ZIP을 이전한 기록이 있어. 기존 이전 배치를 롤백하거나 내용이 바뀐 ZIP으로 다시 시도해줘.'};for(const [k,v] of Object.entries(map))if(raw.includes(k))return v;return raw}
+function loreErrorMessage(err){const raw=String(err?.message||err||'');const map={ANNOTATION_BEFORE_DOCUMENT:'문서 작성일보다 앞선 날짜에는 주석을 남길 수 없어.',LORE_BEFORE_ARCHIVIST_ACTIVITY:'해당 기록관의 활동 시작 이전 날짜야.',LORE_AFTER_ARCHIVIST_DEATH:'해당 기록관의 사망 이후 날짜에는 작성할 수 없어.',LORE_DATE_INCOMPLETE:'년도·월·일을 모두 선택해줘.',LORE_DAY_INVALID:'존재하지 않는 날짜야.',LORE_AUTHOR_REQUIRED:'기록관을 선택하거나 이름을 입력해줘.',CHIEF_REQUIRED_FOR_LORE_METADATA:'과거 작성자와 날짜 지정은 최고기록관리자만 할 수 있어.',CHIEF_REQUIRED_FOR_LORE_ANNOTATION:'과거 기록관 명의 주석은 최고기록관리자만 등록할 수 있어.',VAULT_ALREADY_IMPORTED:'이미 동일한 Obsidian Vault ZIP을 이전한 기록이 있어. 기존 이전 배치를 롤백하거나 내용이 바뀐 ZIP으로 다시 시도해줘.',FOLDER_CLEARANCE_REQUIRED:'이 폴더를 열거나 수정할 권한이 부족해.',ACCESS_LEVEL_TOO_HIGH:'현재 계정 등급보다 높은 폴더 제한은 설정할 수 없어.',ACCESS_LEVEL_BELOW_PARENT:'상위 폴더보다 낮은 제한으로 설정할 수 없어.'};for(const [k,v] of Object.entries(map))if(raw.includes(k))return v;return raw}
 function textToHtml(v=''){return escapeHTML(v).split(/\n{2,}/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('')}
 function stripYamlValue(v=''){
   const t=String(v).trim();
@@ -958,7 +971,7 @@ async function loadDocuments(){
     restQuery('archive_document_aliases','select=document_id,alias'),
     restQuery('archive_document_tags','select=document_id,tag'),
     restQuery('archive_document_import_meta','select=document_id,source_path,source_format'),
-    restQuery('archive_world_folders','select=id,world_name,path,parent_path,name,sort_order,created_at,updated_at&order=world_name.asc,sort_order.asc,path.asc'),
+    restQuery('archive_world_folders','select=id,world_name,path,parent_path,name,sort_order,min_access_level,created_at,updated_at&order=world_name.asc,sort_order.asc,path.asc'),
     restQuery('archive_document_folders','select=document_id,folder_id,assigned_at')
   ]);
   const aliasMap=new Map(),tagMap=new Map(),importMap=new Map(),folderById=new Map(),assignmentMap=new Map();
@@ -1031,7 +1044,7 @@ function toggleMobileSidebar(){if($('.sidebar')?.classList.contains('mobile-open
 function badgeFor(d){if(d.access_class==='sealed')return '<span class="tag sealed">봉인</span>';if(d.min_access_level>0)return `<span class="tag restricted">제한 ${d.min_access_level}급</span>`;return '<span class="tag public">공개</span>'}
 function recordRow(d){return `<div class="record-row" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)}</div><div><div class="record-title">${escapeHTML(d.title)}</div><div class="record-summary">${escapeHTML(d.summary||'')}</div></div>${badgeFor(d)}</div>`}
 function wireDocClicks(root=document){root.querySelectorAll('[data-doc]').forEach(el=>el.onclick=()=>openDocument(el.dataset.doc))}
-function renderHome(){pushArchiveHistory('home');state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(memberDisplay(state.member))}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.4.30</p><div class="patch-note-line"><span>파일식 이동 모드</span><span>다중 문서 이동</span><span>폴더 탐색 개선</span></div></div></section>`;
+function renderHome(){pushArchiveHistory('home');state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(memberDisplay(state.member))}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.4.31</p><div class="patch-note-line"><span>폴더 등급 잠금</span><span>잠금 우회 차단</span><span>권한별 폴더 표시</span></div></div></section>`;
   wireDocClicks();$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});$('#allRecent').onclick=renderRecent;$$('[data-catpill]').forEach(b=>b.onclick=()=>renderCategory(b.dataset.catpill));setNavActive('home')
 }
 function renderSearch(q,notice=''){pushArchiveHistory('search',{q:String(q||'')});state.route='search';const term=(q||'').trim(),needle=term.toLowerCase();setCrumb('SEARCH RESULTS');const rows=!needle?state.documents:state.documents.filter(d=>[d.archive_code,d.title,d.title_en,d.summary,d.primary_world,...(d.aliases||[]),...(d.tags||[])].some(v=>String(v||'').toLowerCase().includes(needle)));$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">SEARCH</div><h1>검색 결과</h1><div class="subtitle">${escapeHTML(term||'전체 기록')} · ${rows.length}건</div></div><div class="search-box search-results-query"><span>⌕</span><input id="searchResultsInput" value="${escapeHTML(term)}" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div>${notice?`<div class="system-banner import-complete-banner"><span class="sync-dot"></span>${escapeHTML(notice)}</div>`:''}<div class="search-results">${rows.length?rows.map(d=>`<div class="result-card" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</div><h3>${escapeHTML(d.title)}</h3><div class="muted">${escapeHTML(d.summary||'')}</div><div style="margin-top:10px">${badgeFor(d)}</div></div>`).join(''):'<div class="empty">일치하는 기록이 없습니다.</div>'}</div></div>`;wireDocClicks();const input=$('#searchResultsInput');if(input){input.addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});input.focus();input.setSelectionRange(input.value.length,input.value.length)}}
@@ -1048,6 +1061,19 @@ function renderWorlds(selectedName='',folderPath=null){
   const moveState={active:false,selected:new Set(),busy:false};
   function project(){const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch),cx=explorer.clientWidth/2,cyScreen=explorer.clientHeight/2,camera=920;for(const g of groups){let x=g.x*cy+g.z*sy;let z=-g.x*sy+g.z*cy;let y=g.y;const y2=y*cp-z*sp,z2=y*sp+z*cp;y=y2;z=z2;const perspective=Math.max(.48,Math.min(1.72,camera/(camera+z))),scale=perspective*zoom,sx=cx+x*scale,syScreen=cyScreen+y*scale,node=nodeMap.get(g.name);node.style.left=sx+'px';node.style.top=syScreen+'px';node.style.transform=`translate(-50%,-50%) scale(${scale})`;node.style.zIndex=String(Math.round(3000-z));const depthNorm=Math.max(0,Math.min(1,(z+420)/840));node.style.opacity=String(.58+(1-depthNorm)*.42);node.style.filter=`brightness(${.72+(1-depthNorm)*.38}) saturate(${.78+(1-depthNorm)*.28})`;}}
   function collectionLabel(name){const raw=String(name||'').trim(),m=raw.match(/^(\d+)[_.\s-]+(.+)$/);return m?`${m[1]} · ${m[2].replaceAll('_',' ')}`:raw.replaceAll('_',' ')}
+  function folderLevel(folder){return Math.max(0,Math.min(3,Number(folder?.min_access_level||0)))}
+  function folderEffectiveLevel(world,path=''){
+    const safe=String(path||'');
+    if(!safe)return 0;
+    let level=0;
+    for(const f of (state.worldFolders||[])){
+      if(f.world_name!==world)continue;
+      if(f.path===safe||safe.startsWith(f.path+'/'))level=Math.max(level,folderLevel(f));
+    }
+    return level;
+  }
+  function canOpenFolder(world,path){return Number(state.member?.access_level||0)>=folderEffectiveLevel(world,path)}
+  function folderAccessLabel(level){return Number(level)>0?`${Number(level)}급 제한`:'공개'}
   function folderRows(group,path=''){
     const safe=String(path||'');
     const folders=(state.worldFolders||[]).filter(f=>f.world_name===group.name&&(f.parent_path||'')===safe).sort((a,b)=>(a.sort_order||100)-(b.sort_order||100)||a.name.localeCompare(b.name,'ko',{numeric:true}));
@@ -1079,11 +1105,31 @@ function renderWorlds(selectedName='',folderPath=null){
     if(name.length>120)return alert('폴더 이름은 120자 이하로 입력해주세요.');
     const path=parent?`${parent}/${name}`:name;
     try{
-      await restInsert('archive_world_folders',{world_name:group.name,path,parent_path:parent||null,name,sort_order:100},{returnRows:false});
+      await restInsert('archive_world_folders',{world_name:group.name,path,parent_path:parent||null,name,sort_order:100,min_access_level:folderEffectiveLevel(group.name,parent)},{returnRows:false});
       await loadDocuments();
       const refreshed=getWorldGroups().find(g=>g.name===group.name)||group;
       renderWorldFolderList(refreshed,parent);
     }catch(e){alert(e.message?.includes('duplicate')?'같은 위치에 같은 이름의 폴더가 이미 있습니다.':loreErrorMessage(e))}
+  }
+  async function setFolderAccess(group,path){
+    if(!canManageFolders||!path)return;
+    const folder=(state.worldFolders||[]).find(f=>f.world_name===group.name&&f.path===path);
+    if(!folder)return alert('폴더를 찾을 수 없습니다.');
+    const current=folderLevel(folder);
+    const parent=folder.parent_path||'';
+    const parentLevel=folderEffectiveLevel(group.name,parent);
+    const raw=prompt(`폴더 열람 제한을 설정합니다.\n0 = 공개\n1 = 1급\n2 = 2급\n3 = 3급\n\n상위 폴더 제한: ${parentLevel?parentLevel+'급':'공개'}\n현재 설정: ${current?current+'급':'공개'}`,String(current));
+    if(raw===null)return;
+    const level=Number(raw);
+    if(!Number.isInteger(level)||level<0||level>3)return alert('0~3 사이 숫자를 입력해주세요.');
+    if(level<parentLevel)return alert(`상위 폴더가 ${parentLevel}급 제한이라 그보다 낮게 설정할 수 없습니다.`);
+    if(level>Number(state.member?.access_level||0))return alert('현재 계정 등급보다 높은 제한은 설정할 수 없습니다.');
+    try{
+      await rpc('set_archive_world_folder_access',{p_folder_id:folder.id,p_min_access_level:level});
+      await loadDocuments();
+      const refreshed=getWorldGroups().find(g=>g.name===group.name)||group;
+      renderWorldFolderList(refreshed,path);
+    }catch(e){alert(loreErrorMessage(e))}
   }
   function selectedMovePreview(group){
     const rows=group.docs.filter(d=>moveState.selected.has(d.id));
@@ -1124,21 +1170,40 @@ function renderWorlds(selectedName='',folderPath=null){
   function renderWorldFolderList(group,path=''){
     let safe=String(path||'');
     if(safe && !(state.worldFolders||[]).some(f=>f.world_name===group.name&&f.path===safe))safe='';
+    const requestedFolder=safe?(state.worldFolders||[]).find(f=>f.world_name===group.name&&f.path===safe):null;
+    const currentEffective=folderEffectiveLevel(group.name,safe);
+    const currentLocked=!!safe && !canOpenFolder(group.name,safe);
     $('#worldListTitle').textContent=group.name;
-    $('#worldListMeta').textContent=moveState.active?`이동할 기록 선택 중 · ${moveState.selected.size.toLocaleString()}개 선택`:`폴더 · ${group.docs.filter(d=>d.folder_path).length.toLocaleString()}건 정리됨`;
+    $('#worldListMeta').textContent=currentLocked?`${currentEffective}급 제한 폴더`:moveState.active?`이동할 기록 선택 중 · ${moveState.selected.size.toLocaleString()}개 선택`:`폴더 · ${group.docs.filter(d=>d.folder_path).length.toLocaleString()}건 정리됨`;
     renderTabs(group,'folders');
-    const data=folderRows(group,safe),parts=safe.split('/').filter(Boolean),crumbs=[`<button type="button" class="world-folder-crumb" data-world-folder="">폴더</button>`];
+    const parts=safe.split('/').filter(Boolean),crumbs=[`<button type="button" class="world-folder-crumb" data-world-folder="">폴더</button>`];
     parts.forEach((p,i)=>crumbs.push(`<span class="world-folder-sep">/</span><button type="button" class="world-folder-crumb" data-world-folder="${escapeHTML(parts.slice(0,i+1).join('/'))}">${escapeHTML(collectionLabel(p))}</button>`));
-    const tools=canManageFolders?`<div class="world-folder-tools"><button type="button" class="small-btn" id="worldCreateFolder">＋ ${safe?'하위 폴더':'폴더'} 만들기</button><span class="move-spacer"></span>${group.docs.length?`<button type="button" class="small-btn world-folder-move-btn ${moveState.active?'active':''}" id="worldToggleMoveMode">${moveState.active?'이동 선택 중':'↔ 이동'}</button>`:''}${moveState.active&&data.docs.length?`<button type="button" class="small-btn" id="worldSelectCurrentFolder">현재 폴더 전체 선택</button>`:''}</div>`:'';
+
+    if(currentLocked){
+      const parent=requestedFolder?.parent_path||'';
+      $('#worldDocList').innerHTML=`<div class="world-folder-breadcrumb">${crumbs.join('')}</div><div class="world-folder-locked-view"><span class="lock-icon">🔒</span><b>${escapeHTML(collectionLabel(requestedFolder?.name||parts.at(-1)||'제한된 폴더'))}</b><br>${currentEffective}급 이상의 권한이 필요합니다.<div style="margin-top:12px"><button type="button" class="small-btn" id="worldLockedBack">상위 폴더로</button></div></div>`;
+      $('#worldLockedBack').onclick=()=>{replaceArchiveHistory('worlds',{world:group.name,folder:parent});renderWorldFolderList(group,parent)};
+      $('#worldDocList').querySelectorAll('[data-world-folder]').forEach(b=>b.onclick=()=>{const p=b.dataset.worldFolder||'';if(p&& !canOpenFolder(group.name,p))return alert(`${folderEffectiveLevel(group.name,p)}급 이상의 권한이 필요한 폴더입니다.`);replaceArchiveHistory('worlds',{world:group.name,folder:p});renderWorldFolderList(group,p)});
+      return;
+    }
+
+    const data=folderRows(group,safe);
+    const currentFolder=safe?(state.worldFolders||[]).find(f=>f.world_name===group.name&&f.path===safe):null;
+    const currentOwnLevel=folderLevel(currentFolder);
+    const tools=canManageFolders?`<div class="world-folder-tools"><button type="button" class="small-btn" id="worldCreateFolder">＋ ${safe?'하위 폴더':'폴더'} 만들기</button>${safe?`<button type="button" class="small-btn world-folder-lock-btn ${currentEffective?'restricted':''}" id="worldFolderAccess">🔒 ${escapeHTML(folderAccessLabel(currentOwnLevel))}</button>`:''}<span class="move-spacer"></span>${group.docs.length?`<button type="button" class="small-btn world-folder-move-btn ${moveState.active?'active':''}" id="worldToggleMoveMode">${moveState.active?'이동 선택 중':'↔ 이동'}</button>`:''}${moveState.active&&data.docs.length?`<button type="button" class="small-btn" id="worldSelectCurrentFolder">현재 폴더 전체 선택</button>`:''}</div>`:'';
     const guide=moveState.active?`<div class="world-move-guide"><b>기록 이동</b> · 옮길 기록을 여러 개 선택한 다음 폴더를 탐색하세요. 목적지에 도착하면 아래 <b>여기로 이동</b>을 누르면 됩니다.</div>`:'';
-    const folders=data.folders.map(f=>`<button type="button" class="world-folder-item" data-world-folder="${escapeHTML(f.path)}"><span class="world-folder-icon">▱</span><span class="world-folder-name">${escapeHTML(collectionLabel(f.name))}</span><span class="world-folder-count">${folderDescendantCount(group,f.path).toLocaleString()}건</span></button>`).join('');
+    const folders=data.folders.map(f=>{
+      const required=folderEffectiveLevel(group.name,f.path),locked=Number(state.member?.access_level||0)<required,restricted=required>0;
+      return `<button type="button" class="world-folder-item ${locked?'locked':restricted?'restricted':''}" data-world-folder="${escapeHTML(f.path)}" aria-disabled="${locked?'true':'false'}" title="${locked?required+'급 제한 폴더':restricted?required+'급 제한':''}"><span class="world-folder-icon">${locked?'🔒':restricted?'🔒':'▱'}</span><span class="world-folder-name">${escapeHTML(collectionLabel(f.name))}</span>${locked?'<span class="world-folder-count"></span>':`<span class="world-folder-count">${folderDescendantCount(group,f.path).toLocaleString()}건</span>`}</button>`;
+    }).join('');
     const docs=data.docs.map(d=>moveState.active?`<button type="button" class="world-folder-record move-select ${moveState.selected.has(d.id)?'selected':''}" data-move-doc="${d.id}"><span class="world-move-check">✓</span><span class="world-move-record-copy"><b>${escapeHTML(d.title)}</b><span>${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</span></span></button>`:`<button type="button" class="world-folder-record" data-doc="${d.id}"><b>${escapeHTML(d.title)}</b><span>${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</span></button>`).join('');
     const empty=!folders&&!docs?`<div class="world-empty">아직 폴더나 기록이 없습니다.${canManageFolders?'<div class="world-folder-empty-note">위의 ‘폴더 만들기’로 이 인터월드의 기록 구조를 시작할 수 있습니다.</div>':''}</div>`:'';
     const destination=safe?`/${safe.split('/').map(collectionLabel).join(' / ')}`:'폴더 루트';
     const moveBar=moveState.active?`<div class="world-move-bar"><div class="world-move-bar-main"><span class="world-move-count">${moveState.selected.size.toLocaleString()}개 선택됨</span><button type="button" class="small-btn" id="worldClearMoveSelection" ${moveState.selected.size?'':'disabled'}>선택 해제</button><button type="button" class="small-btn" id="worldCancelMove">취소</button><button type="button" class="small-btn world-move-here" id="worldMoveHere" ${(!moveState.selected.size||moveState.busy)?'disabled':''}>${moveState.busy?'이동 중…':'여기로 이동'}</button><div class="world-move-destination">목적지 · ${escapeHTML(destination)}</div>${moveState.selected.size?`<div class="world-move-preview">선택 · ${escapeHTML(selectedMovePreview(group))}</div>`:''}</div></div>`:'';
     $('#worldDocList').innerHTML=`<div class="world-folder-breadcrumb">${crumbs.join('')}</div>${tools}${guide}<div class="world-folder-list">${folders}${empty}</div>${docs?`<div class="world-folder-records">${docs}</div>`:''}${moveBar}`;
-    $('#worldDocList').querySelectorAll('[data-world-folder]').forEach(b=>b.onclick=()=>{const p=b.dataset.worldFolder||'';replaceArchiveHistory('worlds',{world:group.name,folder:p});renderWorldFolderList(group,p)});
+    $('#worldDocList').querySelectorAll('[data-world-folder]').forEach(b=>b.onclick=()=>{const p=b.dataset.worldFolder||'';const required=folderEffectiveLevel(group.name,p);if(p&&Number(state.member?.access_level||0)<required){alert(`${required}급 이상의 권한이 필요한 폴더입니다.`);return}replaceArchiveHistory('worlds',{world:group.name,folder:p});renderWorldFolderList(group,p)});
     if($('#worldCreateFolder'))$('#worldCreateFolder').onclick=()=>createFolder(group,safe);
+    if($('#worldFolderAccess'))$('#worldFolderAccess').onclick=()=>setFolderAccess(group,safe);
     if($('#worldToggleMoveMode'))$('#worldToggleMoveMode').onclick=()=>{if(moveState.active){clearMoveMode()}else{moveState.active=true;moveState.selected.clear()}renderWorldFolderList(group,safe)};
     if($('#worldSelectCurrentFolder'))$('#worldSelectCurrentFolder').onclick=()=>selectCurrentFolderDocs(group,safe);
     if($('#worldClearMoveSelection'))$('#worldClearMoveSelection').onclick=()=>{moveState.selected.clear();renderWorldFolderList(group,safe)};
