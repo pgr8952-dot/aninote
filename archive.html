@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PLANK ARCHIVE v0.4.19</title>
+<title>PLANK ARCHIVE v0.4.21</title>
 <style>
 :root {
   --bg: #0b0f14;
@@ -21,11 +21,11 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Pretendard, Inter, "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-body { min-height: 100vh; }
+body { min-height: 100vh; background: radial-gradient(circle at top, rgba(34,52,84,.32), transparent 34%), linear-gradient(180deg,#0b1017 0%,#0f1620 38%,#101720 100%); }
 button, input, select { font: inherit; }
 button { color: inherit; }
 .hidden { display: none !important; }
-.noise { position: fixed; inset: 0; pointer-events: none; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E"); z-index: 100; }
+.noise { display:none; }
 .login-screen { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 50% 10%, #182438 0, #0b0f14 42%, #070a0e 100%); }
 .login-card { width: min(520px, 100%); border: 1px solid var(--line); background: rgba(14,20,28,.94); padding: 38px; box-shadow: var(--shadow); border-radius: 16px; }
 .eyebrow, .hero-kicker, .crumbs, .nav-label { color: var(--muted); letter-spacing: .13em; text-transform: uppercase; font-size: 11px; }
@@ -37,7 +37,7 @@ button { color: inherit; }
 .primary-btn { width: 100%; margin-top: 12px; border: 0; border-radius: 8px; padding: 12px 14px; background: var(--accent); color: #07101d; font-weight: 800; cursor: pointer; }
 .tiny { color: #667587; font-size: 11px; margin: 15px 0 0; }
 .app { display: grid; grid-template-columns: 245px 1fr; min-height: 100vh; }
-.sidebar { position: sticky; top: 0; height: 100vh; border-right: 1px solid var(--line); background: #0d1219; display: flex; flex-direction: column; }
+.sidebar { position: sticky; top: 0; height: 100vh; border-right: 1px solid rgba(93,118,154,.18); background: linear-gradient(180deg, rgba(12,18,28,.96), rgba(13,20,31,.92)); display: flex; flex-direction: column; box-shadow: inset -1px 0 0 rgba(255,255,255,.02); }
 .brand { display: flex; align-items: center; gap: 11px; padding: 22px 18px; background: transparent; border: 0; cursor: pointer; text-align: left; }
 .brand-mark { width: 35px; height: 35px; display: grid; place-items: center; border: 1px solid #41516a; color: var(--accent-2); font: 700 12px ui-monospace, monospace; }
 .brand b { letter-spacing: .12em; font-size: 13px; display: block; }
@@ -52,7 +52,7 @@ button { color: inherit; }
 .profile-lines b, .profile-lines small { display: block; }
 .profile-lines small { color: var(--muted); margin-top: 2px; }
 .main { min-width: 0; }
-.topbar { height: 62px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 26px; position: sticky; top: 0; z-index: 20; background: rgba(11,15,20,.9); backdrop-filter: blur(14px); }
+.topbar { height: 62px; border-bottom: 1px solid rgba(93,118,154,.16); display: flex; align-items: center; justify-content: space-between; padding: 0 26px; position: sticky; top: 0; z-index: 20; background: rgba(10,15,24,.88); backdrop-filter: blur(16px); }
 .top-actions { display: flex; gap: 14px; align-items: center; }
 .node-status { font-size: 11px; color: var(--muted); }
 .node-status i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); margin-right: 6px; box-shadow: 0 0 12px rgba(113,214,165,.7); }
@@ -63,7 +63,7 @@ button { color: inherit; }
 .hero h2 { font-size: clamp(36px, 6vw, 68px); line-height: 1.05; margin: 12px 0 18px; letter-spacing: -.045em; }
 .hero h2 span { color: #9db9ef; }
 .hero > p { color: var(--muted); max-width: 660px; margin: 0 auto; line-height: 1.7; }
-.search-box { margin: 30px auto 15px; width: min(760px, 100%); display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 8px 10px 8px 15px; background: #121923; border: 1px solid #314059; border-radius: 11px; box-shadow: 0 15px 60px rgba(0,0,0,.24); }
+.search-box { margin: 30px auto 15px; width: min(760px, 100%); display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 8px 10px 8px 15px; background: rgba(17,24,35,.92); border: 1px solid rgba(115,149,201,.28); border-radius: 14px; box-shadow: 0 18px 42px rgba(0,0,0,.18); }
 .search-box input { background: transparent; border: 0; outline: 0; color: var(--text); padding: 10px 5px; min-width: 0; }
 kbd { color: #76879b; border: 1px solid #344154; padding: 4px 7px; border-radius: 5px; font-size: 9px; }
 .category-pills { display: flex; gap: 7px; justify-content: center; flex-wrap: wrap; }
@@ -71,7 +71,7 @@ kbd { color: #76879b; border: 1px solid #344154; padding: 4px 7px; border-radius
 .pill { cursor: pointer; }
 .pill:hover { border-color: #55729d; color: var(--text); }
 .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 1180px; margin: 0 auto; }
-.panel { border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 18px; min-width: 0; }
+.panel { border: 1px solid rgba(93,118,154,.18); background: linear-gradient(180deg, rgba(17,23,32,.92), rgba(15,22,32,.96)); border-radius: 14px; padding: 18px; min-width: 0; box-shadow: 0 14px 40px rgba(0,0,0,.18); }
 .span-2 { grid-row: span 2; }
 .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .panel h3 { margin: 0; font-size: 14px; }
@@ -223,7 +223,7 @@ body.sidebar-lock{overflow:hidden}
 .role-chip{display:inline-flex;align-items:center;padding:4px 8px;border:1px solid #34445a;border-radius:999px;color:#aebed2;font-size:10px;font-weight:800}
 .request-status{display:inline-flex;padding:3px 7px;border-radius:999px;border:1px solid #34445a;font-size:10px;font-weight:800}.request-status.approved{color:#8ee3b7;border-color:#2e664b}.request-status.denied{color:#ff9aa8;border-color:#70343d}.request-status.pending{color:#f2cb89;border-color:#6a522f}.request-status.expired{color:#909dad;border-color:#3a4655}
 .help-copy{color:var(--muted);font-size:11px;line-height:1.65;margin-top:7px}.profile-section-title{margin:0 0 7px;font-size:14px}.empty-small{padding:10px 0;color:var(--muted);font-size:11px}
-.doc-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}.document-editor-modal{width:min(1040px,100%)}.edit-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.edit-meta-grid .full{grid-column:1/-1}.locked-field{background:#0a0f15;color:#77879a}.editor-section-list{display:grid;gap:12px;margin-top:12px}.editor-section-card{border:1px solid #2b394c;background:#0b1118;border-radius:10px;padding:14px}.editor-section-head{display:flex;gap:8px;align-items:end}.editor-section-head .grow{flex:1}.editor-section-toolbar{display:flex;gap:6px;flex-wrap:wrap}.editor-section-card textarea{min-height:210px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.65}.edit-warning{margin-top:7px;color:#d0aa70;font-size:11px;line-height:1.6}.edit-section-index{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#718196;margin-bottom:7px}.edit-footer{position:sticky;bottom:-22px;background:linear-gradient(180deg,rgba(15,21,30,0),#0f151e 24%);padding-top:26px;margin-top:18px}.edit-summary{min-height:86px}.danger-zone{border-top:1px solid #34252a;margin-top:14px;padding-top:12px}@media(max-width:700px){.doc-edit-actions,.edit-meta-grid{grid-template-columns:1fr}.edit-meta-grid .full{grid-column:auto}.editor-section-head{align-items:stretch;flex-direction:column}}
+.doc-edit-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:7px;margin-top:14px}.document-editor-modal{width:min(1040px,100%)}.edit-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.edit-meta-grid .full{grid-column:1/-1}.locked-field{background:#0a0f15;color:#77879a}.editor-section-list{display:grid;gap:12px;margin-top:12px}.editor-section-card{border:1px solid #2b394c;background:#0b1118;border-radius:10px;padding:14px}.editor-section-head{display:flex;gap:8px;align-items:end}.editor-section-head .grow{flex:1}.editor-section-toolbar{display:flex;gap:6px;flex-wrap:wrap}.editor-section-card textarea{min-height:210px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.65}.edit-warning{margin-top:7px;color:#d0aa70;font-size:11px;line-height:1.6}.edit-section-index{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#718196;margin-bottom:7px}.edit-footer{position:sticky;bottom:-22px;background:linear-gradient(180deg,rgba(15,21,30,0),#0f151e 24%);padding-top:26px;margin-top:18px}.edit-summary{min-height:86px}.danger-zone{border-top:1px solid #34252a;margin-top:14px;padding-top:12px}@media(max-width:700px){.doc-edit-actions,.edit-meta-grid{grid-template-columns:1fr}.edit-meta-grid .full{grid-column:auto}.editor-section-head{align-items:stretch;flex-direction:column}}
 
 /* ===== v0.3.7 · private document image blocks ===== */
 .archive-image-block{width:min(var(--archive-image-width,72%),100%);margin:24px auto;transform:rotate(var(--archive-image-rotate,0deg));transform-origin:center center;transition:transform .15s ease}
@@ -286,6 +286,39 @@ body.sidebar-lock{overflow:hidden}
 .archivist-back{margin-bottom:14px}
 @media(max-width:720px){.archivist-directory{grid-template-columns:1fr;gap:10px}.archivist-profile-card{padding:15px}.archivist-card-name{font-size:18px}.archivist-detail-grid{grid-template-columns:1fr}.archivist-detail-info{padding:18px}}
 
+.world-shell{display:grid;grid-template-columns:minmax(0,1.2fr) 360px;gap:18px;align-items:start}
+.world-panel{position:relative;overflow:hidden}
+.world-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.world-toolbar .muted{margin:0}
+.world-actions{display:flex;gap:8px;flex-wrap:wrap}
+.world-action{border:1px solid rgba(115,149,201,.25);background:#101826;border-radius:999px;color:#b9c8dc;padding:7px 11px;cursor:pointer}
+.world-action:hover{border-color:#6f92c8;color:#fff}
+.world-explorer{position:relative;height:520px;border:1px solid rgba(115,149,201,.18);border-radius:18px;background:radial-gradient(circle at 30% 30%, rgba(84,118,170,.18), transparent 18%),radial-gradient(circle at 78% 22%, rgba(117,155,214,.14), transparent 17%),linear-gradient(180deg,#0a111b 0%,#0d1520 100%);overflow:hidden;cursor:grab}
+.world-explorer.dragging{cursor:grabbing}
+.world-explorer::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 15% 25%, rgba(255,255,255,.55) 0 1px, transparent 1px),radial-gradient(circle at 68% 42%, rgba(255,255,255,.35) 0 1px, transparent 1px),radial-gradient(circle at 40% 76%, rgba(255,255,255,.4) 0 1px, transparent 1px),radial-gradient(circle at 83% 72%, rgba(255,255,255,.45) 0 1px, transparent 1px),radial-gradient(circle at 22% 58%, rgba(255,255,255,.28) 0 1px, transparent 1px);opacity:.45;pointer-events:none}
+.world-track{position:absolute;inset:0}
+.world-space{position:absolute;inset:0;transform-origin:0 0;will-change:transform}
+.world-node{position:absolute;display:grid;place-items:center;border-radius:50%;border:2px solid rgba(214,229,255,.85);background:radial-gradient(circle at 30% 30%, rgba(201,224,255,.28), rgba(83,117,168,.18) 44%, rgba(28,39,58,.92) 75%);box-shadow:0 12px 36px rgba(0,0,0,.3),0 0 0 8px rgba(125,167,255,.03);color:#edf4ff;cursor:pointer;user-select:none;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.world-node:hover{transform:scale(1.03);border-color:#fff;box-shadow:0 18px 42px rgba(0,0,0,.34),0 0 0 10px rgba(125,167,255,.05)}
+.world-node.active{border-color:#8ec5ff;box-shadow:0 0 0 10px rgba(125,167,255,.08),0 22px 48px rgba(0,0,0,.36)}
+.world-node-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;pointer-events:none}
+.world-node-name{font-weight:800;line-height:1.15;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.world-node-count{font-size:11px;color:#b7c8de;margin-top:6px}
+.world-list{display:grid;gap:10px;max-height:520px;overflow:auto;padding-right:4px}
+.world-doc-item{border:1px solid rgba(115,149,201,.16);background:rgba(14,20,30,.9);border-radius:12px;padding:13px 14px;cursor:pointer}
+.world-doc-item:hover{border-color:rgba(145,180,236,.38)}
+.world-doc-item .title{font-weight:760;margin-bottom:4px}
+.world-doc-item .meta{font-size:11px;color:#93a5bc;margin-bottom:6px}
+.world-doc-item .summary{font-size:12px;color:#c1cedd;line-height:1.55}
+.world-list-head{margin-bottom:12px}
+.world-mini{display:grid;gap:6px;margin-top:10px}
+.world-mini button{border:1px solid rgba(115,149,201,.16);background:#111924;color:#b7c8de;border-radius:10px;padding:10px 12px;text-align:left;cursor:pointer}
+.world-mini button:hover,.world-mini button.active{border-color:rgba(145,180,236,.4);color:#fff;background:#142032}
+.world-empty{color:#8d9db1;border:1px dashed rgba(115,149,201,.18);border-radius:12px;padding:20px;text-align:center}
+@media(max-width:980px){.world-shell{grid-template-columns:1fr}.world-list{max-height:none}.world-explorer{height:430px}}
+@media(max-width:720px){.world-explorer{height:360px}.world-node-count{font-size:10px}.world-node-name{font-size:12px}}
+.patch-note-line{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.patch-note-line span{display:inline-flex;align-items:center;border:1px solid rgba(115,149,201,.18);background:#101824;border-radius:999px;padding:5px 9px;color:#aebbd0;font-size:10px}
+
 </style>
 </head>
 <body>
@@ -314,6 +347,7 @@ body.sidebar-lock{overflow:hidden}
     <button class="brand" data-route="home"><span class="brand-mark">PA</span><span><b>PLANK</b><small>ARCHIVE</small></span></button>
     <nav class="nav">
       <button data-route="home" class="nav-item active">⌕ <span>기록 검색</span></button>
+      <button data-route="worlds" class="nav-item">◌ <span>인터월드 보기</span></button>
       <button data-route="recent" class="nav-item">◴ <span>최근 기록</span></button>
       <button data-route="random" class="nav-item">⤨ <span>무작위 기록</span></button>
       <button id="createDocNav" data-route="create" class="nav-item hidden">＋ <span>기록 작성</span></button>
@@ -353,6 +387,30 @@ const categoryNames={WORLD:'세계',ENTITY:'존재',LOCATION:'장소',EVENT:'사
 const categoryPrefixes={WORLD:'WLD',ENTITY:'ENT',LOCATION:'LOC',EVENT:'EVT',OBJECT:'OBJ',ORGANIZATION:'ORG',CONCEPT:'CON',PHENOMENON:'PHN',DOCUMENT:'DOC'};
 const accessNames={0:'공개',1:'제한 1급',2:'제한 2급',3:'제한 3급'};
 const roleNames={guest:'손님',reader:'열람자',archivist:'기록관',chief:'최고기록관리자'};
+const WORLD_COLORS=['#8ec5ff','#9bc4ff','#9bd0ff','#a7c7ff','#b0d4ff','#7ad3c8','#9fe0b7','#f0c985','#d6bbff'];
+function worldLabel(v){return String(v||'미분류 인터월드').trim()||'미분류 인터월드'}
+function getWorldGroups(){
+  const map=new Map();
+  for(const d of state.documents||[]){
+    const name=worldLabel(d.primary_world);
+    if(!map.has(name))map.set(name,{name,docs:[],count:0});
+    const g=map.get(name);g.docs.push(d);g.count++;
+  }
+  const groups=[...map.values()].sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name,'ko'));
+  if(!groups.length)return [];
+  const cols=Math.max(3,Math.ceil(Math.sqrt(groups.length+1)));
+  const gapX=280,gapY=240,offsetX=220,offsetY=160;
+  groups.forEach((g,i)=>{
+    const row=Math.floor(i/cols),col=i%cols;
+    const variance=((i%2)?40:-30);
+    g.size=Math.max(84,Math.min(184,84+g.count*8));
+    g.x=offsetX + col*gapX + (row%2?60:0);
+    g.y=offsetY + row*gapY + variance;
+    g.color=WORLD_COLORS[i%WORLD_COLORS.length];
+  });
+  return groups;
+}
+
 const statusNames={confirmed:'확인',observing:'관측 중',investigating:'조사 중',incomplete:'불완전',damaged:'손상',lost:'분실',disputed:'논쟁 중',sealed:'봉인'};
 function $(s){return document.querySelector(s)}
 function $$(s){return [...document.querySelectorAll(s)]}
@@ -594,6 +652,41 @@ async function uploadArchiveImage(documentId,blob){
   if(!res.ok){let msg='이미지 업로드에 실패했어.';try{const d=await res.json();msg=d.message||d.error||msg}catch(e){}throw new Error(msg)}
   return objectPath;
 }
+async function deleteArchiveImage(path){
+  if(!path)return;
+  const doDelete=()=>fetch(`${SUPABASE_URL}/storage/v1/object/plang-archive-images/${encodeStoragePath(path)}`,{method:'DELETE',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+state.session.access_token}});
+  let res=await doDelete();
+  if(res.status===401&&state.session?.refresh_token){const ok=await refreshSession();if(ok)res=await doDelete()}
+  if(res.status===404)return;
+  if(!res.ok){let msg='문서 이미지 삭제에 실패했어.';try{const d=await res.json();msg=d.message||d.error||msg}catch(e){}throw new Error(msg)}
+}
+function archiveImagePathsFromSections(sections=[]){
+  const paths=[];
+  for(const s of sections){
+    for(const line of String(s?.body||'').replace(/\r\n?/g,'\n').split('\n')){
+      const img=parseArchiveImageBlock(line);if(img?.path)paths.push(img.path);
+    }
+  }
+  return [...new Set(paths)];
+}
+async function deleteArchiveDocument(d,sections=[]){
+  if(state.member?.role!=='chief')throw new Error('CHIEF_REQUIRED');
+  const ok=confirm(`「${d.title}」 (${d.archive_code}) 문서를 삭제할까요?\n\n본문, 주석, 연결 기록과 첨부 이미지도 함께 삭제됩니다. 이 작업은 되돌릴 수 없습니다.`);
+  if(!ok)return false;
+  const btn=$('#documentDeleteBtn');if(btn){btn.disabled=true;btn.textContent='삭제 중…'}
+  try{
+    const imagePaths=archiveImagePathsFromSections(sections);
+    for(const path of imagePaths)await deleteArchiveImage(path);
+    await restDelete('archive_documents',`id=eq.${encodeURIComponent(d.id)}`);
+    await loadDocuments();
+    renderRecent();
+    return true;
+  }catch(err){
+    alert('문서 삭제 실패: '+loreErrorMessage(err));
+    if(btn){btn.disabled=false;btn.textContent='문서 삭제'}
+    return false;
+  }
+}
 let archiveImageObjectUrls=[];
 function clearArchiveImageObjectUrls(){archiveImageObjectUrls.forEach(u=>URL.revokeObjectURL(u));archiveImageObjectUrls=[]}
 async function hydrateArchiveImages(root=document){
@@ -784,11 +877,13 @@ function toggleMobileSidebar(){if($('.sidebar')?.classList.contains('mobile-open
 function badgeFor(d){if(d.access_class==='sealed')return '<span class="tag sealed">봉인</span>';if(d.min_access_level>0)return `<span class="tag restricted">제한 ${d.min_access_level}급</span>`;return '<span class="tag public">공개</span>'}
 function recordRow(d){return `<div class="record-row" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)}</div><div><div class="record-title">${escapeHTML(d.title)}</div><div class="record-summary">${escapeHTML(d.summary||'')}</div></div>${badgeFor(d)}</div>`}
 function wireDocClicks(root=document){root.querySelectorAll('[data-doc]').forEach(el=>el.onclick=()=>openDocument(el.dataset.doc))}
-function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(memberDisplay(state.member))}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.4.19</p><p class="muted">실제 데이터베이스 연결이 활성화되었습니다. 문서와 섹션의 열람 권한은 서버의 RLS 정책으로 판정됩니다.</p></div></section>`;
-  wireDocClicks();$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});$('#allRecent').onclick=renderRecent;$$('[data-catpill]').forEach(b=>b.onclick=()=>renderCategory(b.dataset.catpill))
+function renderHome(){state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(memberDisplay(state.member))}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.4.21</p><div class="patch-note-line"><span>문서 삭제</span><span>최근 기록 15건</span><span>노드 UI 정리</span></div></div></section>`;
+  wireDocClicks();$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});$('#allRecent').onclick=renderRecent;$$('[data-catpill]').forEach(b=>b.onclick=()=>renderCategory(b.dataset.catpill));setNavActive('home')
 }
 function renderSearch(q,notice=''){state.route='search';const term=(q||'').trim(),needle=term.toLowerCase();setCrumb('SEARCH RESULTS');const rows=!needle?state.documents:state.documents.filter(d=>[d.archive_code,d.title,d.title_en,d.summary,d.primary_world,...(d.aliases||[]),...(d.tags||[])].some(v=>String(v||'').toLowerCase().includes(needle)));$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">SEARCH</div><h1>검색 결과</h1><div class="subtitle">${escapeHTML(term||'전체 기록')} · ${rows.length}건</div></div><div class="search-box search-results-query"><span>⌕</span><input id="searchResultsInput" value="${escapeHTML(term)}" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div>${notice?`<div class="system-banner import-complete-banner"><span class="sync-dot"></span>${escapeHTML(notice)}</div>`:''}<div class="search-results">${rows.length?rows.map(d=>`<div class="result-card" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</div><h3>${escapeHTML(d.title)}</h3><div class="muted">${escapeHTML(d.summary||'')}</div><div style="margin-top:10px">${badgeFor(d)}</div></div>`).join(''):'<div class="empty">일치하는 기록이 없습니다.</div>'}</div></div>`;wireDocClicks();const input=$('#searchResultsInput');if(input){input.addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});input.focus();input.setSelectionRange(input.value.length,input.value.length)}}
-function renderRecent(){state.route='recent';setCrumb('RECENT');const rows=[...state.documents].sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));renderListPage('최근 기록','최근 갱신 순으로 표시합니다.',rows)}
+function setNavActive(routeName){$$('.nav-item').forEach(x=>x.classList.remove('active'));const active=document.querySelector(`[data-route="${routeName}"]`);if(active)active.classList.add('active')}
+function renderWorlds(selectedName=''){closeMobileSidebar();state.route='worlds';setCrumb('INTERWORLDS');setNavActive('worlds');const groups=getWorldGroups();if(!groups.length){$('#view').innerHTML='<div class="empty">관련 세계 정보가 등록된 기록이 아직 없습니다.</div>';return}let selected=groups.find(g=>g.name===selectedName)||groups[0];$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">INTERWORLD INDEX</div><h1>인터월드 보기</h1><div class="subtitle">둥근 세계를 눌러 해당 인터월드의 기록만 빠르게 모아볼 수 있습니다. 마우스로 드래그해서 기록망을 둘러보세요.</div></div><div class="world-shell"><section class="panel world-panel"><div class="world-toolbar"><div><h3 style="margin:0">INTERWORLD FIELD</h3><p class="muted">원 안의 숫자는 현재 계정으로 열람 가능한 기록 수입니다.</p></div><div class="world-actions"><button type="button" id="worldResetView" class="world-action">시야 중앙으로</button></div></div><div id="worldExplorer" class="world-explorer"><div class="world-track"><div id="worldSpace" class="world-space"></div></div></div></section><aside class="panel"><div class="world-list-head"><div class="eyebrow">WORLD RECORDS</div><h3 id="worldListTitle" style="margin:.2rem 0 .35rem"></h3><div id="worldListMeta" class="muted"></div></div><div id="worldDocList" class="world-list"></div></aside></div></div>`;const explorer=$('#worldExplorer'),space=$('#worldSpace');const maxX=Math.max(...groups.map(g=>g.x+g.size))+220,maxY=Math.max(...groups.map(g=>g.y+g.size))+220;space.style.width=maxX+'px';space.style.height=maxY+'px';groups.forEach(g=>{const node=document.createElement('button');node.type='button';node.className='world-node';node.dataset.world=g.name;node.style.left=g.x+'px';node.style.top=g.y+'px';node.style.width=g.size+'px';node.style.height=g.size+'px';if(g===selected)node.classList.add('active');node.innerHTML=`<span class="world-node-inner"><span class="world-node-name" style="font-size:${Math.max(12,Math.min(22,g.size/6))}px">${escapeHTML(g.name)}</span><span class="world-node-count">${g.count.toLocaleString()}건</span></span>`;node.onclick=()=>selectWorld(g.name);space.appendChild(node)});let panX=Math.max(-maxX/2+explorer.clientWidth/2,20),panY=Math.max(-maxY/2+explorer.clientHeight/2,20),dragging=false,startX=0,startY=0,baseX=0,baseY=0;function applyPan(){space.style.transform=`translate(${panX}px, ${panY}px)`}function centerOn(group){panX=explorer.clientWidth/2-(group.x+group.size/2);panY=explorer.clientHeight/2-(group.y+group.size/2);applyPan()}function renderWorldDocList(group){$('#worldListTitle').textContent=group.name;$('#worldListMeta').textContent=`열람 가능 기록 ${group.count.toLocaleString()}건`;const rows=[...group.docs].sort((a,b)=>a.title.localeCompare(b.title,'ko'));$('#worldDocList').innerHTML=rows.length?rows.map(r=>`<button type="button" class="world-doc-item" data-doc="${r.id}"><div class="meta">${escapeHTML(r.archive_code)} · ${escapeHTML(categoryNames[r.category]||r.category)}</div><div class="title">${escapeHTML(r.title)}</div><div class="summary">${escapeHTML(r.summary||'요약 없음')}</div></button>`).join(''):'<div class="world-empty">이 인터월드에는 열람 가능한 기록이 없습니다.</div>';wireDocClicks()}function selectWorld(name){selected=groups.find(g=>g.name===name)||groups[0];$$('.world-node',space).forEach(btn=>btn.classList.toggle('active',btn.dataset.world===selected.name));centerOn(selected);renderWorldDocList(selected)}explorer.addEventListener('pointerdown',e=>{if(e.target.closest('.world-node'))return;dragging=true;explorer.classList.add('dragging');startX=e.clientX;startY=e.clientY;baseX=panX;baseY=panY;explorer.setPointerCapture(e.pointerId)});explorer.addEventListener('pointermove',e=>{if(!dragging)return;panX=baseX+(e.clientX-startX);panY=baseY+(e.clientY-startY);applyPan()});function endDrag(){dragging=false;explorer.classList.remove('dragging')}explorer.addEventListener('pointerup',endDrag);explorer.addEventListener('pointercancel',endDrag);explorer.addEventListener('pointerleave',e=>{if(dragging&&e.buttons===0)endDrag()});$('#worldResetView').onclick=()=>centerOn(selected);centerOn(selected);renderWorldDocList(selected)}
+function renderRecent(){state.route='recent';setCrumb('RECENT');const rows=[...state.documents].sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at)).slice(0,15);renderListPage('최근 기록','최근 갱신 15건만 표시합니다.',rows)}
 function renderCategory(cat){closeMobileSidebar();state.route='category';setCrumb(categoryNames[cat]||cat);renderListPage(categoryNames[cat]||cat,'현재 계정에서 열람 가능한 분류 기록입니다.',state.documents.filter(d=>d.category===cat))}
 function renderListPage(title,sub,rows){$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">ARCHIVE INDEX</div><h1>${escapeHTML(title)}</h1><div class="subtitle">${escapeHTML(sub)}</div></div><div class="panel"><div class="record-list">${rows.length?rows.map(recordRow).join(''):'<div class="empty">기록이 없습니다.</div>'}</div></div></div>`;wireDocClicks()}
 async function openDocument(id){state.route='record';setCrumb('RECORD');$('#view').innerHTML='<div class="loading">기록을 복호화하는 중...</div>';try{const d=state.documents.find(x=>x.id===id);if(!d)throw new Error('현재 권한에서 문서를 찾을 수 없습니다.');await Promise.all([ensureLoreArchivists(),ensureMemberLabels()]);const [sections,anns,links,redactions,wikiOut,wikiIn,importMeta]=await Promise.all([restQuery('archive_document_sections',`select=id,heading,body,sort_order,min_access_level,created_at,updated_at&document_id=eq.${encodeURIComponent(id)}&order=sort_order.asc`),restQuery('archive_annotations',`select=id,parent_id,author_id,author_code,body,min_access_level,lore_author_profile_id,lore_author_name,lore_year,lore_month,lore_day,lore_time,created_at&document_id=eq.${encodeURIComponent(id)}&order=created_at.asc`),restQuery('archive_document_links',`select=target_document_id,relation,label&source_document_id=eq.${encodeURIComponent(id)}`),rpc('archive_visible_redactions',{p_document_id:id}),restQuery('archive_wikilinks',`select=target_document_id,target_text,display_text,target_heading,is_embed,ordinal&source_document_id=eq.${encodeURIComponent(id)}&order=ordinal.asc`),restQuery('archive_wikilinks',`select=source_document_id,target_text,display_text,target_heading&target_document_id=eq.${encodeURIComponent(id)}&order=created_at.asc`),restQuery('archive_document_import_meta',`select=source_path,source_format,frontmatter,imported_at&document_id=eq.${encodeURIComponent(id)}&limit=1`)]);renderDocument(d,sections,anns,links,redactions,{wikiOut,wikiIn,importMeta:importMeta?.[0]||null})}catch(e){$('#view').innerHTML=`<div class="empty">${escapeHTML(loreErrorMessage(e))}</div>`}}
@@ -814,13 +909,14 @@ function renderDocument(d,sections,anns,links,redactions=[],context={}){
   const loreAnnotationFields=isChief?`<div class="lore-box"><div class="lore-box-title">HISTORICAL ANNOTATION</div><div class="lore-grid"><div><label class="field-label">기록관</label>${loreAuthorSelectHTML('annotationAuthor','annotationAuthorCustom')}</div><div><label class="field-label">주석 작성일</label>${loreDateInputs('annotationLore',annDate,true)}<div class="lore-hint">시간은 등록 버튼을 누르는 순간의 현실 시간(KST)으로 자동 기록됩니다.</div></div></div></div>`:'';
   const annotationForm=canAnnotate?`<form id="annotationForm" class="comment-form"><label class="field-label" for="annotationBody">주석 추가</label><textarea id="annotationBody" class="control textarea" maxlength="5000" placeholder="기록관 의견, 보충 기록, 경고 등을 남깁니다."></textarea>${loreAnnotationFields}<div class="toolbar-row end"><select id="annotationLevel" class="control" style="width:auto"><option value="0">공개</option>${[1,2,3].filter(n=>n<=state.member.access_level).map(n=>`<option value="${n}">제한 ${n}급</option>`).join('')}</select><button class="primary-inline" type="submit">주석 등록</button></div><div id="annotationStatus" class="status-msg"></div></form>`:'';
   const recordOrigin=(d.lore_author_name&&d.lore_year&&d.lore_month&&d.lore_day)?`${escapeHTML(loreAuthorDisplay(d))} · ${escapeHTML(loreDateLabel(d.lore_year,d.lore_month,d.lore_day))} 기록`:'';
-  $('#view').innerHTML=`<article class="page"><div class="page-head"><div class="eyebrow">${escapeHTML(d.archive_code)}</div><h1>${escapeHTML(d.title)}</h1><div class="subtitle">${escapeHTML(d.title_en||'')}</div>${recordOrigin?`<div class="record-origin-line">${recordOrigin}</div>`:''}<div class="doc-toolbar"><span class="badge">${escapeHTML(categoryNames[d.category]||d.category)}</span>${badgeFor(d)}<span class="badge">${escapeHTML(statusNames[d.record_status]||d.record_status)}</span></div></div><div class="document-layout"><div class="document-body">${sections.length?sections.map(s=>`<section class="doc-section"><h2 data-section-heading="${escapeHTML(s.heading)}">${escapeHTML(s.heading)}${s.min_access_level?`<span class="section-level">제한 ${s.min_access_level}급</span>`:''}</h2>${markdownToHtml(s.body,redactionMap)}</section>`).join(''):'<div class="empty">본문 섹션이 없습니다.</div>'}<section class="annotation-thread"><h2>기록관 주석</h2>${annRows.length?annRows.map(a=>{const canDeleteAnnotation=isChief||a.author_id===state.user?.id;return `<div class="annotation thread"><div class="annotation-head"><span class="annotation-author">${escapeHTML(loreAuthorDisplay(a))}</span><span class="annotation-meta"><span class="annotation-date">${escapeHTML(loreDateTimeLabel(a))}</span>${canDeleteAnnotation?`<button class="annotation-delete" type="button" data-delete-annotation="${escapeHTML(a.id)}" title="주석 삭제" aria-label="주석 삭제">삭제</button>`:''}</span></div><div>${textToHtml(a.body)}</div></div>`}).join(''):'<div class="muted">등록된 주석이 없습니다.</div>'}${annotationForm}</section></div><aside class="meta-card"><h4>RECORD METADATA</h4><div class="meta-row"><span>기록 ID</span><b>${escapeHTML(d.archive_code)}</b></div><div class="meta-row"><span>분류</span><b>${escapeHTML(categoryNames[d.category]||d.category)}</b></div><div class="meta-row"><span>상태</span><b>${escapeHTML(statusNames[d.record_status]||d.record_status)}</b></div><div class="meta-row"><span>세계</span><b>${escapeHTML(d.primary_world||'—')}</b></div><div class="meta-row"><span>기록자</span><b>${escapeHTML(d.lore_author_name?loreAuthorDisplay(d):'—')}</b></div><div class="meta-row"><span>기록일</span><b>${escapeHTML(loreDateLabel(d.lore_year,d.lore_month,d.lore_day))}</b></div>${canEdit?`<div class="doc-edit-actions"><button id="documentEditBtn" class="small-btn" type="button">✎ 문서 수정</button>${canRedact?`<button id="redactionEditBtn" class="small-btn redaction-edit-btn" type="button">▰ 검열 편집</button>`:''}</div>`:''}${(related||outButtons||inButtons||unresolvedBadges)?`<div class="reference-block"><h4>RELATED RECORDS</h4>${related?`<div class="reference-group"><div class="reference-group-title">수동 연결</div><div class="link-list">${related}</div></div>`:''}${outButtons?`<div class="reference-group"><div class="reference-group-title">이 기록에서 참조함</div><div class="reference-list">${outButtons}</div></div>`:''}${inButtons?`<div class="reference-group"><div class="reference-group-title">이 기록을 참조함</div><div class="reference-list">${inButtons}</div></div>`:''}${unresolvedBadges?`<div class="reference-group"><div class="reference-group-title">미작성 참조 기록</div><div class="reference-list">${unresolvedBadges}</div></div>`:''}</div>`:''}${importMeta?`<div class="source-trace"><h4>SOURCE TRACE</h4><div class="muted">${escapeHTML(importMeta.source_format||'obsidian-markdown')}</div><code>${escapeHTML(importMeta.source_path||'')}</code>${frontmatterText?`<details class="source-properties"><summary>원본 속성 보기</summary><pre>${escapeHTML(frontmatterText)}</pre></details>`:''}</div>`:''}</aside></div></article>`;
+  $('#view').innerHTML=`<article class="page"><div class="page-head"><div class="eyebrow">${escapeHTML(d.archive_code)}</div><h1>${escapeHTML(d.title)}</h1><div class="subtitle">${escapeHTML(d.title_en||'')}</div>${recordOrigin?`<div class="record-origin-line">${recordOrigin}</div>`:''}<div class="doc-toolbar"><span class="badge">${escapeHTML(categoryNames[d.category]||d.category)}</span>${badgeFor(d)}<span class="badge">${escapeHTML(statusNames[d.record_status]||d.record_status)}</span></div></div><div class="document-layout"><div class="document-body">${sections.length?sections.map(s=>`<section class="doc-section"><h2 data-section-heading="${escapeHTML(s.heading)}">${escapeHTML(s.heading)}${s.min_access_level?`<span class="section-level">제한 ${s.min_access_level}급</span>`:''}</h2>${markdownToHtml(s.body,redactionMap)}</section>`).join(''):'<div class="empty">본문 섹션이 없습니다.</div>'}<section class="annotation-thread"><h2>기록관 주석</h2>${annRows.length?annRows.map(a=>{const canDeleteAnnotation=isChief||a.author_id===state.user?.id;return `<div class="annotation thread"><div class="annotation-head"><span class="annotation-author">${escapeHTML(loreAuthorDisplay(a))}</span><span class="annotation-meta"><span class="annotation-date">${escapeHTML(loreDateTimeLabel(a))}</span>${canDeleteAnnotation?`<button class="annotation-delete" type="button" data-delete-annotation="${escapeHTML(a.id)}" title="주석 삭제" aria-label="주석 삭제">삭제</button>`:''}</span></div><div>${textToHtml(a.body)}</div></div>`}).join(''):'<div class="muted">등록된 주석이 없습니다.</div>'}${annotationForm}</section></div><aside class="meta-card"><h4>RECORD METADATA</h4><div class="meta-row"><span>기록 ID</span><b>${escapeHTML(d.archive_code)}</b></div><div class="meta-row"><span>분류</span><b>${escapeHTML(categoryNames[d.category]||d.category)}</b></div><div class="meta-row"><span>상태</span><b>${escapeHTML(statusNames[d.record_status]||d.record_status)}</b></div><div class="meta-row"><span>세계</span><b>${escapeHTML(d.primary_world||'—')}</b></div><div class="meta-row"><span>기록자</span><b>${escapeHTML(d.lore_author_name?loreAuthorDisplay(d):'—')}</b></div><div class="meta-row"><span>기록일</span><b>${escapeHTML(loreDateLabel(d.lore_year,d.lore_month,d.lore_day))}</b></div>${canEdit?`<div class="doc-edit-actions"><button id="documentEditBtn" class="small-btn" type="button">✎ 문서 수정</button>${canRedact?`<button id="redactionEditBtn" class="small-btn redaction-edit-btn" type="button">▰ 검열 편집</button>`:''}${isChief?`<button id="documentDeleteBtn" class="small-btn danger" type="button">문서 삭제</button>`:''}</div>`:''}${(related||outButtons||inButtons||unresolvedBadges)?`<div class="reference-block"><h4>RELATED RECORDS</h4>${related?`<div class="reference-group"><div class="reference-group-title">수동 연결</div><div class="link-list">${related}</div></div>`:''}${outButtons?`<div class="reference-group"><div class="reference-group-title">이 기록에서 참조함</div><div class="reference-list">${outButtons}</div></div>`:''}${inButtons?`<div class="reference-group"><div class="reference-group-title">이 기록을 참조함</div><div class="reference-list">${inButtons}</div></div>`:''}${unresolvedBadges?`<div class="reference-group"><div class="reference-group-title">미작성 참조 기록</div><div class="reference-list">${unresolvedBadges}</div></div>`:''}</div>`:''}${importMeta?`<div class="source-trace"><h4>SOURCE TRACE</h4><div class="muted">${escapeHTML(importMeta.source_format||'obsidian-markdown')}</div><code>${escapeHTML(importMeta.source_path||'')}</code>${frontmatterText?`<details class="source-properties"><summary>원본 속성 보기</summary><pre>${escapeHTML(frontmatterText)}</pre></details>`:''}</div>`:''}</aside></div></article>`;
   wireDocClicks();
   wireWikiClicks($('#view'));
   hydrateArchiveImages($('#view'));
   if(isChief)bindLoreAuthorSelect('annotationAuthor','annotationAuthorCustom');
   if($('#documentEditBtn'))$('#documentEditBtn').onclick=()=>openDocumentEditor(d,sections);
   if($('#redactionEditBtn'))$('#redactionEditBtn').onclick=()=>openRedactionEditor(d,sections);
+  if($('#documentDeleteBtn'))$('#documentDeleteBtn').onclick=()=>deleteArchiveDocument(d,sections);
   $$('[data-delete-annotation]').forEach(btn=>btn.onclick=async()=>{
     if(!confirm('이 주석을 삭제할까요? 삭제한 주석은 복구할 수 없습니다.'))return;
     btn.disabled=true;
@@ -1151,12 +1247,12 @@ async function sendArchiveChat(){
 }
 const ARCHIVIST_PROFILES=[
   {
-    key:'ryo',code:'ARC-C3-B07F44',name:'료',state:'현재 활동 중',rank:'최고기록관리자',species:'미기록',
+    key:'jjokomi',code:'ARC-C3-B07F44',name:'JJOKOMI',state:'현재 활동 중',rank:'최고기록관리자',species:'미기록',
     age:'미기록',apparent:'미기록',origin:'미기록',height:'미기록',
     appearance:'미기록',
     note:'PLANK ARCHIVE의 최고기록관리자. 일반 기록관 등급 체계 바깥의 관리직으로, 아카이브 전체의 기록과 운영을 총괄한다.',
     personality:'세부 성격 기록은 아직 등록되지 않았다.',
-    relation:'주요 기록관 7인의 한 명이며 최고기록관리자 권한 코드 C3를 사용한다.'
+    relation:''
   },
   {
     key:'astra',code:'ARC-A2-A57A01',name:'아스트라 맥스',state:'활동 종료 · 사망',rank:'2급 기록관',species:'비잔티움성인',
@@ -1221,7 +1317,7 @@ function renderArchivistDetail(key){
   const docs=documentsByArchivist(p);
   const records=docs.length?docs.map(d=>`<article class="panel archivist-record" data-doc="${escapeHTML(d.id)}"><div class="eyebrow">${escapeHTML(d.archive_code||'ARCHIVE RECORD')}</div><div class="archivist-record-title">${escapeHTML(d.title)}</div><div class="archivist-record-meta">${escapeHTML(loreDateLabel(d.lore_year,d.lore_month,d.lore_day))}${d.summary?` · ${escapeHTML(d.summary)}`:''}</div></article>`).join(''):'<div class="empty-small">현재 연결된 기록이 없습니다.</div>';
   $('#crumbs').textContent=`ARCHIVE / ARCHIVISTS / ${p.code}`;
-  $('#view').innerHTML=`<div class="page"><button id="archivistBack" class="small-btn archivist-back" type="button">← 기록관 목록</button><div class="page-head"><div class="eyebrow">${escapeHTML(p.code)}</div><h1>${escapeHTML(p.name)}</h1><div class="subtitle">${escapeHTML(p.state)} · ${escapeHTML(p.rank)}</div></div><div class="archivist-detail-head"><section class="panel archivist-detail-info"><div class="archivist-card-facts"><span class="tag">${escapeHTML(p.rank)}</span><span class="archivist-state">${escapeHTML(p.state)}</span></div><div class="archivist-detail-grid"><div class="archivist-detail-item"><span>종족</span><b>${escapeHTML(p.species)}</b></div><div class="archivist-detail-item"><span>출신</span><b>${escapeHTML(p.origin)}</b></div><div class="archivist-detail-item"><span>실제 나이</span><b>${escapeHTML(p.age)}</b></div><div class="archivist-detail-item"><span>외형 나이</span><b>${escapeHTML(p.apparent)}</b></div><div class="archivist-detail-item"><span>신장</span><b>${escapeHTML(p.height)}</b></div><div class="archivist-detail-item"><span>외형</span><b>${escapeHTML(p.appearance)}</b></div></div><div class="archivist-detail-text"><b>프로필</b><br>${escapeHTML(p.note)}</div><div class="archivist-detail-text"><b>성격</b><br>${escapeHTML(p.personality)}</div><div class="archivist-detail-text"><b>관련 사항</b><br>${escapeHTML(p.relation)}</div></section></div><section style="margin-top:28px"><div class="eyebrow">AUTHORED RECORDS</div><h2 style="margin-top:5px">이 기록관이 남긴 기록</h2><div class="archivist-record-list">${records}</div></section></div>`;
+  $('#view').innerHTML=`<div class="page"><button id="archivistBack" class="small-btn archivist-back" type="button">← 기록관 목록</button><div class="page-head"><div class="eyebrow">${escapeHTML(p.code)}</div><h1>${escapeHTML(p.name)}</h1><div class="subtitle">${escapeHTML(p.state)} · ${escapeHTML(p.rank)}</div></div><div class="archivist-detail-head"><section class="panel archivist-detail-info"><div class="archivist-card-facts"><span class="tag">${escapeHTML(p.rank)}</span><span class="archivist-state">${escapeHTML(p.state)}</span></div><div class="archivist-detail-grid"><div class="archivist-detail-item"><span>종족</span><b>${escapeHTML(p.species)}</b></div><div class="archivist-detail-item"><span>출신</span><b>${escapeHTML(p.origin)}</b></div><div class="archivist-detail-item"><span>실제 나이</span><b>${escapeHTML(p.age)}</b></div><div class="archivist-detail-item"><span>외형 나이</span><b>${escapeHTML(p.apparent)}</b></div><div class="archivist-detail-item"><span>신장</span><b>${escapeHTML(p.height)}</b></div><div class="archivist-detail-item"><span>외형</span><b>${escapeHTML(p.appearance)}</b></div></div><div class="archivist-detail-text"><b>프로필</b><br>${escapeHTML(p.note)}</div><div class="archivist-detail-text"><b>성격</b><br>${escapeHTML(p.personality)}</div>${p.relation?`<div class="archivist-detail-text"><b>관련 사항</b><br>${escapeHTML(p.relation)}</div>`:""}</section></div><section style="margin-top:28px"><div class="eyebrow">AUTHORED RECORDS</div><h2 style="margin-top:5px">이 기록관이 남긴 기록</h2><div class="archivist-record-list">${records}</div></section></div>`;
   $('#archivistBack').onclick=renderArchivists;wireDocClicks($('#view'));
 }
 function renderArchivists(){
@@ -1503,7 +1599,7 @@ async function importMarkdownDraft(){
 async function updateSuggestedCode(){const cat=$('#docCategory')?.value;if(!cat)return;try{const codes=await restQuery('archive_documents',`select=archive_code&category=eq.${encodeURIComponent(cat)}`);const prefix=`PA-${categoryPrefixes[cat]}-`;let max=0;(codes||[]).forEach(x=>{const m=String(x.archive_code).match(/(\d{4})$/);if(m)max=Math.max(max,Number(m[1]))});$('#docCode').value=prefix+String(max+1).padStart(4,'0')}catch(e){$('#docCode').value=`PA-${categoryPrefixes[cat]}-0001`}}
 async function createDocument(e){e.preventDefault();const st=$('#createStatus');st.textContent='기록 등록 중...';st.className='status-msg';const level=Number($('#docLevel').value);const payload={archive_code:$('#docCode').value.trim().toUpperCase(),title:$('#docTitle').value.trim(),title_en:$('#docTitleEn').value.trim()||null,category:$('#docCategory').value,access_class:level===0?'public':'restricted',min_access_level:level,record_status:$('#docStatus').value,summary:$('#docSummary').value.trim(),primary_world:$('#docWorld').value.trim()||null};try{if(state.member.role==='chief'){const author=readLoreAuthor('docLoreAuthor','docLoreAuthorCustom'),date=readLoreDate('docLore');validateLoreAuthorDate(author,date);Object.assign(payload,{lore_author_profile_id:author.profile_id,lore_author_name:author.name,lore_year:date.year,lore_month:date.month,lore_day:date.day})}const rows=await restInsert('archive_documents',payload);const d=rows[0];const body=$('#docBody').value.trim();if(body)await restInsert('archive_document_sections',{document_id:d.id,heading:'개요',body,sort_order:10,min_access_level:level});await restInsert('archive_document_revisions',{document_id:d.id,change_summary:'문서 생성',snapshot:payload});await loadDocuments();st.textContent='등록 완료';st.className='status-msg ok';setTimeout(()=>openDocument(d.id),250)}catch(err){st.textContent=loreErrorMessage(err);st.className='status-msg error'}}
 async function syncNow(){const btn=$('#refreshBtn');btn.textContent='동기화 중…';try{await loadMember();if(!state.member)return showDenied();await Promise.all([loadDocuments(),loadMemberLabels()]);applyMemberUI();renderHome()}catch(e){alert('동기화 실패: '+e.message)}finally{btn.textContent='동기화'}}
-function route(name){closeMobileSidebar();if(name!=='comms')stopCommsPolling();state.route=name;$$('.nav-item').forEach(x=>x.classList.remove('active'));const active=document.querySelector(`[data-route="${name}"]`);if(active)active.classList.add('active');if(name==='home')renderHome();else if(name==='recent')renderRecent();else if(name==='random'){if(state.documents.length)openDocument(state.documents[Math.floor(Math.random()*state.documents.length)].id);else renderHome()}else if(name==='create')renderCreate();else if(name==='comms')renderComms();else if(name==='archivists')renderArchivists()}
+function route(name){closeMobileSidebar();if(name!=='comms')stopCommsPolling();state.route=name;setNavActive(name);if(name==='home')renderHome();else if(name==='worlds')renderWorlds();else if(name==='recent')renderRecent();else if(name==='random'){if(state.documents.length)openDocument(state.documents[Math.floor(Math.random()*state.documents.length)].id);else renderHome()}else if(name==='create')renderCreate();else if(name==='comms')renderComms();else if(name==='archivists')renderArchivists()}
 $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();if(state.busy)return;state.busy=true;$('#loginBtn').disabled=true;setLoginStatus('계정 인증 중...');try{await signIn($('#email').value.trim(),$('#password').value);await loadMember();if(!state.member){showDenied();return}await Promise.all([loadDocuments(),loadMemberLabels()]);$('#loginScreen').classList.add('hidden');$('#app').classList.remove('hidden');applyMemberUI();renderHome()}catch(err){console.error(err);saveSession(null);setLoginStatus(err.message||'로그인에 실패했습니다.','error')}finally{state.busy=false;$('#loginBtn').disabled=false}});
 $$('[data-route]').forEach(b=>b.addEventListener('click',()=>route(b.dataset.route)));$$('[data-category]').forEach(b=>b.addEventListener('click',()=>renderCategory(b.dataset.category)));$('#profileBtn').onclick=()=>{closeMobileSidebar();renderProfile()};$('#logoutBtn').onclick=signOut;$('#refreshBtn').onclick=syncNow;
 $('#mobileMenuBtn').onclick=toggleMobileSidebar;$('#sidebarOverlay').onclick=closeMobileSidebar;window.addEventListener('resize',()=>{if(innerWidth>620)closeMobileSidebar()});
