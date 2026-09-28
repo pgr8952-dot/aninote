@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PLANK ARCHIVE v0.4.29</title>
+<title>PLANK ARCHIVE v0.4.30</title>
 <style>
 :root {
   --bg: #0b0f14;
@@ -371,6 +371,28 @@ body.sidebar-lock{overflow:hidden}
 .world-folder-tools .control{min-width:0;flex:1 1 150px;padding:8px 9px;font-size:11px}
 .world-folder-tools .small-btn{white-space:nowrap}
 .world-folder-empty-note{padding:12px 4px 4px;color:#74879e;font-size:11px;line-height:1.55}
+
+/* v0.4.30 · My Files style folder move mode */
+.world-folder-tools{justify-content:flex-start}
+.world-folder-tools .move-spacer{flex:1 1 auto}
+.world-folder-move-btn{border-color:rgba(126,164,216,.3)!important;background:#142034!important}
+.world-folder-move-btn.active{border-color:#86b5f0!important;background:#1b3150!important;color:#fff!important}
+.world-folder-record.move-select{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center}
+.world-folder-record.move-select .world-move-check{width:22px;height:22px;border:1px solid #50647d;border-radius:6px;display:grid;place-items:center;color:transparent;background:#0d1520;font-size:13px;font-weight:900;flex:0 0 auto}
+.world-folder-record.move-select.selected{border-color:#6f9bd4;background:#17263a}
+.world-folder-record.move-select.selected .world-move-check{background:#7da9e1;border-color:#92b9e9;color:#08111c}
+.world-folder-record.move-select .world-move-record-copy{min-width:0}
+.world-move-guide{margin:0 0 10px;padding:10px 11px;border:1px solid rgba(119,158,211,.26);border-radius:10px;background:rgba(20,34,52,.72);color:#b8c8dc;font-size:11px;line-height:1.55}
+.world-move-guide b{color:#e4edf8}
+.world-move-bar{position:sticky;bottom:0;z-index:8;margin-top:12px;padding:10px;border:1px solid #38526f;border-radius:12px;background:rgba(11,18,28,.96);backdrop-filter:blur(12px);box-shadow:0 -10px 24px rgba(0,0,0,.24)}
+.world-move-bar-main{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.world-move-count{font-weight:800;color:#e3edf9;margin-right:auto}
+.world-move-destination{font-size:10px;color:#8195ae;width:100%;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.world-move-preview{font-size:10px;color:#9eb0c7;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.world-move-here{background:#22466d!important;border-color:#517faf!important;color:#fff!important}
+.world-move-here:disabled{opacity:.45;cursor:not-allowed}
+.world-folder-current-select{border:1px dashed rgba(117,158,214,.24);background:rgba(14,24,38,.55);border-radius:9px;padding:8px 10px;margin:0 0 9px;display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:10px;color:#8194ac}
+@media(max-width:720px){.world-move-bar-main .small-btn{flex:1 1 auto}.world-folder-tools{display:grid;grid-template-columns:1fr 1fr}.world-folder-tools .move-spacer{display:none}}
 
 </style>
 </head>
@@ -1009,7 +1031,7 @@ function toggleMobileSidebar(){if($('.sidebar')?.classList.contains('mobile-open
 function badgeFor(d){if(d.access_class==='sealed')return '<span class="tag sealed">봉인</span>';if(d.min_access_level>0)return `<span class="tag restricted">제한 ${d.min_access_level}급</span>`;return '<span class="tag public">공개</span>'}
 function recordRow(d){return `<div class="record-row" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)}</div><div><div class="record-title">${escapeHTML(d.title)}</div><div class="record-summary">${escapeHTML(d.summary||'')}</div></div>${badgeFor(d)}</div>`}
 function wireDocClicks(root=document){root.querySelectorAll('[data-doc]').forEach(el=>el.onclick=()=>openDocument(el.dataset.doc))}
-function renderHome(){pushArchiveHistory('home');state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(memberDisplay(state.member))}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.4.29</p><div class="patch-note-line"><span>인터월드 공용 폴더</span><span>폴더 생성·이동</span><span>Markdown 표시</span></div></div></section>`;
+function renderHome(){pushArchiveHistory('home');state.route='home';setCrumb('SEARCH');const recent=state.documents.slice(0,6);$('#view').innerHTML=`<section class="hero"><div class="hero-kicker">EARTH ARCHIVE NODE</div><h2>기록은 사라지지 않는다. <span>사라진 것 또한 기록될 수 있다.</span></h2><p>플랑으로부터 시작된 세계와 존재의 흔적을 검색합니다.</p><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div><div class="category-pills">${Object.entries(categoryNames).map(([k,v])=>`<button class="pill" data-catpill="${k}">${v}</button>`).join('')}</div></section><div class="system-banner"><span class="sync-dot"></span>LIVE DATABASE · 현재 계정에서 열람 가능한 기록만 표시됩니다.</div><section class="dashboard-grid"><div class="panel span-2"><div class="panel-head"><h3>최근 갱신 기록</h3><button id="allRecent" class="text-btn">전체 보기</button></div><div class="record-list">${recent.length?recent.map(recordRow).join(''):'<div class="empty">열람 가능한 기록이 없습니다.</div>'}</div></div><div class="panel"><h3>열람 권한</h3><div class="clearance-card"><div class="clearance-number">${state.member.access_level}</div><div><b>${accessNames[state.member.access_level]}</b><p>${escapeHTML(roleNames[state.member.role]||state.member.role)} · ${escapeHTML(memberDisplay(state.member))}</p>${state.member.role==='guest'?`<span class="expiry-chip">남은 권한 ${escapeHTML(remainingTime(state.member.access_expires_at))}</span>`:''}</div></div><div class="stat-row"><span>열람 가능 기록</span><b>${state.documents.length}</b></div><div class="stat-row"><span>계정 유형</span><b>${escapeHTML(roleNames[state.member.role]||state.member.role)}</b></div></div><div class="panel"><h3>노드 공지</h3><p class="notice-title">PLANK ARCHIVE v0.4.30</p><div class="patch-note-line"><span>파일식 이동 모드</span><span>다중 문서 이동</span><span>폴더 탐색 개선</span></div></div></section>`;
   wireDocClicks();$('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});$('#allRecent').onclick=renderRecent;$$('[data-catpill]').forEach(b=>b.onclick=()=>renderCategory(b.dataset.catpill));setNavActive('home')
 }
 function renderSearch(q,notice=''){pushArchiveHistory('search',{q:String(q||'')});state.route='search';const term=(q||'').trim(),needle=term.toLowerCase();setCrumb('SEARCH RESULTS');const rows=!needle?state.documents:state.documents.filter(d=>[d.archive_code,d.title,d.title_en,d.summary,d.primary_world,...(d.aliases||[]),...(d.tags||[])].some(v=>String(v||'').toLowerCase().includes(needle)));$('#view').innerHTML=`<div class="page"><div class="page-head"><div class="eyebrow">SEARCH</div><h1>검색 결과</h1><div class="subtitle">${escapeHTML(term||'전체 기록')} · ${rows.length}건</div></div><div class="search-box search-results-query"><span>⌕</span><input id="searchResultsInput" value="${escapeHTML(term)}" placeholder="기록명, 기록 ID, 요약 검색" autocomplete="off"/><kbd>ENTER</kbd></div>${notice?`<div class="system-banner import-complete-banner"><span class="sync-dot"></span>${escapeHTML(notice)}</div>`:''}<div class="search-results">${rows.length?rows.map(d=>`<div class="result-card" data-doc="${d.id}"><div class="record-code">${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</div><h3>${escapeHTML(d.title)}</h3><div class="muted">${escapeHTML(d.summary||'')}</div><div style="margin-top:10px">${badgeFor(d)}</div></div>`).join(''):'<div class="empty">일치하는 기록이 없습니다.</div>'}</div></div>`;wireDocClicks();const input=$('#searchResultsInput');if(input){input.addEventListener('keydown',e=>{if(e.key==='Enter')renderSearch(e.target.value)});input.focus();input.setSelectionRange(input.value.length,input.value.length)}}
@@ -1023,6 +1045,7 @@ function renderWorlds(selectedName='',folderPath=null){
   groups.forEach(g=>{const node=document.createElement('button');node.type='button';node.className='world-node';node.dataset.world=g.name;node.style.width=g.size+'px';node.style.height=g.size+'px';if(g===selected)node.classList.add('active');node.innerHTML=`<span class="world-node-inner"><span class="world-node-name" style="font-size:${Math.max(11,Math.min(19,g.size/6.7))}px">${escapeHTML(g.name)}</span><span class="world-node-count">${g.count.toLocaleString()}건</span></span>`;space.appendChild(node);nodeMap.set(g.name,node)});
   let yaw=.45,pitch=-.18,zoom=1,dragging=false,startX=0,startY=0,startYaw=0,startPitch=0,suppressClick=false,dragDistance=0;
   const canManageFolders=['archivist','chief'].includes(state.member?.role);
+  const moveState={active:false,selected:new Set(),busy:false};
   function project(){const cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch),cx=explorer.clientWidth/2,cyScreen=explorer.clientHeight/2,camera=920;for(const g of groups){let x=g.x*cy+g.z*sy;let z=-g.x*sy+g.z*cy;let y=g.y;const y2=y*cp-z*sp,z2=y*sp+z*cp;y=y2;z=z2;const perspective=Math.max(.48,Math.min(1.72,camera/(camera+z))),scale=perspective*zoom,sx=cx+x*scale,syScreen=cyScreen+y*scale,node=nodeMap.get(g.name);node.style.left=sx+'px';node.style.top=syScreen+'px';node.style.transform=`translate(-50%,-50%) scale(${scale})`;node.style.zIndex=String(Math.round(3000-z));const depthNorm=Math.max(0,Math.min(1,(z+420)/840));node.style.opacity=String(.58+(1-depthNorm)*.42);node.style.filter=`brightness(${.72+(1-depthNorm)*.38}) saturate(${.78+(1-depthNorm)*.28})`;}}
   function collectionLabel(name){const raw=String(name||'').trim(),m=raw.match(/^(\d+)[_.\s-]+(.+)$/);return m?`${m[1]} · ${m[2].replaceAll('_',' ')}`:raw.replaceAll('_',' ')}
   function folderRows(group,path=''){
@@ -1032,8 +1055,20 @@ function renderWorlds(selectedName='',folderPath=null){
     return {folders,docs};
   }
   function folderDescendantCount(group,path){return group.docs.filter(d=>d.folder_path===path||String(d.folder_path||'').startsWith(path+'/')).length}
-  function renderTabs(group,mode){const tabs=$('#worldRecordTabs');tabs.innerHTML=`<button type="button" class="world-record-tab ${mode==='records'?'active':''}" data-world-mode="records">전체 기록</button><button type="button" class="world-record-tab ${mode==='folders'?'active':''}" data-world-mode="folders">폴더</button>`;tabs.querySelector('[data-world-mode="records"]').onclick=()=>{replaceArchiveHistory('worlds',{world:group.name,folder:null});renderWorldDocList(group)};tabs.querySelector('[data-world-mode="folders"]').onclick=()=>{replaceArchiveHistory('worlds',{world:group.name,folder:''});renderWorldFolderList(group,'')}}
-  function renderWorldDocList(group){$('#worldListTitle').textContent=group.name;$('#worldListMeta').textContent=`열람 가능 기록 ${group.count.toLocaleString()}건`;renderTabs(group,'records');const rows=[...group.docs].sort((a,b)=>a.title.localeCompare(b.title,'ko'));$('#worldDocList').innerHTML=rows.length?rows.map(r=>`<button type="button" class="world-doc-item" data-doc="${r.id}"><div class="meta">${escapeHTML(r.archive_code)} · ${escapeHTML(categoryNames[r.category]||r.category)}</div><div class="title">${escapeHTML(r.title)}</div><div class="summary">${escapeHTML(r.summary||'요약 없음')}</div></button>`).join(''):'<div class="world-empty">이 인터월드에는 열람 가능한 기록이 없습니다.</div>';wireDocClicks($('#worldDocList'))}
+  function clearMoveMode(){moveState.active=false;moveState.selected.clear();moveState.busy=false}
+  function renderTabs(group,mode){
+    const tabs=$('#worldRecordTabs');
+    tabs.innerHTML=`<button type="button" class="world-record-tab ${mode==='records'?'active':''}" data-world-mode="records">전체 기록</button><button type="button" class="world-record-tab ${mode==='folders'?'active':''}" data-world-mode="folders">폴더</button>`;
+    tabs.querySelector('[data-world-mode="records"]').onclick=()=>{clearMoveMode();replaceArchiveHistory('worlds',{world:group.name,folder:null});renderWorldDocList(group)};
+    tabs.querySelector('[data-world-mode="folders"]').onclick=()=>{replaceArchiveHistory('worlds',{world:group.name,folder:''});renderWorldFolderList(group,'')};
+  }
+  function renderWorldDocList(group){
+    clearMoveMode();
+    $('#worldListTitle').textContent=group.name;$('#worldListMeta').textContent=`열람 가능 기록 ${group.count.toLocaleString()}건`;renderTabs(group,'records');
+    const rows=[...group.docs].sort((a,b)=>a.title.localeCompare(b.title,'ko'));
+    $('#worldDocList').innerHTML=rows.length?rows.map(r=>`<button type="button" class="world-doc-item" data-doc="${r.id}"><div class="meta">${escapeHTML(r.archive_code)} · ${escapeHTML(categoryNames[r.category]||r.category)}</div><div class="title">${escapeHTML(r.title)}</div><div class="summary">${escapeHTML(r.summary||'요약 없음')}</div></button>`).join(''):'<div class="world-empty">이 인터월드에는 열람 가능한 기록이 없습니다.</div>';
+    wireDocClicks($('#worldDocList'));
+  }
   async function createFolder(group,parent=''){
     if(!canManageFolders)return;
     const raw=prompt(parent?'새 하위 폴더 이름':'새 폴더 이름');
@@ -1050,41 +1085,69 @@ function renderWorlds(selectedName='',folderPath=null){
       renderWorldFolderList(refreshed,parent);
     }catch(e){alert(e.message?.includes('duplicate')?'같은 위치에 같은 이름의 폴더가 이미 있습니다.':loreErrorMessage(e))}
   }
-  async function moveDocument(group,path,documentId){
-    if(!canManageFolders||!documentId)return;
+  function selectedMovePreview(group){
+    const rows=group.docs.filter(d=>moveState.selected.has(d.id));
+    const names=rows.slice(0,3).map(d=>d.title);
+    return names.join(' · ')+(rows.length>3?` 외 ${rows.length-3}개`:'' );
+  }
+  function toggleMoveDoc(group,path,id){
+    if(!moveState.active)return;
+    if(moveState.selected.has(id))moveState.selected.delete(id);else moveState.selected.add(id);
+    renderWorldFolderList(group,path);
+  }
+  function selectCurrentFolderDocs(group,path){
+    for(const d of folderRows(group,path).docs)moveState.selected.add(d.id);
+    renderWorldFolderList(group,path);
+  }
+  async function moveSelectedDocuments(group,path){
+    if(!moveState.active||moveState.busy)return;
+    const ids=[...moveState.selected];
+    if(!ids.length)return alert('이동할 기록을 먼저 선택해주세요.');
+    let folderId=null;
+    if(path){
+      const folder=(state.worldFolders||[]).find(f=>f.world_name===group.name&&f.path===path);
+      if(!folder)return alert('이동할 폴더를 찾을 수 없습니다.');
+      folderId=folder.id;
+    }
+    const dest=path?`/${path.split('/').map(collectionLabel).join(' / ')}`:'폴더 루트';
+    if(!confirm(`${ids.length}개 기록을 “${dest}” 위치로 이동할까요?`))return;
+    moveState.busy=true;
+    renderWorldFolderList(group,path);
     try{
-      if(!path){
-        await restDelete('archive_document_folders',`document_id=eq.${encodeURIComponent(documentId)}`);
-      }else{
-        const folder=(state.worldFolders||[]).find(f=>f.world_name===group.name&&f.path===path);
-        if(!folder)throw new Error('폴더를 찾을 수 없습니다.');
-        await rawFetch('/rest/v1/archive_document_folders?on_conflict=document_id',{method:'POST',body:{document_id:documentId,folder_id:folder.id},headers:{'Prefer':'resolution=merge-duplicates,return=minimal'}});
-      }
+      await rpc('move_archive_documents_to_folder',{p_document_ids:ids,p_world_name:group.name,p_folder_id:folderId});
       await loadDocuments();
       const refreshed=getWorldGroups().find(g=>g.name===group.name)||group;
+      clearMoveMode();
       renderWorldFolderList(refreshed,path);
-    }catch(e){alert(loreErrorMessage(e))}
+    }catch(e){moveState.busy=false;renderWorldFolderList(group,path);alert(loreErrorMessage(e))}
   }
   function renderWorldFolderList(group,path=''){
     let safe=String(path||'');
     if(safe && !(state.worldFolders||[]).some(f=>f.world_name===group.name&&f.path===safe))safe='';
     $('#worldListTitle').textContent=group.name;
-    $('#worldListMeta').textContent=`폴더 · ${group.docs.filter(d=>d.folder_path).length.toLocaleString()}건 정리됨`;
+    $('#worldListMeta').textContent=moveState.active?`이동할 기록 선택 중 · ${moveState.selected.size.toLocaleString()}개 선택`:`폴더 · ${group.docs.filter(d=>d.folder_path).length.toLocaleString()}건 정리됨`;
     renderTabs(group,'folders');
     const data=folderRows(group,safe),parts=safe.split('/').filter(Boolean),crumbs=[`<button type="button" class="world-folder-crumb" data-world-folder="">폴더</button>`];
     parts.forEach((p,i)=>crumbs.push(`<span class="world-folder-sep">/</span><button type="button" class="world-folder-crumb" data-world-folder="${escapeHTML(parts.slice(0,i+1).join('/'))}">${escapeHTML(collectionLabel(p))}</button>`));
-    const folderOptions=group.docs.filter(d=>(d.folder_path||'')!==safe).sort((a,b)=>a.title.localeCompare(b.title,'ko')).map(d=>`<option value="${escapeHTML(d.id)}">${escapeHTML(d.archive_code)} · ${escapeHTML(d.title)}</option>`).join('');
-    const tools=canManageFolders?`<div class="world-folder-tools"><button type="button" class="small-btn" id="worldCreateFolder">＋ ${safe?'하위 폴더':'폴더'} 만들기</button>${folderOptions?`<select id="worldFolderDocumentSelect" class="control"><option value="">${safe?'이 폴더로 옮길 기록 선택':'루트로 옮길 기록 선택'}</option>${folderOptions}</select><button type="button" class="small-btn" id="worldMoveFolderDocument">${safe?'여기로 이동':'루트로 이동'}</button>`:''}</div>`:'';
+    const tools=canManageFolders?`<div class="world-folder-tools"><button type="button" class="small-btn" id="worldCreateFolder">＋ ${safe?'하위 폴더':'폴더'} 만들기</button><span class="move-spacer"></span>${group.docs.length?`<button type="button" class="small-btn world-folder-move-btn ${moveState.active?'active':''}" id="worldToggleMoveMode">${moveState.active?'이동 선택 중':'↔ 이동'}</button>`:''}${moveState.active&&data.docs.length?`<button type="button" class="small-btn" id="worldSelectCurrentFolder">현재 폴더 전체 선택</button>`:''}</div>`:'';
+    const guide=moveState.active?`<div class="world-move-guide"><b>기록 이동</b> · 옮길 기록을 여러 개 선택한 다음 폴더를 탐색하세요. 목적지에 도착하면 아래 <b>여기로 이동</b>을 누르면 됩니다.</div>`:'';
     const folders=data.folders.map(f=>`<button type="button" class="world-folder-item" data-world-folder="${escapeHTML(f.path)}"><span class="world-folder-icon">▱</span><span class="world-folder-name">${escapeHTML(collectionLabel(f.name))}</span><span class="world-folder-count">${folderDescendantCount(group,f.path).toLocaleString()}건</span></button>`).join('');
-    const docs=data.docs.map(d=>`<button type="button" class="world-folder-record" data-doc="${d.id}"><b>${escapeHTML(d.title)}</b><span>${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</span></button>`).join('');
+    const docs=data.docs.map(d=>moveState.active?`<button type="button" class="world-folder-record move-select ${moveState.selected.has(d.id)?'selected':''}" data-move-doc="${d.id}"><span class="world-move-check">✓</span><span class="world-move-record-copy"><b>${escapeHTML(d.title)}</b><span>${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</span></span></button>`:`<button type="button" class="world-folder-record" data-doc="${d.id}"><b>${escapeHTML(d.title)}</b><span>${escapeHTML(d.archive_code)} · ${escapeHTML(categoryNames[d.category]||d.category)}</span></button>`).join('');
     const empty=!folders&&!docs?`<div class="world-empty">아직 폴더나 기록이 없습니다.${canManageFolders?'<div class="world-folder-empty-note">위의 ‘폴더 만들기’로 이 인터월드의 기록 구조를 시작할 수 있습니다.</div>':''}</div>`:'';
-    $('#worldDocList').innerHTML=`<div class="world-folder-breadcrumb">${crumbs.join('')}</div>${tools}<div class="world-folder-list">${folders}${empty}</div>${docs?`<div class="world-folder-records">${docs}</div>`:''}`;
+    const destination=safe?`/${safe.split('/').map(collectionLabel).join(' / ')}`:'폴더 루트';
+    const moveBar=moveState.active?`<div class="world-move-bar"><div class="world-move-bar-main"><span class="world-move-count">${moveState.selected.size.toLocaleString()}개 선택됨</span><button type="button" class="small-btn" id="worldClearMoveSelection" ${moveState.selected.size?'':'disabled'}>선택 해제</button><button type="button" class="small-btn" id="worldCancelMove">취소</button><button type="button" class="small-btn world-move-here" id="worldMoveHere" ${(!moveState.selected.size||moveState.busy)?'disabled':''}>${moveState.busy?'이동 중…':'여기로 이동'}</button><div class="world-move-destination">목적지 · ${escapeHTML(destination)}</div>${moveState.selected.size?`<div class="world-move-preview">선택 · ${escapeHTML(selectedMovePreview(group))}</div>`:''}</div></div>`:'';
+    $('#worldDocList').innerHTML=`<div class="world-folder-breadcrumb">${crumbs.join('')}</div>${tools}${guide}<div class="world-folder-list">${folders}${empty}</div>${docs?`<div class="world-folder-records">${docs}</div>`:''}${moveBar}`;
     $('#worldDocList').querySelectorAll('[data-world-folder]').forEach(b=>b.onclick=()=>{const p=b.dataset.worldFolder||'';replaceArchiveHistory('worlds',{world:group.name,folder:p});renderWorldFolderList(group,p)});
     if($('#worldCreateFolder'))$('#worldCreateFolder').onclick=()=>createFolder(group,safe);
-    if($('#worldMoveFolderDocument'))$('#worldMoveFolderDocument').onclick=()=>{const id=$('#worldFolderDocumentSelect')?.value;if(!id)return alert('이동할 기록을 선택해주세요.');moveDocument(group,safe,id)};
-    wireDocClicks($('#worldDocList'));
+    if($('#worldToggleMoveMode'))$('#worldToggleMoveMode').onclick=()=>{if(moveState.active){clearMoveMode()}else{moveState.active=true;moveState.selected.clear()}renderWorldFolderList(group,safe)};
+    if($('#worldSelectCurrentFolder'))$('#worldSelectCurrentFolder').onclick=()=>selectCurrentFolderDocs(group,safe);
+    if($('#worldClearMoveSelection'))$('#worldClearMoveSelection').onclick=()=>{moveState.selected.clear();renderWorldFolderList(group,safe)};
+    if($('#worldCancelMove'))$('#worldCancelMove').onclick=()=>{clearMoveMode();renderWorldFolderList(group,safe)};
+    if($('#worldMoveHere'))$('#worldMoveHere').onclick=()=>moveSelectedDocuments(group,safe);
+    $('#worldDocList').querySelectorAll('[data-move-doc]').forEach(b=>b.onclick=()=>toggleMoveDoc(group,safe,b.dataset.moveDoc));
+    if(!moveState.active)wireDocClicks($('#worldDocList'));
   }
-  function selectWorld(name){selected=groups.find(g=>g.name===name)||groups[0];for(const [world,node] of nodeMap)node.classList.toggle('active',world===selected.name);replaceArchiveHistory('worlds',{world:selected.name,folder:null});renderWorldDocList(selected)}
+  function selectWorld(name){selected=groups.find(g=>g.name===name)||groups[0];clearMoveMode();for(const [world,node] of nodeMap)node.classList.toggle('active',world===selected.name);replaceArchiveHistory('worlds',{world:selected.name,folder:null});renderWorldDocList(selected)}
   for(const g of groups){const node=nodeMap.get(g.name);node.onclick=e=>{if(suppressClick){e.preventDefault();return}selectWorld(g.name)}}
   explorer.addEventListener('pointerdown',e=>{if(e.target.closest('.world-node'))return;dragging=true;dragDistance=0;startX=e.clientX;startY=e.clientY;startYaw=yaw;startPitch=pitch;explorer.classList.add('dragging');explorer.setPointerCapture?.(e.pointerId)});
   explorer.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-startX,dy=e.clientY-startY;dragDistance=Math.max(dragDistance,Math.hypot(dx,dy));yaw=startYaw-dx*.0075;pitch=startPitch+dy*.0058;project()});
