@@ -133,8 +133,11 @@ async function openDetail(id){const r=restaurants.find(x=>x.id===id);if(!r)retur
 async function fetchWalkingRoute(p){
   if(!currentRestaurant)throw Error("no_destination");
   const d={lat:+currentRestaurant.latitude,lng:+currentRestaurant.longitude};
-  const url=ROUTE+"?origin="+encodeURIComponent(p.lng+","+p.lat)+"&destination="+encodeURIComponent(d.lng+","+d.lat);
-  const r=await fetch(url);
+  const r=await fetch(ROUTE,{
+    method:"POST",
+    headers:{"content-type":"application/json"},
+    body:JSON.stringify({origin:{lat:p.lat,lng:p.lng},destination:d})
+  });
   const j=await r.json();
   if(!r.ok)throw Error(j?.error||"route_failed");
   return j;
