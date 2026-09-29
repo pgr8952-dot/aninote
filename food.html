@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ìš¸ì‚°ëŒ€ ë­ë¨¹ì§€</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#17191d;--muted:#747b86;--line:#e4e7eb;--dark:#111827}
+*{box-sizing:border-box} html,body{margin:0;background:#e9ebef;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+button,input{font:inherit} button{cursor:pointer} .app{width:min(100%,430px);min-height:100dvh;margin:auto;background:var(--bg);overflow:hidden}
+.top{height:62px;display:flex;align-items:center;padding:0 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.top b{flex:1;font-size:18px} .icon{width:40px;height:40px;border:1px solid var(--line);background:#fff;border-radius:13px}
+.pad{padding:14px} .map{height:255px;border-radius:20px;overflow:hidden;background:#dce2e7}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;box-shadow:0 5px 18px rgba(0,0,0,.035)}
+.notice{background:#fff3cd;color:#684f00;line-height:1.55} .muted{font-size:12px;color:var(--muted);line-height:1.45}
+.section{font-size:13px;font-weight:900;margin:18px 0 8px} .chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:800}
+.chip.on{background:#111827;color:#fff;border-color:#111827} .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;border-radius:15px;background:#111827;color:#fff;font-weight:900;padding:14px}
+#results,#detail{display:none} .bar{display:flex;align-items:center;gap:8px} .bar h2{font-size:18px;flex:1}
+.store{width:100%;display:flex;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:#fff;border-radius:17px;padding:12px;margin:8px 0}
+.store:active{transform:scale(.993)} .emoji{width:56px;height:56px;border-radius:14px;background:#eef1f4;display:grid;place-items:center;font-size:26px;flex:0 0 auto}
+.main{min-width:0;flex:1} .name{font-weight:900;font-size:14px} .meta{font-size:11px;color:var(--muted);line-height:1.45;margin-top:4px}
+.price{font-size:12px;font-weight:850;margin-top:4px} .go{font-size:11px;background:#111827;color:#fff;border-radius:999px;padding:7px 8px;white-space:nowrap}
+.info{background:#fff;border:1px solid var(--line);border-radius:15px;padding:11px} .info b{display:block;font-size:10px;color:#777f88;margin-bottom:4px} .info span{font-size:12px;font-weight:850}
+.menus>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #eceef1} .menus>div:last-child{border:0}
+</style>
+</head>
+<body><div class="app">
+<section id="home">
+ <div class="top"><b>ðŸ´ ìš¸ì‚°ëŒ€ ë­ë¨¹ì§€</b><button class="icon" onclick="location.href='food-editor.html'">ðŸ› </button></div>
+ <div class="pad">
+  <div id="notice"></div>
+  <div id="map" class="map"></div>
+  <div class="section">1ì¸ë‹¹ ì‹ë¹„</div>
+  <div class="grid">
+   <div class="card"><div class="muted">ìµœì†Œ</div><b id="minL">0ì›</b><input id="min" type="range" min="0" max="30000" step="1000" value="0"></div>
+   <div class="card"><div class="muted">ìµœëŒ€</div><b id="maxL">30,000ì›</b><input id="max" type="range" min="0" max="30000" step="1000" value="30000"></div>
+  </div>
+  <div class="section">ìŒì‹ ì¢…ë¥˜</div>
+  <div class="chips" id="cats">
+   <button class="chip on" data-v="all">ì•„ë¬´ê±°ë‚˜</button><button class="chip" data-v="í•œì‹">í•œì‹</button><button class="chip" data-v="ì¼ì‹">ì¼ì‹</button>
+   <button class="chip" data-v="ì¤‘ì‹">ì¤‘ì‹</button><button class="chip" data-v="ì–‘ì‹">ì–‘ì‹</button><button class="chip" data-v="ë¶„ì‹">ë¶„ì‹</button><button class="chip" data-v="íŒ¨ìŠ¤íŠ¸í‘¸ë“œ">íŒ¨ìŠ¤íŠ¸í‘¸ë“œ</button>
+  </div>
+  <div class="section">ìµœëŒ€ ë„ë³´ì‹œê°„</div>
+  <div class="chips" id="walks"><button class="chip" data-v="5">5ë¶„</button><button class="chip on" data-v="10">10ë¶„</button><button class="chip" data-v="15">15ë¶„</button><button class="chip" data-v="20">20ë¶„</button></div>
+  <div style="height:14px"></div><button class="btn" id="search">ì‹ë‹¹ ì°¾ê¸°</button>
+ </div>
+</section>
+
+<section id="results">
+ <div class="top bar"><button class="icon" onclick="show('home')">â†</button><h2>ê²€ìƒ‰ ê²°ê³¼</h2></div>
+ <div class="pad"><div id="rmap" class="map"></div><div class="card"><b id="count"></b><div id="list"></div></div></div>
+</section>
+
+<section id="detail">
+ <div class="top bar"><button class="icon" onclick="show('results')">â†</button><h2>ì‹ë‹¹ ìƒì„¸</h2></div>
+ <div class="pad"><div id="dmap" class="map"></div><h1 id="dn" style="font-size:26px;margin-bottom:6px"></h1><div id="tags" class="muted"></div>
+  <div class="grid" style="margin-top:12px">
+   <div class="info"><b>ê±°ë¦¬/ë„ë³´</b><span id="dd"></span></div><div class="info"><b>ê°€ê²©ëŒ€</b><span id="dp"></span></div>
+   <div class="info"><b>í…Œì´ë¸”/ìˆ˜ìš©</b><span id="dc"></span></div><div class="info"><b>í˜¼ë°¥/ë‹¨ì²´</b><span id="df"></span></div>
+   <div class="info"><b>ì˜ì—…ì‹œê°„</b><span id="dh"></span></div><div class="info"><b>ë¸Œë ˆì´í¬</b><span id="db"></span></div>
+  </div>
+  <div class="section">ëŒ€í‘œ ë©”ë‰´</div><div class="card menus" id="dm"></div>
+  <div class="section">ì„¤ëª…</div><div class="card muted" id="desc"></div>
+ </div>
+</section>
+</div>
+<script>
+const SB="https://zkmxtvompqzhyfbrnupc.supabase.co", PK="sb_publishable_yqodOC8pokdJmOthqsuA1Q_WZjlI0Xg", SCHOOL={lat:35.5439,lng:129.2563};
+const $=q=>document.querySelector(q);
+let all=[], filtered=[], cat="all", walk=10, maps={}, marks=[], origin={...SCHOOL};
+async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());return r.json()}
+function won(n){return Number(n||0).toLocaleString("ko-KR")+"ì›"}
+function dist(a,b){const R=6371000,p=Math.PI/180,x=(b.lat-a.lat)*p,y=(b.lng-a.lng)*p,A=Math.sin(x/2)**2+Math.cos(a.lat*p)*Math.cos(b.lat*p)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(A))}
+function show(id){["home","results","detail"].forEach(x=>$("#"+x).style.display=x===id?"block":"none");setTimeout(()=>Object.values(maps).forEach(m=>m?.relayout?.()),80);scrollTo(0,0)}
+async function boot(){
+ try{all=await api("food_restaurants?select=*&is_demo=eq.true&is_active=eq.true&order=name.asc")}catch(e){$("#notice").innerHTML='<div class="card notice">ì‹ë‹¹ DBë¥¼ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆì–´.</div>';return}
+ let settings=[];
+ try{settings=await api("food_app_settings?id=eq.main&select=kakao_js_key")}catch{}
+ const key=settings[0]?.kakao_js_key||"";
+ if(!key){$("#notice").innerHTML='<div class="card notice"><b>ì§€ë„ ì„¤ì • ì „</b><br>ì—ë””í„°ì—ì„œ ì¹´ì¹´ì˜¤ JavaScript í‚¤ë¥¼ í•œ ë²ˆ ì €ìž¥í•˜ë©´ ì´ ë§í¬ë¥¼ ë°›ì€ ì‚¬ëžŒì€ ë³„ë„ ì„¤ì • ì—†ì´ ì‚¬ìš©í•  ìˆ˜ ìžˆì–´.</div>';return}
+ const s=document.createElement("script");
+ s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);
+ s.onload=()=>kakao.maps.load(()=>{maps.home=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.results=new kakao.maps.Map($("#rmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.detail=new kakakao.maps.Map($("#dmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:3});new kakao.maps.Marker({map:maps.home,position:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng)})});
+ s.onerror=()=>$("#notice").innerHTML='<div class="card notice">ì¹´ì¹´ì˜¤ ì§€ë„ë¥¼ ëª» ë¶ˆëŸ¬ì™”ì–´. ì—ë””í„°ì— í‘œì‹œë˜ëŠ” í˜„ìž¬ ì‚¬ì´íŠ¸ ë„ë©´ì´ì´ ì¹´ì¹´ì˜¤ JavaScript SDK ë„ë©”ì¸ì— ë“±ë¡œë¨ëŠ”ì§€ í™•ì¸í•´ì ˜.</div>';
+ document.head.appendChild(s);
+}
+function sync(){let a=+$("#min").value,b=+$("#max").value;if(a>b){b=a;$("#max").value=b}$("#minL").textContent=won(a);$("#maxL").textContent=won(b)}
+$("#min").oninput=sync;$("#max").oninput=sync;sync();
+$("#cats").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#cats").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");cat=b.dataset.v}
+$("#walks").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#walks").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");walk=+b.dataset.v}
+$("#search").onclick=()=>{const mi=+$("#min").value,ma=+$("#max").value;filtered=all.map(r=>({...r,_d:Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}))})).filter(r=>Math.ceil(r._d/75)<=walk&&(cat==="all"||r.category_label===cat)&&(r.max_price??999999)>=mi&&(r.min_price??0)<=ma).sort((a,b)=>a._d-b._d);$("#count").textContent=filtered.length+"ê³³";$("#list").innerHTML=filtered.map((r,i)=>`<button class="store" data-id="${r.id}"><div class="emoji">ðŸ´</div><div class="main"><div class="name">${i<3?"ì¶”ì²œ "+(i+1)+" Â· ":""}${r.name}</div><div class="meta">${r.category_label||"ê¸°íƒ€"'Ò+rÉ[ÒG´ÖF‚æÖ‚ƒÄÖF‚æ6V–Â‡"åöBósR’—ÞËhB+rG·"åöGÖÓÆ'#âG·"æFG&W77ÓÂöF—cãÆF—b6Æ73Ò'&–6R#âG·vöâ‡"æÖ–å÷&–6R—ÒâG·vöâ‡"æÖ…÷&–6R—ÓÂöF—cãÂöF—cãÇ7â6Æ73Ò&vò#îÈ8ÈK‚(£Â÷7ããÂö'WGFöãæ’æ¦ö–â‚""—ÇÂsÆF—b6Æ73Ò&×WFVB"7G–ÆSÒ'FF–æs£'‚#îÊ«NÉyºyî¸©BÈ¹Þ¸»ŽÉÛBÉxnÉkBãÂöF—câs·6†÷r‚'&W7VÇG2"“·6WEF–ÖV÷WB†G&u&W7VÇG2Ã#—Ð¦gVæ7F–öâG&u&W7VÇG2‚—¶–b‚Ö2ç&W7VÇG2—&WGW&ã¶Ö&·2æf÷$V6‚†ÓÓæÒç6WDÖ†çVÆÂ’“¶Ö&·3ÕµÓ¶6öç7B#ÖæWr¶¶òæÖ2äÆDÆæt&÷VæG2‚“¶"æW‡FVæB†æWr¶¶òæÖ2äÆDÆær†÷&–v–âæÆBÆ÷&–v–âæÆær’“¶f–ÇFW&VBæf÷$V6‚‡#Óç¶6öç7BÖæWr¶¶òæÖ2äÆDÆær²·"æÆF—GVFRÂ·"æÆöæv—GVFR“¶"æW‡FVæB‡“¶6öç7BÓÖæWr¶¶òæÖ2äÖ&¶W"‡¶Ö¦Ö2ç&W7VÇG2Ç÷6—F–öã§Ò“¶Ö&·2çW6‚†Ò“¶¶¶òæÖ2æWfVçBæFDÆ—7FVæW"†ÒÂ&6Æ–6²"Â‚“Óæ÷VäFWF–Â‡"æ–B’—Ò“¶–b†f–ÇFW&VBæÆVæwF‚–Ö2ç&W7VÇG2ç6WD&÷VæG2†"ÃCRÃ#RÃCRÃ#R—Ð¢B‚"6Æ—7B"’æöæ6Æ–6³ÖSÓç¶6öç7B#ÖRçF&vWBæ6Æ÷6W7B‚"ç7F÷&R"“¶–b†"–÷VäFWF–Â†"æFF6WBæ–B—Ð¦7–æ2gVæ7F–öâ÷VäFWF–Â†–B—¶6öç7B#Öf–ÇFW&VBæf–æB‡ƒÓç‚æ–CÓÓÖ–B—ÇÆÆÂæf–æB‡ƒÓç‚æ–CÓÓÖ–B“¶–b‚"—&WGW&ã·6†÷r‚&FWF–Â"“¶6öç7BC×"åöGÇÄÖF‚ç&÷VæB†F—7B†÷&–v–âÇ¶ÆC¢·"æÆF—GVFRÆÆæs¢·"æÆöæv—GVFWÒ’“²B‚"6Fâ"’çFW‡D6öçFVçC×"ææÖS²B‚"7Fw2"’çFW‡D6öçFVçCÒ‡"æ6FVv÷'•öÆ&VÇÇÂ""’²"+rDU5B"²‡"æFVÖõ÷&F–æsò"+~(HR"·"æFVÖõ÷&F–æs¢""“²B‚"6FB"’çFW‡D6öçFVçCÖB²&Ò+rÉ[Ò"´ÖF‚æÖ‚ƒÄÖF‚æ6V–Â†BósR’’².»hB#²B‚"6G"’çFW‡D6öçFVçC×vöâ‡"æÖ–å÷&–6R’²"â"·vöâ‡"æÖ…÷&–6R“²B‚"6F2"’çFW‡D6öçFVçCÒ‡"çF&ÆUö6÷VçCóò"Ò"’².«	Â+r"²‡"æ66—G“óò"Ò"’².º¨R#²B‚"6Fb"’çFW‡D6öçFVçCÒ.Ù‹Î»
+R"²‡"ç6öÆõög&–VæFÇ“ò.«¸ªR#¢.»˜NËiNË)Â"’²"+r¸ºŽË+B"²‡"æw&÷Wög&–VæFÇ“ò.«¸ªR#¢.»˜NËiNË)Â"“²B‚"6FW62"’çFW‡D6öçFVçC×"æFW67&—F–öçÇÂ.ÈJNº¨RÉxnÉØÂ#¶6öç7B¶×2Æ‡5ÓÖv—B&öÖ—6RæÆÂ…¶’‚&fööEöÖVçW3÷6VÆV7CÒ¢g&W7FW&çEö–CÖWâ"¶–B²"f—5öf–Æ&ÆSÖWçG'VRf÷&FW#×6÷'Eö÷&FW"æ62"’Æ’‚&fööE÷&W7FW&çEö†÷W'3÷6VÆV7CÒ¢g&W7FW&çEö–CÖWâ"¶–B²"gvVV¶F“ÖWâ"¶æWrFFR‚’ævWDF’‚’•Ò“²B‚"6FÒ"’æ–ææW$…DÔÃÖ×2æÖ‡ƒÓæÆF—cãÆ#âG·‚æ—5÷6–væGW&Sò.¸ÈÙÂ+r#¢"'ÒG·‚ææÖWÓÂö#ãÇ7ãâG·vöâ‡‚ç&–6R—ÓÂ÷7ããÂöF—cæ’æ¦ö–â‚""—ÇÂsÆF—cîº™N¸›BÉxnÉØÃÂöF—câs¶6öç7BƒÖ‡5³Ó²B‚"6F‚"’çFW‡D6öçFVçCÖ‚bb‚æ—5ö6Æ÷6VCò†‚æ÷Vå÷F–ÖWÇÂ""’ç6Æ–6RƒÃR’².(	2"²†‚æ6Æ÷6U÷F–ÖWÇÂ""’ç6Æ–6RƒÃR“¢.ÙËNºËB#²B‚"6F""’çFW‡D6öçFVçCÖƒòæ'&Vµ÷7F'Cö‚æ'&Vµ÷7F'Bç6Æ–6RƒÃR’².(	2"¶‚æ'&VµöVæBç6Æ–6RƒÃR“¢.ÉxnÉØÂ#·6WEF–ÖV÷WB‚‚“Óç¶–b‚Ö2æFWF–Â—&WGW&ã¶6öç7BÖæWr¶¶òæÖ2äÆDÆær‚·"æÆF—GVFRÂ·"æÆöæv—GVFR“¶Ö2æFWF–Âç&VÆ–÷WB‚“¶Ö2æFWF–Âç6WD6VçFW"‡“¶æWr¶¶òæÖ2äÖ&¶W"‡¶Ö¦Ö2æFWF–ÂÇ÷6—F–öã§Ò—ÒÃ—Ð§6†÷r‚&†öÖR"“¶&ö÷B‚“°£Â÷67&—CãÂö&öG“ãÂö‡FÖÃà 
