@@ -10,7 +10,7 @@
 button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-height:100dvh;margin:auto;background:var(--bg);overflow:hidden}
 .top{height:62px;display:flex;align-items:center;padding:0 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
 .top b{flex:1;font-size:18px}.icon{width:40px;height:40px;border:1px solid var(--line);background:#fff;border-radius:13px}
-.pad{padding:14px}.map{height:260px;border-radius:20px;overflow:hidden;background:#dce2e7;position:relative}
+.pad{padding:14px}.map-wrap{position:relative}.map{height:260px;border-radius:20px;overflow:hidden;background:#dce2e7}.locate-btn{position:absolute;top:10px;right:10px;z-index:25;width:42px;height:42px;border:1px solid rgba(0,0,0,.12);border-radius:13px;background:rgba(255,255,255,.96);box-shadow:0 3px 12px rgba(0,0,0,.16);display:grid;place-items:center;font-size:20px;font-weight:900}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;box-shadow:0 5px 18px rgba(0,0,0,.035)}
 .notice{background:#fff3cd;color:#684f00;line-height:1.55}.muted{font-size:12px;color:var(--muted);line-height:1.45}
 .section{font-size:13px;font-weight:900;margin:18px 0 8px}.chips{display:flex;gap:7px;flex-wrap:wrap}
@@ -34,7 +34,7 @@ button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-h
 .nav-card{margin:0;border-radius:0;border-left:0;border-right:0;box-shadow:none}
 .nav-big{font-size:28px;font-weight:950;letter-spacing:-.5px}
 .nav-note{font-size:11px;color:#747b86;line-height:1.5;margin-top:5px}
-.nav-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.nav-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
 .nav-actions button{padding:12px;border-radius:13px;font-weight:850}
 .nav-secondary{background:#fff;color:#111827;border:1px solid #dfe3e8}
 </style>
@@ -44,7 +44,7 @@ button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-h
  <div class="top"><b>🍴 울산대 뭐먹지</b><button class="icon" onclick="location.href='food-editor.html'">🛠</button></div>
  <div class="pad">
   <div id="notice"></div>
-  <div id="map" class="map"></div>
+  <div class="map-wrap"><div id="map" class="map"></div><button class="locate-btn" data-map="home" aria-label="내 위치로 이동" title="내 위치">⌖</button></div>
   <div class="legend"><span><span class="dot food">🍴</span>등록 식당</span><span><span class="dot vm"></span>자판기</span><span id="vmCount"></span></div>
   <div class="section">1인당 식비</div>
   <div class="grid">
@@ -63,11 +63,11 @@ button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-h
 </section>
 <section id="results">
  <div class="top bar"><button class="icon" onclick="show('home')">←</button><h2>검색 결과</h2></div>
- <div class="pad"><div id="rmap" class="map"></div><div class="legend"><span><span class="dot food">🍴</span>식당</span><span><span class="dot vm"></span>자판기</span></div><div class="card"><b id="count"></b><div id="list"></div></div></div>
+ <div class="pad"><div class="map-wrap"><div id="rmap" class="map"></div><button class="locate-btn" data-map="results" aria-label="내 위치로 이동" title="내 위치">⌖</button></div><div class="legend"><span><span class="dot food">🍴</span>식당</span><span><span class="dot vm"></span>자판기</span></div><div class="card"><b id="count"></b><div id="list"></div></div></div>
 </section>
 <section id="detail">
  <div class="top bar"><button class="icon" onclick="show('results')">←</button><h2>식당 상세</h2></div>
- <div class="pad"><div id="dmap" class="map"></div><h1 id="dn" style="font-size:26px;margin-bottom:6px"></h1><div id="tags" class="muted"></div>
+ <div class="pad"><div class="map-wrap"><div id="dmap" class="map"></div><button class="locate-btn" data-map="detail" aria-label="내 위치로 이동" title="내 위치">⌖</button></div><h1 id="dn" style="font-size:26px;margin-bottom:6px"></h1><div id="tags" class="muted"></div>
   <div class="grid" style="margin-top:12px">
    <div class="info"><b>거리/도보</b><span id="dd"></span></div><div class="info"><b>가격대</b><span id="dp"></span></div>
    <div class="info"><b>테이블/수용</b><span id="dc"></span></div><div class="info"><b>혼밥/단체</b><span id="df"></span></div>
@@ -81,7 +81,7 @@ button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-h
 
 <section id="nav">
  <div class="top bar"><button class="icon" id="stopNavTop">←</button><h2>도보 길안내</h2></div>
- <div id="navmap" class="map"></div>
+ <div class="map-wrap"><div id="navmap" class="map"></div><button class="locate-btn" data-map="nav" aria-label="내 위치로 이동" title="내 위치">⌖</button></div>
  <div class="card nav-card">
   <div class="muted">목적지</div>
   <div style="font-size:18px;font-weight:900" id="navTitle">-</div>
@@ -92,7 +92,7 @@ button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-h
   <div id="navStatus" class="nav-note">실제 보행 경로를 계산하는 중...</div>
   <div id="navStep" class="nav-note"></div>
   <div class="nav-note">파란 선이 실제 보행 가능한 길을 따라 표시돼. GPS가 움직이면 경로를 다시 계산해.</div>
-  <div class="nav-actions"><button class="btn" id="openKakaoWalk">카카오맵 실제 경로</button><button class="nav-secondary" id="stopNav">안내 종료</button></div>
+  <div class="nav-actions"><button class="nav-secondary" id="stopNav">안내 종료</button></div>
  </div>
 </section>
 </div>
@@ -106,6 +106,8 @@ function won(n){return Number(n||0).toLocaleString("ko-KR")+"원"}
 function dist(a,b){const R=6371000,p=Math.PI/180,x=(b.lat-a.lat)*p,y=(b.lng-a.lng)*p,A=Math.sin(x/2)**2+Math.cos(a.lat*p)*Math.cos(b.lat*p)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(A))}
 function show(id){["home","results","detail","nav"].forEach(x=>$("#"+x).style.display=x===id?"block":"none");setTimeout(()=>Object.values(maps).forEach(m=>m?.relayout?.()),80);scrollTo(0,0)}
 function getPosition(fallback=true){return new Promise(resolve=>{if(!navigator.geolocation)return resolve(fallback?{...SCHOOL}:null);navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lng:p.coords.longitude}),()=>resolve(fallback?{...SCHOOL}:null),{enableHighAccuracy:true,timeout:7000,maximumAge:15000})})}
+async function centerOnMe(key){const p=await getPosition(false);if(!p){alert("내 위치로 이동하려면 위치 권한을 허용해줘.");return}livePosition=p;const m=maps[key];if(!m)return;meOverlay(m,key,p);m.setCenter(new kakao.maps.LatLng(p.lat,p.lng));m.setLevel(2);if(key==="nav"&&navigating)refreshWalkingRoute(p,false)}
+document.addEventListener("click",e=>{const b=e.target.closest(".locate-btn");if(b)centerOnMe(b.dataset.map)})
 function nearSchool(p){return !!p&&dist(SCHOOL,p)<=5000}
 function meOverlay(map,k,p){if(!map||!p)return;meOverlays[k]?.setMap(null);const el=document.createElement("div");el.className="me-pin";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(p.lat,p.lng),content:el,yAnchor:.5,zIndex:20});meOverlays[k]=ov;return ov}
 function refreshLocationDots(){if(!livePosition)return;["home","results","detail"].forEach(k=>{if(maps[k])meOverlay(maps[k],k,livePosition)})}
@@ -120,7 +122,7 @@ async function boot(){
  const key=settings[0]?.kakao_js_key||"";
  if(!key){$("#notice").innerHTML='<div class="card notice"><b>지도 설정 전</b><br>에디터에서 카카오 JavaScript 키를 저장해줘.</div>';return}
  const s=document.createElement("script");s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);
- s.onload=()=>kakao.maps.load(async()=>{maps.home=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.results=new kakao.maps.Map($("#rmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.detail=new kakao.maps.Map($("#dmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:3});const p=await getPosition(false);if(p){livePosition=p;origin=nearSchool(p)?p:{...SCHOOL}}drawAll(maps.home,"home");startLocationWatch()});s.onerror=()=>$("#notice").innerHTML='<div class="card notice">카카오 지도를 불러오지 못했어. SDK 도메인 등록을 확인해줘.</div>';document.head.appendChild(s)
+ s.onload=()=>kakao.maps.load(async()=>{maps.home=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:2});maps.results=new kakao.maps.Map($("#rmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:2});maps.detail=new kakao.maps.Map($("#dmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:2});const p=await getPosition(false);if(p){livePosition=p;origin=nearSchool(p)?p:{...SCHOOL}}drawAll(maps.home,"home");startLocationWatch()});s.onerror=()=>$("#notice").innerHTML='<div class="card notice">카카오 지도를 불러오지 못했어. SDK 도메인 등록을 확인해줘.</div>';document.head.appendChild(s)
 }
 function sync(){let a=+$("#min").value,b=+$("#max").value;if(a>b){b=a;$("#max").value=b}$("#minL").textContent=won(a);$("#maxL").textContent=won(b)}$("#min").oninput=sync;$("#max").oninput=sync;sync();
 $("#cats").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#cats").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");cat=b.dataset.v}
@@ -143,7 +145,7 @@ async function startInternalNavigation(){
   if(!p){alert("도보 길안내를 시작하려면 위치 권한을 허용해줘.");return}
   livePosition=p;navigating=true;lastRoutePos=null;lastRouteAt=0;
   show("nav");$("#navTitle").textContent=currentRestaurant.name;
-  if(!maps.nav)maps.nav=new kakao.maps.Map($("#navmap"),{center:new kakao.maps.LatLng(p.lat,p.lng),level:3});
+  if(!maps.nav)maps.nav=new kakao.maps.Map($("#navmap"),{center:new kakao.maps.LatLng(p.lat,p.lng),level:2});
   setTimeout(()=>{maps.nav.relayout();refreshWalkingRoute(p,true)},100);
   startLocationWatch();
 }
@@ -197,8 +199,7 @@ function maybeRefreshRoute(p){
   const elapsed=Date.now()-lastRouteAt;
   if(moved>=20||elapsed>=15000)refreshWalkingRoute(p,false);
 }
-function openKakaoWalk(){if(!currentRestaurant||!livePosition)return;const a=encodeURIComponent("현재 위치")+","+livePosition.lat+","+livePosition.lng;const b=encodeURIComponent(currentRestaurant.name)+","+currentRestaurant.latitude+","+currentRestaurant.longitude;window.open("https://map.kakao.com/link/by/walk/"+a+"/"+b,"_blank","noopener")}
 function stopNavigation(){navigating=false;show("detail")}
-$("#startNav").onclick=startInternalNavigation;$("#openKakaoWalk").onclick=openKakaoWalk;$("#stopNav").onclick=stopNavigation;$("#stopNavTop").onclick=stopNavigation;
+$("#startNav").onclick=startInternalNavigation;$("#stopNav").onclick=stopNavigation;$("#stopNavTop").onclick=stopNavigation;
 show("home");boot();
 </script></body></html>
