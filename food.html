@@ -24,6 +24,8 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
 .price{font-size:12px;font-weight:850;margin-top:4px} .go{font-size:11px;background:#111827;color:#fff;border-radius:999px;padding:7px 8px;white-space:nowrap}
 .info{background:#fff;border:1px solid var(--line);border-radius:15px;padding:11px} .info b{display:block;font-size:10px;color:#777f88;margin-bottom:4px} .info span{font-size:12px;font-weight:850}
 .menus>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #eceef1} .menus>div:last-child{border:0}
+.legend{display:flex;gap:10px;align-items:center;margin:8px 3px 0;font-size:11px;color:#666f79}.dot{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;font-size:13px;margin-right:3px}.dot.food{background:#111827;color:#fff}.dot.vm{background:#fff;border:2px solid #111827}
+.vm-pin{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid #111827;box-shadow:0 2px 7px rgba(0,0,0,.22);font-size:18px}.vm-bubble{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:7px 9px;font-size:11px;box-shadow:0 3px 12px rgba(0,0,0,.13);white-space:nowrap}.actions{margin-top:14px}
 </style>
 </head>
 <body><div class="app">
@@ -32,6 +34,7 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
  <div class="pad">
   <div id="notice"></div>
   <div id="map" class="map"></div>
+  <div class="legend"><span><span class="dot food">🍴</span>등록 식당</span><span><span class="dot vm">🥤</span>자판기</span><span id="vmCount"></span></div>
   <div class="section">1인당 식비</div>
   <div class="grid">
    <div class="card"><div class="muted">최소</div><b id="minL">0원</b><input id="min" type="range" min="0" max="30000" step="1000" value="0"></div>
@@ -50,7 +53,7 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
 
 <section id="results">
  <div class="top bar"><button class="icon" onclick="show('home')">←</button><h2>검색 결과</h2></div>
- <div class="pad"><div id="rmap" class="map"></div><div class="card"><b id="count"></b><div id="list"></div></div></div>
+ <div class="pad"><div id="rmap" class="map"></div><div class="legend"><span><span class="dot food">🍴</span>식당</span><span><span class="dot vm">🥤</span>자판기</span></div><div class="card"><b id="count"></b><div id="list"></div></div></div>
 </section>
 
 <section id="detail">
@@ -63,26 +66,30 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
   </div>
   <div class="section">대표 메뉴</div><div class="card menus" id="dm"></div>
   <div class="section">설명</div><div class="card muted" id="desc"></div>
+  <div class="actions"><button class="btn" id="startNav">🚶 출발 · 도보 길찾기</button></div>
  </div>
 </section>
 </div>
 <script>
 const SB="https://wlajrtchyadaxojzrxjg.supabase.co", PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC", SCHOOL={lat:35.5439,lng:129.2563};
 const $=q=>document.querySelector(q);
-let all=[], filtered=[], cat="all", walk=10, maps={}, marks=[], origin={...SCHOOL};
+let all=[], vending=[], filtered=[], cat="all", walk=10, maps={}, marks=[], origin={...SCHOOL}, currentRestaurant=null;
 async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());return r.json()}
 function won(n){return Number(n||0).toLocaleString("ko-KR")+"원"}
 function dist(a,b){const R=6371000,p=Math.PI/180,x=(b.lat-a.lat)*p,y=(b.lng-a.lng)*p,A=Math.sin(x/2)**2+Math.cos(a.lat*p)*Math.cos(b.lat*p)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(A))}
 function show(id){["home","results","detail"].forEach(x=>$("#"+x).style.display=x===id?"block":"none");setTimeout(()=>Object.values(maps).forEach(m=>m?.relayout?.()),80);scrollTo(0,0)}
+function getPosition(fallback=true){return new Promise(resolve=>{if(!navigator.geolocation)return resolve(fallback?{...SCHOOL}:null);navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lng:p.coords.longitude}),()=>resolve(fallback?{...SCHOOL}:null),{enableHighAccuracy:true,timeout:7000,maximumAge:15000})})}
+function addVending(map,v){const el=document.createElement("div");el.className="vm-pin";el.textContent="🥤";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:el,yAnchor:1});let bubble=null;el.onclick=()=>{if(bubble){bubble.setMap(null);bubble=null;return}const b=document.createElement("div");b.className="vm-bubble";b.innerHTML="<b>"+(v.name||"자판기")+"</b>"+(v.description?"<br>"+v.description:"");bubble=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:b,yAnchor:2.8});bubble.setMap(map)};return ov}
+function drawHome(){if(!maps.home)return;const b=new kakao.maps.LatLngBounds();let n=0;all.forEach(r=>{const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);b.extend(p);const m=new kakao.maps.Marker({map:maps.home,position:p});kakao.maps.event.addListener(m,"click",()=>openDetail(r.id));n++});vending.forEach(v=>{b.extend(new kakao.maps.LatLng(+v.latitude,+v.longitude));addVending(maps.home,v);n++});if(n)maps.home.setBounds(b,35,25,35,25)}
 async function boot(){
- try{all=await api("food_restaurants?select=*&is_demo=eq.true&is_active=eq.true&order=name.asc")}catch(e){$("#notice").innerHTML='<div class="card notice">식당 DB를 불러오지 못했어.</div>';return}
+ try{[all,vending]=await Promise.all([api("food_restaurants?select=*&is_demo=eq.true&is_active=eq.true&order=name.asc"),api("food_vending_machines?select=*&is_active=eq.true&order=name.asc")]);$("#vmCount").textContent="· "+vending.length+"대 등록"}catch(e){$("#notice").innerHTML='<div class="card notice">DB를 불러오지 못했어.</div>';return}
  let settings=[];
  try{settings=await api("food_app_settings?id=eq.main&select=kakao_js_key")}catch{}
  const key=settings[0]?.kakao_js_key||"";
  if(!key){$("#notice").innerHTML='<div class="card notice"><b>지도 설정 전</b><br>에디터에서 카카오 JavaScript 키를 한 번 저장하면 이 링크를 받은 사람은 별도 설정 없이 사용할 수 있어.</div>';return}
  const s=document.createElement("script");
  s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);
- s.onload=()=>kakao.maps.load(()=>{maps.home=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.results=new kakao.maps.Map($("#rmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.detail=new kakao.maps.Map($("#dmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:3});new kakao.maps.Marker({map:maps.home,position:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng)})});
+ s.onload=()=>kakao.maps.load(async()=>{maps.home=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.results=new kakao.maps.Map($("#rmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.detail=new kakao.maps.Map($("#dmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:3});drawHome();origin=await getPosition(true)});
  s.onerror=()=>$("#notice").innerHTML='<div class="card notice">카카오 지도를 못 불러왔어. 에디터에 표시되는 현재 사이트 도메인이 카카오 JavaScript SDK 도메인에 등록됐는지 확인해줘.</div>';
  document.head.appendChild(s);
 }
@@ -90,9 +97,10 @@ function sync(){let a=+$("#min").value,b=+$("#max").value;if(a>b){b=a;$("#max").
 $("#min").oninput=sync;$("#max").oninput=sync;sync();
 $("#cats").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#cats").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");cat=b.dataset.v}
 $("#walks").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#walks").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");walk=+b.dataset.v}
-$("#search").onclick=()=>{const mi=+$("#min").value,ma=+$("#max").value;filtered=all.map(r=>({...r,_d:Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}))})).filter(r=>Math.ceil(r._d/75)<=walk&&(cat==="all"||r.category_label===cat)&&(r.max_price??999999)>=mi&&(r.min_price??0)<=ma).sort((a,b)=>a._d-b._d);$("#count").textContent=filtered.length+"곳";$("#list").innerHTML=filtered.map((r,i)=>`<button class="store" data-id="${r.id}"><div class="emoji">🍴</div><div class="main"><div class="name">${i<3?"추천 "+(i+1)+" · ":""}${r.name}</div><div class="meta">${r.category_label||"기타"} · 약 ${Math.max(1,Math.ceil(r._d/75))}분 · ${r._d}m<br>${r.address}</div><div class="price">${won(r.min_price)} ~ ${won(r.max_price)}</div></div><span class="go">상세 ›</span></button>`).join("")||'<div class="muted" style="padding:12px">조건에 맞는 식당이 없어.</div>';show("results");setTimeout(drawResults,120)}
-function drawResults(){if(!maps.results)return;marks.forEach(m=>m.setMap(null));marks=[];const b=new kakao.maps.LatLngBounds();b.extend(new kakao.maps.LatLng(origin.lat,origin.lng));filtered.forEach(r=>{const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);b.extend(p);const m=new kakao.maps.Marker({map:maps.results,position:p});marks.push(m);kakao.maps.event.addListener(m,"click",()=>openDetail(r.id))});if(filtered.length)maps.results.setBounds(b,45,25,45,25)}
+$("#search").onclick=async()=>{origin=await getPosition(true);const mi=+$("#min").value,ma=+$("#max").value;filtered=all.map(r=>({...r,_d:Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}))})).filter(r=>Math.ceil(r._d/75)<=walk&&(cat==="all"||r.category_label===cat)&&(r.max_price??999999)>=mi&&(r.min_price??0)<=ma).sort((a,b)=>a._d-b._d);$("#count").textContent=filtered.length+"곳";$("#list").innerHTML=filtered.map((r,i)=>`<button class="store" data-id="${r.id}"><div class="emoji">🍴</div><div class="main"><div class="name">${i<3?"추천 "+(i+1)+" · ":""}${r.name}</div><div class="meta">${r.category_label||"기타"} · 약 ${Math.max(1,Math.ceil(r._d/75))}분 · ${r._d}m<br>${r.address}</div><div class="price">${won(r.min_price)} ~ ${won(r.max_price)}</div></div><span class="go">상세 ›</span></button>`).join("")||'<div class="muted" style="padding:12px">조건에 맞는 식당이 없어.</div>';show("results");setTimeout(drawResults,120)}
+function drawResults(){if(!maps.results)return;marks.forEach(m=>m.setMap(null));marks=[];const b=new kakao.maps.LatLngBounds();b.extend(new kakao.maps.LatLng(origin.lat,origin.lng));filtered.forEach(r=>{const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);b.extend(p);const m=new kakao.maps.Marker({map:maps.results,position:p});marks.push(m);kakao.maps.event.addListener(m,"click",()=>openDetail(r.id))});vending.forEach(v=>{const p=new kakao.maps.LatLng(+v.latitude,+v.longitude);b.extend(p);const o=addVending(maps.results,v);marks.push(o)});if(filtered.length||vending.length)maps.results.setBounds(b,45,25,45,25)}
 $("#list").onclick=e=>{const b=e.target.closest(".store");if(b)openDetail(b.dataset.id)}
-async function openDetail(id){const r=filtered.find(x=>x.id===id)||all.find(x=>x.id===id);if(!r)return;show("detail");const d=r._d||Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}));$("#dn").textContent=r.name;$("#tags").textContent=(r.category_label||"")+" · TEST"+(r.demo_rating?" · ★ "+r.demo_rating:"");$("#dd").textContent=d+"m · 약 "+Math.max(1,Math.ceil(d/75))+"분";$("#dp").textContent=won(r.min_price)+" ~ "+won(r.max_price);$("#dc").textContent=(r.table_count??"-")+"개 · "+(r.capacity??"-")+"명";$("#df").textContent="혼밥 "+(r.solo_friendly?"가능":"비추천")+" · 단체 "+(r.group_friendly?"가능":"비추천");$("#desc").textContent=r.description||"설명 없음";const [ms,hs]=await Promise.all([api("food_menus?select=*&restaurant_id=eq."+id+"&is_available=eq.true&order=sort_order.asc"),api("food_restaurant_hours?select=*&restaurant_id=eq."+id+"&weekday=eq."+new Date().getDay())]);$("#dm").innerHTML=ms.map(x=>`<div><b>${x.is_signature?"대표 · ":""}${x.name}</b><span>${won(x.price)}</span></div>`).join("")||'<div>메뉴 없음</div>';const h=hs[0];$("#dh").textContent=h&&!h.is_closed?(h.open_time||"").slice(0,5)+"–"+(h.close_time||"").slice(0,5):"휴무";$("#db").textContent=h?.break_start?h.break_start.slice(0,5)+"–"+h.break_end.slice(0,5):"없음";setTimeout(()=>{if(!maps.detail)return;const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);maps.detail.relayout();maps.detail.setCenter(p);new kakao.maps.Marker({map:maps.detail,position:p})},100)}
+async function openDetail(id){const r=filtered.find(x=>x.id===id)||all.find(x=>x.id===id);if(!r)return;currentRestaurant=r;show("detail");const d=r._d||Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}));$("#dn").textContent=r.name;$("#tags").textContent=(r.category_label||"")+" · TEST"+(r.demo_rating?" · ★ "+r.demo_rating:"");$("#dd").textContent=d+"m · 약 "+Math.max(1,Math.ceil(d/75))+"분";$("#dp").textContent=won(r.min_price)+" ~ "+won(r.max_price);$("#dc").textContent=(r.table_count??"-")+"개 · "+(r.capacity??"-")+"명";$("#df").textContent="혼밥 "+(r.solo_friendly?"가능":"비추천")+" · 단체 "+(r.group_friendly?"가능":"비추천");$("#desc").textContent=r.description||"설명 없음";const [ms,hs]=await Promise.all([api("food_menus?select=*&restaurant_id=eq."+id+"&is_available=eq.true&order=sort_order.asc"),api("food_restaurant_hours?select=*&restaurant_id=eq."+id+"&weekday=eq."+new Date().getDay())]);$("#dm").innerHTML=ms.map(x=>`<div><b>${x.is_signature?"대표 · ":""}${x.name}</b><span>${won(x.price)}</span></div>`).join("")||'<div>메뉴 없음</div>';const h=hs[0];$("#dh").textContent=h&&!h.is_closed?(h.open_time||"").slice(0,5)+"–"+(h.close_time||"").slice(0,5):"휴무";$("#db").textContent=h?.break_start?h.break_start.slice(0,5)+"–"+h.break_end.slice(0,5):"없음";setTimeout(()=>{if(!maps.detail)return;const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);maps.detail.relayout();maps.detail.setCenter(p);new kakao.maps.Marker({map:maps.detail,position:p})},100)}
+$("#startNav").onclick=async()=>{if(!currentRestaurant)return;const p=await getPosition(false);if(!p){alert("도보 길안내를 시작하려면 위치 권한을 허용해줘.");return}const r=currentRestaurant;const from=encodeURIComponent("현재 위치")+","+p.lat+","+p.lng;const to=encodeURIComponent(r.name)+","+r.latitude+","+r.longitude;window.open("https://map.kakao.com/link/by/walk/"+from+"/"+to,"_blank","noopener")}
 show("home");boot();
 </script></body></html>
