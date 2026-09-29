@@ -10,7 +10,7 @@ header{height:64px;display:flex;align-items:center;padding:0 16px;background:#ff
 @media(max-width:760px){.layout,.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr 90px 64px 38px}#map{height:280px}}
 </style></head>
 <body>
-<header><b>🛠 울산대 뭐먹지 Editor</b><button class="btn ghost" onclick="location.href='food.html'">사용자 화면</button></header>
+<header><b>🛠 울산대 뭐먹지 Editor</b><button class="btn ghost" style="margin-right:7px" onclick="location.href='vending-editor.html'">🥤 자판기</button><button class="btn ghost" onclick="location.href='food.html'">사용자 화면</button></header>
 <div class="wrap">
  <div class="card"><b>공유 지도 설정</b><div class="muted" style="margin-top:5px">카카오 JavaScript 키를 한 번 저장하면 다른 사람은 사용자 링크에서 키를 입력할 필요가 없어.</div>
   <div class="grid"><div><label>카카오 JavaScript 키</label><input id="jskey" type="password" placeholder="JavaScript 키"></div><div style="align-self:end"><button class="btn" id="saveKey" style="width:100%">공유 키 저장</button></div></div><div id="keyStatus" class="muted" style="margin-top:8px"></div>
