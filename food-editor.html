@@ -15,6 +15,9 @@ header{height:64px;display:flex;align-items:center;padding:0 16px;background:#ff
  <div class="card"><b>공유 지도 설정</b><div class="muted" style="margin-top:5px">카카오 JavaScript 키는 한 번만 저장하면 돼.</div>
   <div class="grid"><div><label>카카오 JavaScript 키</label><input id="jskey" type="password" placeholder="JavaScript 키"></div><div style="align-self:end"><button class="btn" id="saveKey" style="width:100%">공유 키 저장</button></div></div><div id="keyStatus" class="muted" style="margin-top:8px"></div>
  </div>
+ <div class="card"><b>실제 도보 길찾기 설정</b><div class="muted" style="margin-top:5px">OpenRouteService API 키를 한 번 저장하면 앱 안에서 보행 가능한 길을 따라 경로를 그려.</div>
+  <div class="grid"><div><label>OpenRouteService API 키</label><input id="orskey" type="password" placeholder="ORS API 키"></div><div style="align-self:end"><button class="btn" id="saveRouteKey" style="width:100%">길찾기 키 저장</button></div></div><div id="routeKeyStatus" class="muted" style="margin-top:8px"></div>
+ </div>
  <div class="card notice"><b>카카오 JavaScript SDK 도메인 등록값</b><br><span id="origin"></span></div>
  <div class="layout">
   <aside class="card">
@@ -53,12 +56,14 @@ header{height:64px;display:flex;align-items:center;padding:0 16px;background:#ff
  </div>
 </div>
 <script>
-const SB="https://wlajrtchyadaxojzrxjg.supabase.co",PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC",S={lat:35.5439,lng:129.2563};let mode="restaurant",restaurants=[],vending=[],sel=null,menus=[],map=null,marker=null;const $=q=>document.querySelector(q);
+const SB="https://wlajrtchyadaxojzrxjg.supabase.co",PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC",ROUTE=SB+"/functions/v1/food-route",S={lat:35.5439,lng:129.2563};let mode="restaurant",restaurants=[],vending=[],sel=null,menus=[],map=null,marker=null;const $=q=>document.querySelector(q);
 async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",Prefer:"return=representation",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());const t=await r.text();return t?JSON.parse(t):null}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}function t5(v){return(v||"").slice(0,5)}
 async function settings(){const a=await api("food_app_settings?id=eq.main&select=*");$("#keyStatus").textContent=a[0]?.kakao_js_key?"공유 키 저장됨 ✅":"아직 공유 키 없음";return a[0]?.kakao_js_key||""}
 $("#origin").textContent=location.origin;
 $("#saveKey").onclick=async()=>{const k=$("#jskey").value.trim();if(!k)return alert("JavaScript 키를 입력해줘.");await api("food_app_settings?id=eq.main",{method:"PATCH",body:JSON.stringify({kakao_js_key:k,updated_at:new Date().toISOString()})});alert("저장 완료");location.reload()}
+async function routeKeyStatus(){try{const r=await fetch(ROUTE+"?status=1");const j=await r.json();$("#routeKeyStatus").textContent=j.configured?"보행 길찾기 키 저장됨 ✅":"아직 보행 길찾기 키 없음"}catch{$("#routeKeyStatus").textContent="길찾기 설정 상태 확인 실패"}}
+$("#saveRouteKey").onclick=async()=>{const k=$("#orskey").value.trim();if(!k)return alert("OpenRouteService API 키를 입력해줘.");const r=await fetch(ROUTE+"/config",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({key:k})});const j=await r.json();if(j.ok){alert("길찾기 키 저장 완료");$("#orskey").value="";routeKeyStatus()}else alert("저장 실패")}
 function initMap(key){if(!key)return;const s=document.createElement("script");s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);s.onload=()=>kakao.maps.load(()=>{map=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(S.lat,S.lng),level:3});marker=new kakao.maps.Marker({map,position:new kakao.maps.LatLng(S.lat,S.lng),draggable:true});kakao.maps.event.addListener(map,"click",e=>setPos(e.latLng.getLat(),e.latLng.getLng()));kakao.maps.event.addListener(marker,"dragend",()=>{const p=marker.getPosition();setPos(p.getLat(),p.getLng(),false)})});document.head.appendChild(s)}
 function setPos(a,b,m=true){$("#lat").value=(+a).toFixed(6);$("#lng").value=(+b).toFixed(6);if(map&&marker&&m){const p=new kakao.maps.LatLng(+a,+b);marker.setPosition(p);map.panTo(p)}}
 async function loadAll(){[restaurants,vending]=await Promise.all([api("food_restaurants?select=*&is_demo=eq.true&order=name.asc"),api("food_vending_machines?select=*&order=name.asc")]);renderList()}
@@ -80,5 +85,5 @@ async function saveRestaurant(){let id=sel.id,p=restaurantPayload();if(id){const
 async function saveVending(){const p={name:$("#vname").value.trim()||"자판기",description:$("#vdesc").value.trim()||null,latitude:+$("#lat").value,longitude:+$("#lng").value,is_active:true,updated_at:new Date().toISOString()};if(sel.id){const a=await api("food_vending_machines?id=eq."+sel.id,{method:"PATCH",body:JSON.stringify(p)});sel=a[0]||{...sel,...p}}else{const a=await api("food_vending_machines",{method:"POST",body:JSON.stringify(p)});sel=a[0]}alert("자판기 저장 완료")}
 $("#del").onclick=async()=>{if(!sel?.id)return;if(!confirm("삭제할까?"))return;if(mode==="restaurant"){await api("food_menus?restaurant_id=eq."+sel.id,{method:"DELETE"});await api("food_restaurant_hours?restaurant_id=eq."+sel.id,{method:"DELETE"});await api("food_restaurants?id=eq."+sel.id,{method:"DELETE"})}else await api("food_vending_machines?id=eq."+sel.id,{method:"DELETE"});sel=null;$("#restaurantForm").style.display="none";$("#vendingForm").style.display="none";$("#locationBlock").style.display="none";$("#empty").style.display="block";await loadAll()}
 $("#lat").onchange=()=>setPos(+$("#lat").value,+$("#lng").value);$("#lng").onchange=()=>setPos(+$("#lat").value,+$("#lng").value);
-(async()=>{const [_,key]=await Promise.all([loadAll(),settings()]);initMap(key)})();
+(async()=>{const [_,key]=await Promise.all([loadAll(),settings(),routeKeyStatus()]);initMap(key)})();
 </script></body></html>
