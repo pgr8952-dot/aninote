@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>울산대 자판기 Editor</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:#17191d;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}
+header{height:64px;display:flex;align-items:center;padding:0 16px;background:#fff;border-bottom:1px solid #e2e6ea;position:sticky;top:0;z-index:20}header b{flex:1}.btn{border:0;background:#111827;color:#fff;border-radius:12px;padding:10px 13px;font-weight:850}.ghost{background:#fff;color:#111827;border:1px solid #dfe3e8}
+.wrap{max-width:1000px;margin:auto;padding:14px}.layout{display:grid;grid-template-columns:280px 1fr;gap:12px}.card{background:#fff;border:1px solid #e1e5e9;border-radius:17px;padding:14px;margin-bottom:12px}.item{width:100%;border:1px solid #e0e4e8;background:#fff;border-radius:12px;padding:10px;text-align:left;margin:6px 0}.item.on{border-color:#111827}.muted{font-size:12px;color:#737b85;line-height:1.5}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}label{display:block;font-size:11px;font-weight:850;color:#747b85;margin:9px 0 4px}input,textarea{width:100%;border:1px solid #dfe3e8;border-radius:10px;padding:9px}textarea{min-height:85px}#map{height:420px;background:#dce2e7;border-radius:14px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}.notice{background:#fff4cf;color:#665000;line-height:1.55}
+@media(max-width:760px){.layout,.grid{grid-template-columns:1fr}#map{height:300px}}
+</style></head><body>
+<header><b>🥤 울산대 자판기 Editor</b><button class="btn ghost" onclick="location.href='food-editor.html'">← 식당 에디터</button></header>
+<div class="wrap">
+ <div id="notice"></div>
+ <div class="layout">
+  <aside class="card"><div style="display:flex;align-items:center;gap:7px"><b style="flex:1">등록 자판기</b><button class="btn" id="new">+ 추가</button></div><div id="items"></div></aside>
+  <main class="card"><div id="empty" class="muted">자판기를 선택하거나 새로 추가해줘.</div><div id="form" style="display:none">
+   <div class="grid"><div><label>이름</label><input id="name" placeholder="예: 생활과학관 1층 자판기"></div><div><label>설명</label><input id="desc" placeholder="예: 음료 / 카드 가능"></div></div>
+   <div id="map"></div>
+   <div class="grid"><div><label>위도</label><input id="lat" type="number" step=".000001"></div><div><label>경도</label><input id="lng" type="number" step=".000001"></div></div>
+   <div class="muted" style="margin-top:7px">지도를 클릭하거나 핀을 드래그해서 정확한 위치를 정하면 돼.</div>
+   <div class="actions"><button class="btn ghost" id="del">삭제</button><button class="btn" id="save">저장</button></div>
+  </div></main>
+ </div>
+</div>
+<script>
+const SB="https://wlajrtchyadaxojzrxjg.supabase.co",PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC",S={lat:35.5439,lng:129.2563};let items=[],sel=null,map=null,marker=null;const $=q=>document.querySelector(q);
+async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",Prefer:"return=representation",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());const t=await r.text();return t?JSON.parse(t):null}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+async function load(){items=await api("food_vending_machines?select=*&order=name.asc");$("#items").innerHTML=items.map(v=>'<button class="item '+(sel?.id===v.id?"on":"")+'" data-id="'+v.id+'"><b>🥤 '+esc(v.name)+'</b><div class="muted">'+esc(v.description||"설명 없음")+'</div></button>').join("")||'<div class="muted" style="padding:10px 2px">아직 등록된 자판기 없음</div>'}
+function setPos(a,b,m=true){$("#lat").value=(+a).toFixed(6);$("#lng").value=(+b).toFixed(6);if(map&&marker&&m){const p=new kakao.maps.LatLng(+a,+b);marker.setPosition(p);map.panTo(p)}}
+async function initMap(){let st=[];try{st=await api("food_app_settings?id=eq.main&select=kakao_js_key")}catch{}const key=st[0]?.kakao_js_key;if(!key){$("#notice").innerHTML='<div class="card notice">카카오 JavaScript 키가 아직 없어. 식당 에디터에서 먼저 저장해줘.</div>';return}const s=document.createElement("script");s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);s.onload=()=>kakao.maps.load(()=>{map=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(S.lat,S.lng),level:3});marker=new kakao.maps.Marker({map,position:new kakao.maps.LatLng(S.lat,S.lng),draggable:true});kakao.maps.event.addListener(map,"click",e=>setPos(e.latLng.getLat(),e.latLng.getLng()));kakao.maps.event.addListener(marker,"dragend",()=>{const p=marker.getPosition();setPos(p.getLat(),p.getLng(),false)})});document.head.appendChild(s)}
+$("#items").onclick=e=>{const b=e.target.closest(".item");if(!b)return;sel=items.find(x=>x.id===b.dataset.id);if(!sel)return;$("#empty").style.display="none";$("#form").style.display="block";$("#name").value=sel.name||"자판기";$("#desc").value=sel.description||"";setPos(sel.latitude,sel.longitude);setTimeout(()=>map?.relayout(),80);load()}
+$("#new").onclick=()=>{sel={id:null};$("#empty").style.display="none";$("#form").style.display="block";$("#name").value="자판기";$("#desc").value="";setPos(S.lat,S.lng);setTimeout(()=>map?.relayout(),80)}
+$("#save").onclick=async()=>{const p={name:$("#name").value.trim()||"자판기",description:$("#desc").value.trim()||null,latitude:+$("#lat").value,longitude:+$("#lng").value,is_active:true,updated_at:new Date().toISOString()};if(sel?.id){const a=await api("food_vending_machines?id=eq."+sel.id,{method:"PATCH",body:JSON.stringify(p)});sel=a[0]||{...sel,...p}}else{const a=await api("food_vending_machines",{method:"POST",body:JSON.stringify(p)});sel=a[0]}alert("자판기 저장 완료");await load()}
+$("#del").onclick=async()=>{if(!sel?.id)return;if(!confirm("이 자판기를 삭제할까?"))return;await api("food_vending_machines?id=eq."+sel.id,{method:"DELETE"});sel=null;$("#form").style.display="none";$("#empty").style.display="block";await load()}
+$("#lat").onchange=()=>setPos(+$("#lat").value,+$("#lng").value);$("#lng").onchange=()=>setPos(+$("#lat").value,+$("#lng").value);
+(async()=>{await load();await initMap()})();
+</script></body></html>
