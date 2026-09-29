@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>울산대 뭐먹지 Editor</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:#17191d;font-family:system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+header{height:64px;display:flex;align-items:center;padding:0 16px;background:#fff;border-bottom:1px solid #e2e6ea;position:sticky;top:0;z-index:20}header b{flex:1}.btn{border:0;background:#111827;color:#fff;border-radius:12px;padding:10px 13px;font-weight:850}.ghost{background:#fff;color:#111827;border:1px solid #dfe3e8}
+.wrap{max-width:1080px;margin:auto;padding:14px}.card{background:#fff;border:1px solid #e1e5e9;border-radius:17px;padding:14px;margin-bottom:12px}.layout{display:grid;grid-template-columns:275px 1fr;gap:12px}.store{width:100%;border:1px solid #e0e4e8;background:#fff;border-radius:12px;padding:10px;text-align:left;margin:6px 0}.store.on{border-color:#111827}.muted{font-size:12px;color:#737b85;line-height:1.5}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}label{display:block;font-size:11px;font-weight:850;color:#747b85;margin:9px 0 4px}input,select,textarea{width:100%;border:1px solid #dfe3e8;border-radius:10px;padding:9px}textarea{min-height:80px}#map{height:340px;background:#dce2e7;border-radius:14px}.row{display:grid;grid-template-columns:1fr 120px 70px 38px;gap:7px;margin:7px 0}.x{border:1px solid #e1e4e8;background:#fff;border-radius:8px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}.notice{background:#fff4cf;color:#665000;line-height:1.55}
+@media(max-width:760px){.layout,.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr 90px 64px 38px}#map{height:280px}}
+</style></head>
+<body>
+<header><b>🛠 울산대 뭐먹지 Editor</b><button class="btn ghost" onclick="location.href='index.html'">사용자 화면</button></header>
+<div class="wrap">
+ <div class="card"><b>공유 지도 설정</b><div class="muted" style="margin-top:5px">카카오 JavaScript 키를 한 번 저장하면 다른 사람은 사용자 링크에서 키를 입력할 필요가 없어.</div>
+  <div class="grid"><div><label>카카오 JavaScript 키</label><input id="jskey" type="password" placeholder="JavaScript 키"></div><div style="align-self:end"><button class="btn" id="saveKey" style="width:100%">공유 키 저장</button></div></div><div id="keyStatus" class="muted" style="margin-top:8px"></div>
+ </div>
+ <div class="card notice"><b>카카오 JavaScript SDK 도메인에 등록할 값</b><br><span id="origin"></span><br><span class="muted">GitHub Pages로 열면 여기에 실제 공유 도메인이 자동 표시돼.</span></div>
+ <div class="layout">
+  <aside class="card"><div style="display:flex;align-items:center;gap:7px"><b style="flex:1">테스트 식당</b><button class="btn" id="new">+ 추가</button></div><div id="stores"></div></aside>
+  <main class="card"><div id="empty" class="muted">식당을 선택하거나 새로 추가해줘.</div><div id="form" style="display:none">
+   <div class="grid">
+    <div><label>이름</label><input id="name"></div><div><label>종류</label><select id="cat"><option>한식</option><option>일식</option><option>중식</option><option>양식</option><option>분식</option><option>패스트푸드</option><option>기타</option></select></div>
+    <div><label>주소</label><input id="address"></div><div><label>전화</label><input id="phone"></div>
+    <div><label>최소 가격</label><input id="minp" type="number"></div><div><label>평균 가격</label><input id="avgp" type="number"></div>
+    <div><label>최대 가격</label><input id="maxp" type="number"></div><div><label>평점(TEST)</label><input id="rating" type="number" step=".1"></div>
+    <div><label>테이블 수</label><input id="tables" type="number"></div><div><label>수용 인원</label><input id="capacity" type="number"></div>
+   </div>
+   <label>설명</label><textarea id="desc"></textarea>
+   <div style="display:flex;gap:14px;flex-wrap:wrap"><label><input id="solo" type="checkbox" style="width:auto"> 혼밥 가능</label><label><input id="group" type="checkbox" style="width:auto"> 단체 가능</label><label><input id="takeout" type="checkbox" style="width:auto"> 포장 가능</label></div>
+   <div id="map"></div>
+   <div class="grid"><div><label>위도</label><input id="lat" type="number" step=".000001"></div><div><label>경도</label><input id="lng" type="number" step=".000001"></div></div>
+   <div class="grid"><div><label>오픈</label><input id="open" type="time"></div><div><label>마감</label><input id="close" type="time"></div><div><label>브레이크 시작</label><input id="bs" type="time"></div><div><label>브레이크 종료</label><input id="be" type="time"></div><div><label>라스트오더</label><input id="last" type="time"></div></div>
+   <label>메뉴</label><div id="menus"></div><button class="btn ghost" id="addMenu">+ 메뉴</button>
+   <div class="actions"><button class="btn ghost" id="del">삭제</button><button class="btn" id="save">Supabase에 저장</button></div>
+  </div></main>
+ </div>
+</div>
+<script>
+const SB="https://zkmxtvompqzhyfbrnupc.supabase.co",PK="sb_publishable_yqodOC8pokdJmOthqsuA1Q_WZjlI0Xg",S={lat:35.5439,lng:129.2563};let stores=[],sel=null,menus=[],map=null,marker=null;const $=q=>document.querySelector(q);
+async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",Prefer:"return=representation",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());const t=await r.text();return t?JSON.parse(t):null}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}function t5(v){return(v||"").slice(0,5)}
+async function settings(){const a=await api("food_app_settings?id=eq.main&select=*");$("#keyStatus").textContent=a[0]?.kakao_js_key?"공유 키 저장됨 ✅":"아직 공유 키 없음";return a[0]?.kakao_js_key||""}
+$("#origin").textContent=location.origin;
+$("#saveKey").onclick=async()=>{const k=$("#jskey").value.trim();if(!k)return alert("JavaScript 키를 입력해줘.");await api("food_app_settings?id=eq.main",{method:"PATCH",body:JSON.stringify({kakao_js_key:k,updated_at:new Date().toISOString()})});alert("저장 완료. 이제 사용자 링크에서는 키 입력이 필요 없어.");location.reload()}
+function initMap(key){if(!key)return;const s=document.createElement("script");s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);s.onload=()=>kakao.maps.load(()=>{map=new kakakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(S.lat,S.lng),level:3});marker=new kakao.maps.Marker({map,position:new kakao.maps.LatLng(S.lat,S.lng),draggable:true});kakao.maps.event.addListener(map,"click",e=>setPos(e.latlng.getLat(),e.latlng.getLng()));kakao.maps.event.addListener(marker,"dragend",()=>{const p=marker.getPosition();setPos(p.getLat(),p.getLng(),false)})});document.head.appendChild(s)}
+function setPos(a,b,m=true){$("#lat").value=(+a).toFixed(6);$("#lng").value=(+b).toFixed(6);if(map&&marker&&m){const p=new kakao.maps.LatLng(+a,+b);marker.setPosition(p);map.panTo(p)}}
+async function load(){stores=await api("food_restaurants?select=*&is_demo=eq.true&order=name.asc");$("#stores").innerHTML=stores.map(r=>`<button class="store ${sel?.id===r.id?"on":""}" data-id="${r.id}"><b>${esc(r.name)}</b><div class="muted">${esc(r.category_label||"기타")}</div></button>`).join("")}
+$("#stores").onclick=e=>{const b=e.target.closest(".store");if(b)openStore(b.dataset.id)}
+async function openStore(id){sel=stores.find(x=>x.id===id);if(!sel)return;$("#empty").style.display="none";$("#form").style.display="block";await load();$("#name").value=sel.name||"";$("#cat").value=sel.category_label||"기타";$("#address").value=sel.address||"";$("#phone").value=sel.phone||"";$("#desc").value=sel.description||"";$("#minp").value=sel.min_price??"";$("#avgp").value=sel.average_price??"";$("#maxp").value=sel.max_price??"";$("#rating").value=sel.demo_rating??"";$("#tables").value=sel.table_count??"";$("#capacity").value=sel.capacity??"";$("#solo").checked=!!sel.solo_friendly;$("#group").checked=!!sel.group_friendly;$("#takeout").checked=!!sel.takeout;$("#last").value=t5(sel.last_order_time);setPos(sel.latitude,sel.longitude);setTimeout(()=>map?.relayout(),80);const [ms,hs]=await Promise.all([api("food_menus?select=*&restaurant_id=eq."+id+"&order=sort_order.asc"),api("food_restaurant_hours?select=*&restaurant_id=eq."+id+"&order=weekday.asc")]);menus=ms.map(x=>({name:x.name,price:x.price,is_signature:x.is_signature}));renderMenus();const h=hs[0];$("#open").value=t5(h?.open_time);$("#close").value=t4(h?.close_time);$("#bs").value=t4(h?.break_start);$("#be").value=t5(h?.break_end)}
+function renderMenus(){$("#menus").innerHTML=menus.map((m,i)=>`<div class="row"><input data-i="${i}" data-k="name" value="${esc(m.name)}"><input data-i="${i}" data-k="price" type="number" value="${m.price}"><label><input data-i="${i}" data-k="sig" type="checkbox" ${m.is_signature?"checked":""} style="width:auto"> 대표</label><button class="x" data-x="${i}">×</button></div>`).join("")}
+$("#menus").oninput=e=>{const i=+e.target.dataset.i,k=e.target.dataset.k;if(k==="name")menus[i].name=e.target.value;if(k==="price")menus[i].price=+e.target.value}
+$("#menus").onchange=e=>{if(e.target.dataset.k==="sig")menus[+e.target.dataset.i].is_signature=e.target.checked}
+$("#menus").onclick=e=>{const b=e.target.closest("[data-x]");if(b){menus.splice(+b.dataset.x,1);renderMenus()}}
+$("#addMenu").onclick=()=>{menus.push({name:"새 메뉴",price:8000,is_signature:menus.length===0});renderMenus()}
+$("#new").onclick=()=>{sel={id:null,demo_slug:"demo-"+Date.now(),name:"[TEST] 새 식닸",category_label:"한식",address:"울산대학교 주변",latitude:S.lat,longitude:S.lng,min_price:7000,average_price:9000,max_price:12000,solo_friendly:true,group_friendly:true,takeout:true};$("#empty").style.display="none";$("#form").style.display="block";$("#name").value=sel.name;$("#cat").value="한식";$("#address").value=sel.address;$("#phone").value="";$("#desc").value="";$("#minp").value=7000;$("#avgp").value=9000;$("#maxp").value=12000;$("#rating").value=4;$("#tables").value=8;$("#capacity").value=24;$("#solo").checked=true;$("#group").checked=true;$("#takeout").checked=true;menus=[{name:"대표 메뉴",price:9000,is_signature:true}];renderMenus();$("#open").value="11:00";$("#close").value="21:00";$("#bs").value="";$("#be").value="";$("#last").value="20:30";setPos(S.lat,S.lng)}
+function payload(){return{name:$("#name").value.trim(),category_label:$("#cat").value,address:$("#address").value.trim(),phone:$("#phone").value.trim()||null,description:$("#desc").value.trim()||null,min_price:+$("#minp").value||null,average_price:+$("#avgp").value||null,max_price:+$("#maxp").value||null,demo_rating:+$("#rating").value||null,table_count:+$("#tables").value||null,capacity:+$("#capacity").value||null,solo_friendly:$("#solo").checked,group_friendly:$("#group").checked,takeout:$("#takeout").checked,delivery:false,latitude:+$("#lat").value,longitude:+$("#lng").value,last_order_time:$("#last").value||null,is_active:true,is_demo:true,demo_slug:sel.demo_slug||("demo-"+Date.now()),updated_at:new Date().toISOString()}}
+$("#save").onclick=async()=>{let id=sel.id,p=payload();if(id){const a=await api("food_restaurants?id=eq."+id,{method:"PATCH",body:JSON.stringify(p)});sel=a[0]||{...sel,...p}}else{const a=await api("food_restaurants",{method:"POST",body:JSON.stringify(p)});sel=a[0];id=sel.id}await api("food_menus?restaurant_id=eq."+id,{method:"DELETE"});if(menus.length)await api("food_menus",{method:"POST",body:JSON.stringify(menus.map((m,i)=>({restaurant_id:id,name:m.name,price:+m.price||0,is_signature:!!m.is_signature,is_available:true,sort_order:i+1})))});await api("food_restaurant_hours?restaurant_id=eq."+id,{method:"DELETE"});await api("food_restaurant_hours",{method:"POST",body:JSON.stringify([0,1,2,3,4,5,6].map(d=>({restaurant_id:id,weekday:d,open_time:$("#open").value||null,close_time:$("#close").value||null,break_start:$("#bs").value||null,break_end:$("#be").value||null,is_closed:false})))});alert("저장 완료!");await load();await openStore(id)}
+$("#del").onclick=async()=>{if(!sel?.id)return;if(!confirm("삭제할까?"))return;await api("food_menus?restaurant_id=eq."+sel.id,{method:"DELETE"});await api("food_restaurant_hours?restaurant_id=eq."+sel.id,{method:"DELETE"});await api("food_restaurants?id=eq."+sel.id,{method:"DELETE"});sel=null;$("#form").style.display="none";$("#empty").style.display="block";await load()}
+$("#lat").onchange=()=>setPos(+$("#lat").value,+$("#lng").value);$("#lng").onchange=()=>setPos(+$("#lat").value,+$("#lng").value);
+(async()=>{const [_,key]=await Promise.all([load(),settings()]);initMap(key)})();
+</script></body></html>
