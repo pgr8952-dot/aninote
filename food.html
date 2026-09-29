@@ -67,7 +67,7 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
 </section>
 </div>
 <script>
-const SB="https://zkmxtvompqzhyfbrnupc.supabase.co", PK="sb_publishable_yqodOC8pokdJmOthqsuA1Q_WZjlI0Xg", SCHOOL={lat:35.5439,lng:129.2563};
+const SB="https://wlajrtchyadaxojzrxjg.supabase.co", PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC", SCHOOL={lat:35.5439,lng:129.2563};
 const $=q=>document.querySelector(q);
 let all=[], filtered=[], cat="all", walk=10, maps={}, marks=[], origin={...SCHOOL};
 async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());return r.json()}
