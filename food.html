@@ -6,26 +6,37 @@
 <title>울산대 뭐먹지</title>
 <style>
 :root{--bg:#f5f6f8;--card:#fff;--ink:#17191d;--muted:#747b86;--line:#e4e7eb;--dark:#111827}
-*{box-sizing:border-box} html,body{margin:0;background:#e9ebef;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
-button,input{font:inherit} button{cursor:pointer} .app{width:min(100%,430px);min-height:100dvh;margin:auto;background:var(--bg);overflow:hidden}
+*{box-sizing:border-box}html,body{margin:0;background:#e9ebef;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-height:100dvh;margin:auto;background:var(--bg);overflow:hidden}
 .top{height:62px;display:flex;align-items:center;padding:0 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
-.top b{flex:1;font-size:18px} .icon{width:40px;height:40px;border:1px solid var(--line);background:#fff;border-radius:13px}
-.pad{padding:14px} .map{height:255px;border-radius:20px;overflow:hidden;background:#dce2e7}
+.top b{flex:1;font-size:18px}.icon{width:40px;height:40px;border:1px solid var(--line);background:#fff;border-radius:13px}
+.pad{padding:14px}.map{height:260px;border-radius:20px;overflow:hidden;background:#dce2e7;position:relative}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px;margin-top:10px;box-shadow:0 5px 18px rgba(0,0,0,.035)}
-.notice{background:#fff3cd;color:#684f00;line-height:1.55} .muted{font-size:12px;color:var(--muted);line-height:1.45}
-.section{font-size:13px;font-weight:900;margin:18px 0 8px} .chips{display:flex;gap:7px;flex-wrap:wrap}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:800}
-.chip.on{background:#111827;color:#fff;border-color:#111827} .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;border-radius:15px;background:#111827;color:#fff;font-weight:900;padding:14px}
-#results,#detail{display:none} .bar{display:flex;align-items:center;gap:8px} .bar h2{font-size:18px;flex:1}
+.notice{background:#fff3cd;color:#684f00;line-height:1.55}.muted{font-size:12px;color:var(--muted);line-height:1.45}
+.section{font-size:13px;font-weight:900;margin:18px 0 8px}.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:800}.chip.on{background:#111827;color:#fff;border-color:#111827}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}input[type=range]{width:100%;accent-color:#111827}
+.btn{width:100%;border:0;border-radius:15px;background:#111827;color:#fff;font-weight:900;padding:14px}
+#results,#detail,#nav{display:none}.bar{display:flex;align-items:center;gap:8px}.bar h2{font-size:18px;flex:1}
 .store{width:100%;display:flex;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:#fff;border-radius:17px;padding:12px;margin:8px 0}
-.store:active{transform:scale(.993)} .emoji{width:56px;height:56px;border-radius:14px;background:#eef1f4;display:grid;place-items:center;font-size:26px;flex:0 0 auto}
-.main{min-width:0;flex:1} .name{font-weight:900;font-size:14px} .meta{font-size:11px;color:var(--muted);line-height:1.45;margin-top:4px}
-.price{font-size:12px;font-weight:850;margin-top:4px} .go{font-size:11px;background:#111827;color:#fff;border-radius:999px;padding:7px 8px;white-space:nowrap}
-.info{background:#fff;border:1px solid var(--line);border-radius:15px;padding:11px} .info b{display:block;font-size:10px;color:#777f88;margin-bottom:4px} .info span{font-size:12px;font-weight:850}
-.menus>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #eceef1} .menus>div:last-child{border:0}
-.legend{display:flex;gap:10px;align-items:center;margin:8px 3px 0;font-size:11px;color:#666f79}.dot{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;font-size:13px;margin-right:3px}.dot.food{background:#111827;color:#fff}.dot.vm{background:#fff;border:2px solid #111827}
-.vm-pin{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid #111827;box-shadow:0 2px 7px rgba(0,0,0,.22);font-size:18px}.vm-bubble{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:7px 9px;font-size:11px;box-shadow:0 3px 12px rgba(0,0,0,.13);white-space:nowrap}.actions{margin-top:14px}
+.store:active{transform:scale(.993)}.emoji{width:56px;height:56px;border-radius:14px;background:#eef1f4;display:grid;place-items:center;font-size:26px;flex:0 0 auto}
+.main{min-width:0;flex:1}.name{font-weight:900;font-size:14px}.meta{font-size:11px;color:var(--muted);line-height:1.45;margin-top:4px}.price{font-size:12px;font-weight:850;margin-top:4px}.go{font-size:11px;background:#111827;color:#fff;border-radius:999px;padding:7px 8px;white-space:nowrap}
+.info{background:#fff;border:1px solid var(--line);border-radius:15px;padding:11px}.info b{display:block;font-size:10px;color:#777f88;margin-bottom:4px}.info span{font-size:12px;font-weight:850}
+.menus>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #eceef1}.menus>div:last-child{border:0}
+.legend{display:flex;gap:10px;align-items:center;margin:8px 3px 0;font-size:11px;color:#666f79}.dot{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;font-size:13px;margin-right:3px}
+.dot.food{background:#111827;color:#fff}.dot.vm{width:9px;height:9px;background:#e53935;border:0}
+.vm-pin{width:11px;height:11px;border-radius:50%;background:#e53935;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.3);cursor:pointer}
+.food-pin{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#111827;color:#fff;border:2px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.22);font-size:16px}
+.vm-bubble{background:white;border:1px solid #dfe3e8;border-radius:10px;padding:7px 9px;font-size:11px;box-shadow:0 3px 12px rgba(0,0,0,.13);white-space:nowrap}
+.actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px}
+.me-pin{width:18px;height:18px;border-radius:50%;background:#2f7df6;border:3px solid #fff;box-shadow:0 0 0 5px rgba(47,125,246,.18),0 2px 8px rgba(0,0,0,.22)}
+#navmap{height:58vh;min-height:410px;border-radius:0}
+.nav-card{margin:0;border-radius:0;border-left:0;border-right:0;box-shadow:none}
+.nav-big{font-size:28px;font-weight:950;letter-spacing:-.5px}
+.nav-note{font-size:11px;color:#747b86;line-height:1.5;margin-top:5px}
+.nav-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.nav-actions button{padding:12px;border-radius:13px;font-weight:850}
+.nav-secondary{background:#fff;color:#111827;border:1px solid #dfe3e8}
 </style>
 </head>
 <body><div class="app">
@@ -34,7 +45,7 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
  <div class="pad">
   <div id="notice"></div>
   <div id="map" class="map"></div>
-  <div class="legend"><span><span class="dot food">🍴</span>등록 식당</span><span><span class="dot vm">🥤</span>자판기</span><span id="vmCount"></span></div>
+  <div class="legend"><span><span class="dot food">🍴</span>등록 식당</span><span><span class="dot vm"></span>자판기</span><span id="vmCount"></span></div>
   <div class="section">1인당 식비</div>
   <div class="grid">
    <div class="card"><div class="muted">최소</div><b id="minL">0원</b><input id="min" type="range" min="0" max="30000" step="1000" value="0"></div>
@@ -50,12 +61,10 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
   <div style="height:14px"></div><button class="btn" id="search">식당 찾기</button>
  </div>
 </section>
-
 <section id="results">
  <div class="top bar"><button class="icon" onclick="show('home')">←</button><h2>검색 결과</h2></div>
- <div class="pad"><div id="rmap" class="map"></div><div class="legend"><span><span class="dot food">🍴</span>식당</span><span><span class="dot vm">🥤</span>자판기</span></div><div class="card"><b id="count"></b><div id="list"></div></div></div>
+ <div class="pad"><div id="rmap" class="map"></div><div class="legend"><span><span class="dot food">🍴</span>식당</span><span><span class="dot vm"></span>자판기</span></div><div class="card"><b id="count"></b><div id="list"></div></div></div>
 </section>
-
 <section id="detail">
  <div class="top bar"><button class="icon" onclick="show('results')">←</button><h2>식당 상세</h2></div>
  <div class="pad"><div id="dmap" class="map"></div><h1 id="dn" style="font-size:26px;margin-bottom:6px"></h1><div id="tags" class="muted"></div>
@@ -69,38 +78,59 @@ input[type=range]{width:100%;accent-color:#111827} .btn{width:100%;border:0;bord
   <div class="actions"><button class="btn" id="startNav">🚶 출발 · 도보 길찾기</button></div>
  </div>
 </section>
+
+<section id="nav">
+ <div class="top bar"><button class="icon" id="stopNavTop">←</button><h2>도보 길안내</h2></div>
+ <div id="navmap" class="map"></div>
+ <div class="card nav-card">
+  <div class="muted">목적지</div>
+  <div style="font-size:18px;font-weight:900" id="navTitle">-</div>
+  <div style="height:10px"></div>
+  <div class="muted">남은 직선거리</div>
+  <div class="nav-big" id="navDistance">-</div>
+  <div id="navEta" style="font-size:13px;font-weight:800;margin-top:2px"></div>
+  <div id="navStatus" class="nav-note">GPS 위치를 기다리는 중...</div>
+  <div class="nav-note">파란 선은 현재 위치와 목적지를 잇는 방향 가이드야. 도로를 따라가는 실제 도보 경로는 카카오맵으로 확인할 수 있어.</div>
+  <div class="nav-actions"><button class="btn" id="openKakaoWalk">카카오맵 실제 경로</button><button class="nav-secondary" id="stopNav">안내 종료</button></div>
+ </div>
+</section>
 </div>
 <script>
 const SB="https://wlajrtchyadaxojzrxjg.supabase.co", PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC", SCHOOL={lat:35.5439,lng:129.2563};
 const $=q=>document.querySelector(q);
-let all=[], vending=[], filtered=[], cat="all", walk=10, maps={}, marks=[], origin={...SCHOOL}, currentRestaurant=null;
+let restaurants=[], vending=[], filtered=[], cat="all", walk=10, maps={}, overlays={home:[],results:[],detail:[],nav:[]}, origin={...SCHOOL}, currentRestaurant=null;
+let livePosition=null, locationWatchId=null, meOverlays={}, navLine=null, navigating=false;
 async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());return r.json()}
 function won(n){return Number(n||0).toLocaleString("ko-KR")+"원"}
 function dist(a,b){const R=6371000,p=Math.PI/180,x=(b.lat-a.lat)*p,y=(b.lng-a.lng)*p,A=Math.sin(x/2)**2+Math.cos(a.lat*p)*Math.cos(b.lat*p)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(A))}
-function show(id){["home","results","detail"].forEach(x=>$("#"+x).style.display=x===id?"block":"none");setTimeout(()=>Object.values(maps).forEach(m=>m?.relayout?.()),80);scrollTo(0,0)}
+function show(id){["home","results","detail","nav"].forEach(x=>$("#"+x).style.display=x===id?"block":"none");setTimeout(()=>Object.values(maps).forEach(m=>m?.relayout?.()),80);scrollTo(0,0)}
 function getPosition(fallback=true){return new Promise(resolve=>{if(!navigator.geolocation)return resolve(fallback?{...SCHOOL}:null);navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lng:p.coords.longitude}),()=>resolve(fallback?{...SCHOOL}:null),{enableHighAccuracy:true,timeout:7000,maximumAge:15000})})}
-function addVending(map,v){const el=document.createElement("div");el.className="vm-pin";el.textContent="🥤";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:el,yAnchor:1});let bubble=null;el.onclick=()=>{if(bubble){bubble.setMap(null);bubble=null;return}const b=document.createElement("div");b.className="vm-bubble";b.innerHTML="<b>"+(v.name||"자판기")+"</b>"+(v.description?"<br>"+v.description:"");bubble=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:b,yAnchor:2.8});bubble.setMap(map)};return ov}
-function drawHome(){if(!maps.home)return;const b=new kakao.maps.LatLngBounds();let n=0;all.forEach(r=>{const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);b.extend(p);const m=new kakao.maps.Marker({map:maps.home,position:p});kakao.maps.event.addListener(m,"click",()=>openDetail(r.id));n++});vending.forEach(v=>{b.extend(new kakao.maps.LatLng(+v.latitude,+v.longitude));addVending(maps.home,v);n++});if(n)maps.home.setBounds(b,35,25,35,25)}
+function nearSchool(p){return !!p&&dist(SCHOOL,p)<=5000}
+function meOverlay(map,k,p){if(!map||!p)return;meOverlays[k]?.setMap(null);const el=document.createElement("div");el.className="me-pin";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(p.lat,p.lng),content:el,yAnchor:.5,zIndex:20});meOverlays[k]=ov;return ov}
+function refreshLocationDots(){if(!livePosition)return;["home","results","detail"].forEach(k=>{if(maps[k])meOverlay(maps[k],k,livePosition)})}
+function startLocationWatch(){if(locationWatchId!==null||!navigator.geolocation)return;locationWatchId=navigator.geolocation.watchPosition(pos=>{livePosition={lat:pos.coords.latitude,lng:pos.coords.longitude};refreshLocationDots();if(navigating)updateNav(livePosition,false)},()=>{}, {enableHighAccuracy:true,maximumAge:5000,timeout:10000})}
+function clearOverlays(k){(overlays[k]||[]).forEach(o=>o.setMap(null));overlays[k]=[]}
+function foodOverlay(map,r,k,clickable=true){const el=document.createElement("div");el.className="food-pin";el.textContent="🍴";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+r.latitude,+r.longitude),content:el,yAnchor:1});overlays[k].push(ov);if(clickable)el.onclick=()=>openDetail(r.id);return ov}
+function vendingOverlay(map,v,k){const wrap=document.createElement("div");wrap.className="vm-pin";wrap.title=v.name||"자판기";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:wrap,yAnchor:.5,zIndex:8});overlays[k].push(ov);let bubble=null;wrap.onclick=()=>{if(bubble){bubble.setMap(null);bubble=null;return}const b=document.createElement("div");b.className="vm-bubble";const strong=document.createElement("b");strong.textContent=v.name||"자판기";b.appendChild(strong);if(v.description){b.appendChild(document.createElement("br"));b.appendChild(document.createTextNode(v.description))}bubble=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:b,yAnchor:2.1,zIndex:30});bubble.setMap(map)};return ov}
+function drawAll(map,k,foodList=restaurants){if(!map)return;clearOverlays(k);const bounds=new kakao.maps.LatLngBounds();let n=0;foodList.forEach(r=>{foodOverlay(map,r,k);bounds.extend(new kakao.maps.LatLng(+r.latitude,+r.longitude));n++});vending.forEach(v=>{vendingOverlay(map,v,k);bounds.extend(new kakao.maps.LatLng(+v.latitude,+v.longitude));n++});if(livePosition){meOverlay(map,k,livePosition);if(nearSchool(livePosition)){bounds.extend(new kakao.maps.LatLng(livePosition.lat,livePosition.lng));n++}}if(n)map.setBounds(bounds,35,25,35,25)}
 async function boot(){
- try{[all,vending]=await Promise.all([api("food_restaurants?select=*&is_demo=eq.true&is_active=eq.true&order=name.asc"),api("food_vending_machines?select=*&is_active=eq.true&order=name.asc")]);$("#vmCount").textContent="· "+vending.length+"대 등록"}catch(e){$("#notice").innerHTML='<div class="card notice">DB를 불러오지 못했어.</div>';return}
- let settings=[];
- try{settings=await api("food_app_settings?id=eq.main&select=kakao_js_key")}catch{}
+ try{[restaurants,vending]=await Promise.all([api("food_restaurants?select=*&is_demo=eq.true&is_active=eq.true&order=name.asc"),api("food_vending_machines?select=*&is_active=eq.true&order=name.asc")]);$("#vmCount").textContent="· "+vending.length+"대 등록"}catch(e){$("#notice").innerHTML='<div class="card notice">DB를 불러오지 못했어.</div>';return}
+ let settings=[];try{settings=await api("food_app_settings?id=eq.main&select=kakao_js_key")}catch{}
  const key=settings[0]?.kakao_js_key||"";
- if(!key){$("#notice").innerHTML='<div class="card notice"><b>지도 설정 전</b><br>에디터에서 카카오 JavaScript 키를 한 번 저장하면 이 링크를 받은 사람은 별도 설정 없이 사용할 수 있어.</div>';return}
- const s=document.createElement("script");
- s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);
- s.onload=()=>kakao.maps.load(async()=>{maps.home=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.results=new kakao.maps.Map($("#rmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.detail=new kakao.maps.Map($("#dmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:3});drawHome();origin=await getPosition(true)});
- s.onerror=()=>$("#notice").innerHTML='<div class="card notice">카카오 지도를 못 불러왔어. 에디터에 표시되는 현재 사이트 도메인이 카카오 JavaScript SDK 도메인에 등록됐는지 확인해줘.</div>';
- document.head.appendChild(s);
+ if(!key){$("#notice").innerHTML='<div class="card notice"><b>지도 설정 전</b><br>에디터에서 카카오 JavaScript 키를 저장해줘.</div>';return}
+ const s=document.createElement("script");s.src="https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey="+encodeURIComponent(key);
+ s.onload=()=>kakao.maps.load(async()=>{maps.home=new kakao.maps.Map($("#map"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.results=new kakao.maps.Map($("#rmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:4});maps.detail=new kakao.maps.Map($("#dmap"),{center:new kakao.maps.LatLng(SCHOOL.lat,SCHOOL.lng),level:3});const p=await getPosition(false);if(p){livePosition=p;origin=nearSchool(p)?p:{...SCHOOL}}drawAll(maps.home,"home");startLocationWatch()});s.onerror=()=>$("#notice").innerHTML='<div class="card notice">카카오 지도를 불러오지 못했어. SDK 도메인 등록을 확인해줘.</div>';document.head.appendChild(s)
 }
-function sync(){let a=+$("#min").value,b=+$("#max").value;if(a>b){b=a;$("#max").value=b}$("#minL").textContent=won(a);$("#maxL").textContent=won(b)}
-$("#min").oninput=sync;$("#max").oninput=sync;sync();
+function sync(){let a=+$("#min").value,b=+$("#max").value;if(a>b){b=a;$("#max").value=b}$("#minL").textContent=won(a);$("#maxL").textContent=won(b)}$("#min").oninput=sync;$("#max").oninput=sync;sync();
 $("#cats").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#cats").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");cat=b.dataset.v}
 $("#walks").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#walks").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");walk=+b.dataset.v}
-$("#search").onclick=async()=>{origin=await getPosition(true);if(dist(SCHOOL,origin)>5000)origin={...SCHOOL};const mi=+$("#min").value,ma=+$("#max").value;filtered=all.map(r=>({...r,_d:Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}))})).filter(r=>Math.ceil(r._d/75)<=walk&&(cat==="all"||r.category_label===cat)&&(r.max_price??999999)>=mi&&(r.min_price??0)<=ma).sort((a,b)=>a._d-b._d);$("#count").textContent=filtered.length+"곳";$("#list").innerHTML=filtered.map((r,i)=>`<button class="store" data-id="${r.id}"><div class="emoji">🍴</div><div class="main"><div class="name">${i<3?"추천 "+(i+1)+" · ":""}${r.name}</div><div class="meta">${r.category_label||"기타"} · 약 ${Math.max(1,Math.ceil(r._d/75))}분 · ${r._d}m<br>${r.address}</div><div class="price">${won(r.min_price)} ~ ${won(r.max_price)}</div></div><span class="go">상세 ›</span></button>`).join("")||'<div class="muted" style="padding:12px">조건에 맞는 식당이 없어.</div>';show("results");setTimeout(drawResults,120)}
-function drawResults(){if(!maps.results)return;marks.forEach(m=>m.setMap(null));marks=[];const b=new kakao.maps.LatLngBounds();b.extend(new kakao.maps.LatLng(origin.lat,origin.lng));filtered.forEach(r=>{const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);b.extend(p);const m=new kakao.maps.Marker({map:maps.results,position:p});marks.push(m);kakao.maps.event.addListener(m,"click",()=>openDetail(r.id))});vending.forEach(v=>{const p=new kakao.maps.LatLng(+v.latitude,+v.longitude);b.extend(p);const o=addVending(maps.results,v);marks.push(o)});if(filtered.length||vending.length)maps.results.setBounds(b,45,25,45,25)}
+$("#search").onclick=async()=>{const p=await getPosition(false);if(p)livePosition=p;origin=(livePosition&&nearSchool(livePosition))?livePosition:{...SCHOOL};const mi=+$("#min").value,ma=+$("#max").value;filtered=restaurants.map(r=>({...r,_d:Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}))})).filter(r=>Math.ceil(r._d/75)<=walk&&(cat==="all"||r.category_label===cat)&&(r.max_price??999999)>=mi&&(r.min_price??0)<=ma).sort((a,b)=>a._d-b._d);$("#count").textContent=filtered.length+"곳";$("#list").innerHTML=filtered.map((r,i)=>`<button class="store" data-id="${r.id}"><div class="emoji">🍴</div><div class="main"><div class="name">${i<3?"추천 "+(i+1)+" · ":""}${r.name}</div><div class="meta">${r.category_label||"기타"} · 약 ${Math.max(1,Math.ceil(r._d/75))}분 · ${r._d}m<br>${r.address}</div><div class="price">${won(r.min_price)} ~ ${won(r.max_price)}</div></div><span class="go">상세 ›</span></button>`).join("")||'<div class="muted" style="padding:12px">조건에 맞는 식당이 없어.</div>';show("results");setTimeout(()=>drawAll(maps.results,"results",filtered),120)}
 $("#list").onclick=e=>{const b=e.target.closest(".store");if(b)openDetail(b.dataset.id)}
-async function openDetail(id){const r=filtered.find(x=>x.id===id)||all.find(x=>x.id===id);if(!r)return;currentRestaurant=r;show("detail");const d=r._d||Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}));$("#dn").textContent=r.name;$("#tags").textContent=(r.category_label||"")+" · TEST"+(r.demo_rating?" · ★ "+r.demo_rating:"");$("#dd").textContent=d+"m · 약 "+Math.max(1,Math.ceil(d/75))+"분";$("#dp").textContent=won(r.min_price)+" ~ "+won(r.max_price);$("#dc").textContent=(r.table_count??"-")+"개 · "+(r.capacity??"-")+"명";$("#df").textContent="혼밥 "+(r.solo_friendly?"가능":"비추천")+" · 단체 "+(r.group_friendly?"가능":"비추천");$("#desc").textContent=r.description||"설명 없음";const [ms,hs]=await Promise.all([api("food_menus?select=*&restaurant_id=eq."+id+"&is_available=eq.true&order=sort_order.asc"),api("food_restaurant_hours?select=*&restaurant_id=eq."+id+"&weekday=eq."+new Date().getDay())]);$("#dm").innerHTML=ms.map(x=>`<div><b>${x.is_signature?"대표 · ":""}${x.name}</b><span>${won(x.price)}</span></div>`).join("")||'<div>메뉴 없음</div>';const h=hs[0];$("#dh").textContent=h&&!h.is_closed?(h.open_time||"").slice(0,5)+"–"+(h.close_time||"").slice(0,5):"휴무";$("#db").textContent=h?.break_start?h.break_start.slice(0,5)+"–"+h.break_end.slice(0,5):"없음";setTimeout(()=>{if(!maps.detail)return;const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);maps.detail.relayout();maps.detail.setCenter(p);new kakao.maps.Marker({map:maps.detail,position:p})},100)}
-$("#startNav").onclick=async()=>{if(!currentRestaurant)return;const navWin=window.open("about:blank","_blank");const p=await getPosition(false);if(!p){navWin?.close();alert("도보 길안내를 시작하려면 위치 권한을 허용해줘.");return}const r=currentRestaurant;const from=encodeURIComponent("현재 위치")+","+p.lat+","+p.lng;const to=encodeURIComponent(r.name)+","+r.latitude+","+r.longitude;const url="https://map.kakao.com/link/by/walk/"+from+"/"+to;if(navWin)navWin.location.href=url;else location.href=url}
+async function openDetail(id){const r=restaurants.find(x=>x.id===id);if(!r)return;currentRestaurant=r;show("detail");const d=Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}));$("#dn").textContent=r.name;$("#tags").textContent=(r.category_label||"")+(r.demo_rating?" · ★ "+r.demo_rating:"");$("#dd").textContent=d+"m · 약 "+Math.max(1,Math.ceil(d/75))+"분";$("#dp").textContent=won(r.min_price)+" ~ "+won(r.max_price);$("#dc").textContent=(r.table_count??"-")+"개 · "+(r.capacity??"-")+"명";$("#df").textContent="혼밥 "+(r.solo_friendly?"가능":"비추천")+" · 단체 "+(r.group_friendly?"가능":"비추천");$("#desc").textContent=r.description||"설명 없음";const [ms,hs]=await Promise.all([api("food_menus?select=*&restaurant_id=eq."+id+"&is_available=eq.true&order=sort_order.asc"),api("food_restaurant_hours?select=*&restaurant_id=eq."+id+"&weekday=eq."+new Date().getDay())]);$("#dm").innerHTML=ms.map(x=>`<div><b>${x.is_signature?"대표 · ":""}${x.name}</b><span>${won(x.price)}</span></div>`).join("")||'<div>메뉴 없음</div>';const h=hs[0];$("#dh").textContent=h&&!h.is_closed?(h.open_time||"").slice(0,5)+"–"+(h.close_time||"").slice(0,5):"휴무";$("#db").textContent=h?.break_start?h.break_start.slice(0,5)+"–"+h.break_end.slice(0,5):"없음";setTimeout(()=>{if(!maps.detail)return;clearOverlays("detail");maps.detail.relayout();const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);maps.detail.setCenter(p);foodOverlay(maps.detail,r,"detail",false);vending.forEach(v=>vendingOverlay(maps.detail,v,"detail"));if(livePosition)meOverlay(maps.detail,"detail",livePosition)},100)}
+async function startInternalNavigation(){if(!currentRestaurant)return;const p=await getPosition(false);if(!p){alert("도보 길안내를 시작하려면 위치 권한을 허용해줘.");return}livePosition=p;navigating=true;show("nav");$("#navTitle").textContent=currentRestaurant.name;if(!maps.nav)maps.nav=new kakao.maps.Map($("#navmap"),{center:new kakao.maps.LatLng(p.lat,p.lng),level:3});setTimeout(()=>{maps.nav.relayout();updateNav(p,true)},100);startLocationWatch()}
+function updateNav(p,fit=false){if(!maps.nav||!currentRestaurant||!p)return;clearOverlays("nav");meOverlay(maps.nav,"nav",p);foodOverlay(maps.nav,currentRestaurant,"nav",false);vending.forEach(v=>vendingOverlay(maps.nav,v,"nav"));const dest={lat:+currentRestaurant.latitude,lng:+currentRestaurant.longitude};if(navLine)navLine.setMap(null);navLine=new kakao.maps.Polyline({map:maps.nav,path:[new kakao.maps.LatLng(p.lat,p.lng),new kakao.maps.LatLng(dest.lat,dest.lng)],strokeWeight:4,strokeColor:"#2f7df6",strokeOpacity:.8,strokeStyle:"solid"});const d=Math.round(dist(p,dest));$("#navDistance").textContent=d+"m";$("#navEta").textContent="약 "+Math.max(1,Math.ceil(d/75))+"분";$("#navStatus").textContent="GPS 위치를 따라 안내 중";if(fit){const b=new kakao.maps.LatLngBounds();b.extend(new kakao.maps.LatLng(p.lat,p.lng));b.extend(new kakao.maps.LatLng(dest.lat,dest.lng));maps.nav.setBounds(b,80,35,80,35)}if(d<=40&&navigating){navigating=false;$("#navStatus").textContent="목적지 주변에 도착했습니다. 안내를 종료합니다.";setTimeout(()=>{show("home");drawAll(maps.home,"home")},2500)}}
+function openKakaoWalk(){if(!currentRestaurant||!livePosition)return;const a=encodeURIComponent("현재 위치")+","+livePosition.lat+","+livePosition.lng;const b=encodeURIComponent(currentRestaurant.name)+","+currentRestaurant.latitude+","+currentRestaurant.longitude;window.open("https://map.kakao.com/link/by/walk/"+a+"/"+b,"_blank","noopener")}
+function stopNavigation(){navigating=false;show("detail")}
+$("#startNav").onclick=startInternalNavigation;$("#openKakaoWalk").onclick=openKakaoWalk;$("#stopNav").onclick=stopNavigation;$("#stopNavTop").onclick=stopNavigation;
 show("home");boot();
 </script></body></html>
