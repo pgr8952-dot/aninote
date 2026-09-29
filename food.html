@@ -86,20 +86,21 @@ button,input{font:inherit}button{cursor:pointer}.app{width:min(100%,440px);min-h
   <div class="muted">목적지</div>
   <div style="font-size:18px;font-weight:900" id="navTitle">-</div>
   <div style="height:10px"></div>
-  <div class="muted">남은 직선거리</div>
+  <div class="muted">남은 도보 경로</div>
   <div class="nav-big" id="navDistance">-</div>
   <div id="navEta" style="font-size:13px;font-weight:800;margin-top:2px"></div>
-  <div id="navStatus" class="nav-note">GPS 위치를 기다리는 중...</div>
-  <div class="nav-note">파란 선은 현재 위치와 목적지를 잇는 방향 가이드야. 도로를 따라가는 실제 도보 경로는 카카오맵으로 확인할 수 있어.</div>
+  <div id="navStatus" class="nav-note">실제 보행 경로를 계산하는 중...</div>
+  <div id="navStep" class="nav-note"></div>
+  <div class="nav-note">파란 선이 실제 보행 가능한 길을 따라 표시돼. GPS가 움직이면 경로를 다시 계산해.</div>
   <div class="nav-actions"><button class="btn" id="openKakaoWalk">카카오맵 실제 경로</button><button class="nav-secondary" id="stopNav">안내 종료</button></div>
  </div>
 </section>
 </div>
 <script>
-const SB="https://wlajrtchyadaxojzrxjg.supabase.co", PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC", SCHOOL={lat:35.5439,lng:129.2563};
+const SB="https://wlajrtchyadaxojzrxjg.supabase.co", PK="sb_publishable_ylGYWgn577t8gTeRWgqUGA_mwJwo9xC", ROUTE=SB+"/functions/v1/food-route", SCHOOL={lat:35.5439,lng:129.2563};
 const $=q=>document.querySelector(q);
 let restaurants=[], vending=[], filtered=[], cat="all", walk=10, maps={}, overlays={home:[],results:[],detail:[],nav:[]}, origin={...SCHOOL}, currentRestaurant=null;
-let livePosition=null, locationWatchId=null, meOverlays={}, navLine=null, navigating=false;
+let livePosition=null, locationWatchId=null, meOverlays={}, navLine=null, navigating=false, lastRoutePos=null, lastRouteAt=0, routeBusy=false;
 async function api(p,o={}){const r=await fetch(SB+"/rest/v1/"+p,{...o,headers:{apikey:PK,"content-type":"application/json",...(o.headers||{})}});if(!r.ok)throw Error(await r.text());return r.json()}
 function won(n){return Number(n||0).toLocaleString("ko-KR")+"원"}
 function dist(a,b){const R=6371000,p=Math.PI/180,x=(b.lat-a.lat)*p,y=(b.lng-a.lng)*p,A=Math.sin(x/2)**2+Math.cos(a.lat*p)*Math.cos(b.lat*p)*Math.sin(y/2)**2;return 2*R*Math.asin(Math.sqrt(A))}
@@ -108,7 +109,7 @@ function getPosition(fallback=true){return new Promise(resolve=>{if(!navigator.g
 function nearSchool(p){return !!p&&dist(SCHOOL,p)<=5000}
 function meOverlay(map,k,p){if(!map||!p)return;meOverlays[k]?.setMap(null);const el=document.createElement("div");el.className="me-pin";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(p.lat,p.lng),content:el,yAnchor:.5,zIndex:20});meOverlays[k]=ov;return ov}
 function refreshLocationDots(){if(!livePosition)return;["home","results","detail"].forEach(k=>{if(maps[k])meOverlay(maps[k],k,livePosition)})}
-function startLocationWatch(){if(locationWatchId!==null||!navigator.geolocation)return;locationWatchId=navigator.geolocation.watchPosition(pos=>{livePosition={lat:pos.coords.latitude,lng:pos.coords.longitude};refreshLocationDots();if(navigating)updateNav(livePosition,false)},()=>{}, {enableHighAccuracy:true,maximumAge:5000,timeout:10000})}
+function startLocationWatch(){if(locationWatchId!==null||!navigator.geolocation)return;locationWatchId=navigator.geolocation.watchPosition(pos=>{livePosition={lat:pos.coords.latitude,lng:pos.coords.longitude};refreshLocationDots();if(navigating){meOverlay(maps.nav,"nav",livePosition);maybeRefreshRoute(livePosition)}},()=>{}, {enableHighAccuracy:true,maximumAge:5000,timeout:10000})}
 function clearOverlays(k){(overlays[k]||[]).forEach(o=>o.setMap(null));overlays[k]=[]}
 function foodOverlay(map,r,k,clickable=true){const el=document.createElement("div");el.className="food-pin";el.textContent="🍴";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+r.latitude,+r.longitude),content:el,yAnchor:1});overlays[k].push(ov);if(clickable)el.onclick=()=>openDetail(r.id);return ov}
 function vendingOverlay(map,v,k){const wrap=document.createElement("div");wrap.className="vm-pin";wrap.title=v.name||"자판기";const ov=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:wrap,yAnchor:.5,zIndex:8});overlays[k].push(ov);let bubble=null;wrap.onclick=()=>{if(bubble){bubble.setMap(null);bubble=null;return}const b=document.createElement("div");b.className="vm-bubble";const strong=document.createElement("b");strong.textContent=v.name||"자판기";b.appendChild(strong);if(v.description){b.appendChild(document.createElement("br"));b.appendChild(document.createTextNode(v.description))}bubble=new kakao.maps.CustomOverlay({map,position:new kakao.maps.LatLng(+v.latitude,+v.longitude),content:b,yAnchor:2.1,zIndex:30});bubble.setMap(map)};return ov}
@@ -127,8 +128,75 @@ $("#walks").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;[...$("#w
 $("#search").onclick=async()=>{const p=await getPosition(false);if(p)livePosition=p;origin=(livePosition&&nearSchool(livePosition))?livePosition:{...SCHOOL};const mi=+$("#min").value,ma=+$("#max").value;filtered=restaurants.map(r=>({...r,_d:Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}))})).filter(r=>Math.ceil(r._d/75)<=walk&&(cat==="all"||r.category_label===cat)&&(r.max_price??999999)>=mi&&(r.min_price??0)<=ma).sort((a,b)=>a._d-b._d);$("#count").textContent=filtered.length+"곳";$("#list").innerHTML=filtered.map((r,i)=>`<button class="store" data-id="${r.id}"><div class="emoji">🍴</div><div class="main"><div class="name">${i<3?"추천 "+(i+1)+" · ":""}${r.name}</div><div class="meta">${r.category_label||"기타"} · 약 ${Math.max(1,Math.ceil(r._d/75))}분 · ${r._d}m<br>${r.address}</div><div class="price">${won(r.min_price)} ~ ${won(r.max_price)}</div></div><span class="go">상세 ›</span></button>`).join("")||'<div class="muted" style="padding:12px">조건에 맞는 식당이 없어.</div>';show("results");setTimeout(()=>drawAll(maps.results,"results",filtered),120)}
 $("#list").onclick=e=>{const b=e.target.closest(".store");if(b)openDetail(b.dataset.id)}
 async function openDetail(id){const r=restaurants.find(x=>x.id===id);if(!r)return;currentRestaurant=r;show("detail");const d=Math.round(dist(origin,{lat:+r.latitude,lng:+r.longitude}));$("#dn").textContent=r.name;$("#tags").textContent=(r.category_label||"")+(r.demo_rating?" · ★ "+r.demo_rating:"");$("#dd").textContent=d+"m · 약 "+Math.max(1,Math.ceil(d/75))+"분";$("#dp").textContent=won(r.min_price)+" ~ "+won(r.max_price);$("#dc").textContent=(r.table_count??"-")+"개 · "+(r.capacity??"-")+"명";$("#df").textContent="혼밥 "+(r.solo_friendly?"가능":"비추천")+" · 단체 "+(r.group_friendly?"가능":"비추천");$("#desc").textContent=r.description||"설명 없음";const [ms,hs]=await Promise.all([api("food_menus?select=*&restaurant_id=eq."+id+"&is_available=eq.true&order=sort_order.asc"),api("food_restaurant_hours?select=*&restaurant_id=eq."+id+"&weekday=eq."+new Date().getDay())]);$("#dm").innerHTML=ms.map(x=>`<div><b>${x.is_signature?"대표 · ":""}${x.name}</b><span>${won(x.price)}</span></div>`).join("")||'<div>메뉴 없음</div>';const h=hs[0];$("#dh").textContent=h&&!h.is_closed?(h.open_time||"").slice(0,5)+"–"+(h.close_time||"").slice(0,5):"휴무";$("#db").textContent=h?.break_start?h.break_start.slice(0,5)+"–"+h.break_end.slice(0,5):"없음";setTimeout(()=>{if(!maps.detail)return;clearOverlays("detail");maps.detail.relayout();const p=new kakao.maps.LatLng(+r.latitude,+r.longitude);maps.detail.setCenter(p);foodOverlay(maps.detail,r,"detail",false);vending.forEach(v=>vendingOverlay(maps.detail,v,"detail"));if(livePosition)meOverlay(maps.detail,"detail",livePosition)},100)}
-async function startInternalNavigation(){if(!currentRestaurant)return;const p=await getPosition(false);if(!p){alert("도보 길안내를 시작하려면 위치 권한을 허용해줘.");return}livePosition=p;navigating=true;show("nav");$("#navTitle").textContent=currentRestaurant.name;if(!maps.nav)maps.nav=new kakao.maps.Map($("#navmap"),{center:new kakao.maps.LatLng(p.lat,p.lng),level:3});setTimeout(()=>{maps.nav.relayout();updateNav(p,true)},100);startLocationWatch()}
-function updateNav(p,fit=false){if(!maps.nav||!currentRestaurant||!p)return;clearOverlays("nav");meOverlay(maps.nav,"nav",p);foodOverlay(maps.nav,currentRestaurant,"nav",false);vending.forEach(v=>vendingOverlay(maps.nav,v,"nav"));const dest={lat:+currentRestaurant.latitude,lng:+currentRestaurant.longitude};if(navLine)navLine.setMap(null);navLine=new kakao.maps.Polyline({map:maps.nav,path:[new kakao.maps.LatLng(p.lat,p.lng),new kakao.maps.LatLng(dest.lat,dest.lng)],strokeWeight:4,strokeColor:"#2f7df6",strokeOpacity:.8,strokeStyle:"solid"});const d=Math.round(dist(p,dest));$("#navDistance").textContent=d+"m";$("#navEta").textContent="약 "+Math.max(1,Math.ceil(d/75))+"분";$("#navStatus").textContent="GPS 위치를 따라 안내 중";if(fit){const b=new kakao.maps.LatLngBounds();b.extend(new kakao.maps.LatLng(p.lat,p.lng));b.extend(new kakao.maps.LatLng(dest.lat,dest.lng));maps.nav.setBounds(b,80,35,80,35)}if(d<=40&&navigating){navigating=false;$("#navStatus").textContent="목적지 주변에 도착했습니다. 안내를 종료합니다.";setTimeout(()=>{show("home");drawAll(maps.home,"home")},2500)}}
+async function fetchWalkingRoute(p){
+  if(!currentRestaurant)throw Error("no_destination");
+  const d={lat:+currentRestaurant.latitude,lng:+currentRestaurant.longitude};
+  const url=ROUTE+"?origin="+encodeURIComponent(p.lng+","+p.lat)+"&destination="+encodeURIComponent(d.lng+","+d.lat);
+  const r=await fetch(url);
+  const j=await r.json();
+  if(!r.ok)throw Error(j?.error||"route_failed");
+  return j;
+}
+async function startInternalNavigation(){
+  if(!currentRestaurant)return;
+  const p=await getPosition(false);
+  if(!p){alert("도보 길안내를 시작하려면 위치 권한을 허용해줘.");return}
+  livePosition=p;navigating=true;lastRoutePos=null;lastRouteAt=0;
+  show("nav");$("#navTitle").textContent=currentRestaurant.name;
+  if(!maps.nav)maps.nav=new kakao.maps.Map($("#navmap"),{center:new kakao.maps.LatLng(p.lat,p.lng),level:3});
+  setTimeout(()=>{maps.nav.relayout();refreshWalkingRoute(p,true)},100);
+  startLocationWatch();
+}
+async function refreshWalkingRoute(p,fit=false){
+  if(routeBusy||!navigating||!maps.nav||!currentRestaurant||!p)return;
+  routeBusy=true;
+  $("#navStatus").textContent="실제 보행 경로를 계산하는 중...";
+  try{
+    const geo=await fetchWalkingRoute(p);
+    const feature=geo?.features?.[0];
+    const coords=feature?.geometry?.coordinates||[];
+    if(!coords.length)throw Error("empty_route");
+    clearOverlays("nav");
+    meOverlay(maps.nav,"nav",p);
+    foodOverlay(maps.nav,currentRestaurant,"nav",false);
+    vending.forEach(v=>vendingOverlay(maps.nav,v,"nav"));
+    if(navLine)navLine.setMap(null);
+    const path=coords.map(c=>new kakao.maps.LatLng(c[1],c[0]));
+    navLine=new kakao.maps.Polyline({map:maps.nav,path,strokeWeight:5,strokeColor:"#2f7df6",strokeOpacity:.9,strokeStyle:"solid"});
+    const summary=feature?.properties?.summary||{};
+    const routeDistance=Math.round(summary.distance||0);
+    const duration=Math.max(1,Math.round((summary.duration||0)/60));
+    $("#navDistance").textContent=routeDistance?routeDistance+"m":"-";
+    $("#navEta").textContent=summary.duration?"약 "+duration+"분":"";
+    const steps=feature?.properties?.segments?.[0]?.steps||[];
+    $("#navStep").textContent=steps[0]?.instruction?("첫 안내: "+steps[0].instruction):"";
+    $("#navStatus").textContent="실제 보행 경로 안내 중";
+    if(fit){
+      const b=new kakao.maps.LatLngBounds();
+      path.forEach(x=>b.extend(x));
+      maps.nav.setBounds(b,75,35,75,35);
+    }
+    lastRoutePos={...p};lastRouteAt=Date.now();
+  }catch(err){
+    $("#navStatus").textContent=String(err?.message)==="routing_key_missing"?"보행 길찾기 키가 아직 설정되지 않았어.":"실제 보행 경로를 불러오지 못했어.";
+    $("#navStep").textContent="아래 '카카오맵 실제 경로'로도 바로 확인할 수 있어.";
+  }finally{
+    routeBusy=false;
+  }
+  const dest={lat:+currentRestaurant.latitude,lng:+currentRestaurant.longitude};
+  if(dist(p,dest)<=40&&navigating){
+    navigating=false;
+    $("#navStatus").textContent="목적지 주변에 도착했습니다. 안내를 종료합니다.";
+    $("#navStep").textContent="";
+    setTimeout(()=>{show("home");drawAll(maps.home,"home")},2500);
+  }
+}
+function maybeRefreshRoute(p){
+  if(!navigating||!p)return;
+  const moved=!lastRoutePos?999:dist(lastRoutePos,p);
+  const elapsed=Date.now()-lastRouteAt;
+  if(moved>=20||elapsed>=15000)refreshWalkingRoute(p,false);
+}
 function openKakaoWalk(){if(!currentRestaurant||!livePosition)return;const a=encodeURIComponent("현재 위치")+","+livePosition.lat+","+livePosition.lng;const b=encodeURIComponent(currentRestaurant.name)+","+currentRestaurant.latitude+","+currentRestaurant.longitude;window.open("https://map.kakao.com/link/by/walk/"+a+"/"+b,"_blank","noopener")}
 function stopNavigation(){navigating=false;show("detail")}
 $("#startNav").onclick=startInternalNavigation;$("#openKakaoWalk").onclick=openKakaoWalk;$("#stopNav").onclick=stopNavigation;$("#stopNavTop").onclick=stopNavigation;
